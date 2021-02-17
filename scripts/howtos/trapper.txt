@@ -1,9 +1,0 @@
-Trapper2:
-start off on your standard attack-heavy c2 spec 
-then once you raid as far as humanly possible swap to a very health heavy spec
-^minor adjustment to that
-use metal^2 preset at the start for your initial set
-because your income scales with metal drop
-
-Z730 - gather resources and change shield
-Z746 - go to 815
