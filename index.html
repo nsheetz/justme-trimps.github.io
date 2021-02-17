@@ -1097,7 +1097,7 @@ function autobuyPerks(spendEverything) {
 		
 		for (var i = elements.length - 2; i >= 0; i--) {
 			if (elements[i].getAttribute('data-max') !== null) {
-				console.log("Increasing perk number " + i);
+				//console.log("Increasing perk number " + i);
 				var input = elements[i].getElementsByTagName('input')[1];
 				input.value = parseInt(input.value) + 1;
 				calculate();
