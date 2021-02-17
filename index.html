@@ -468,14 +468,14 @@ var setMax = function(whichOne, index, gain, maxed) {
 var setMaxes = function(j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13, loop, index, tenacity, prismal, greed) {
 	var max = Math.max(j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13);
 	
-	     if (j2  == max)       { setMax("tenacity", index, tenacity < maxTenacity ? j2 : 0, tenacity == maxTenacity); j2 = -1e+100; }
-	else if (j3  == max)  { setMax("resilience", index, j3); j3 = -1e+100; }
-	else if (j4  == max)  { setMax("criticality", index, j4); j4 = -1e+100; }
-	else if (j5  == max)  { setMax("equality", index, 0); j5 = -1e+100; }
-	else if (j6  == max)  { setMax("carpentry", index, j6); j6 = -1e+100; }
-	else if (j7  == max)  { setMax("artisanistry", index, j7); j7 = -1e+100; }
-	else if (j8  == max)  { setMax("motivation", index, j8); j8 = -1e+100; }
-	else if (j9  == max)  { setMax("power", index, j9); j9 = -1e+100; }
+	     if (j2  == max) { setMax("tenacity", index, tenacity < maxTenacity ? j2 : 0, tenacity == maxTenacity); j2 = -1e+100; }
+	else if (j3  == max) { setMax("resilience", index, j3); j3 = -1e+100; }
+	else if (j4  == max) { setMax("criticality", index, j4); j4 = -1e+100; }
+	else if (j5  == max) { setMax("equality", index, 0); j5 = -1e+100; }
+	else if (j6  == max) { setMax("carpentry", index, j6); j6 = -1e+100; }
+	else if (j7  == max) { setMax("artisanistry", index, j7); j7 = -1e+100; }
+	else if (j8  == max) { setMax("motivation", index, j8); j8 = -1e+100; }
+	else if (j9  == max) { setMax("power", index, j9); j9 = -1e+100; }
 	else if (j10 == max) { setMax("toughness", index, j10); j10 = -1e+100; }
 	else if (j11 == max) { setMax("looting", index, j11); j11 = -1e+100; }
 	else if (j12 == max) { setMax("prismal", index, prismal < maxPrismal ? j12 : 0, prismal == maxPrismal); j12 = -1e+100; }
@@ -747,29 +747,46 @@ var calculate = function() {
 				
 	var g13 = Math.pow(e13, attackWeight) * Math.pow(f13, healthWeight) * Math.pow(d13, radonWeight) * Math.pow(c13, radonWeight);
 	
+	// nsheetz changes to make the calc keep spending Rn beyond the most efficient perk when unaffordable:
+	//  -> Simply check whether the raw calculated cost fits in the Rn budget, and if not set the cost to Infinity.
+	//     This is an egregious quick-and-dirty hack for now. Eventually I want to rewrite the calculation code from the ground up, so I'm not
+	//     for example refactoring this to use array looping (which would require more far-reaching changes elsewhere in the source).
+	
 	h2 = Math.pow(1.3, tenacity) * 50000000;
+	if (h2 + totalCost > totalRadonEarned) h2 = Infinity;
 	
 	h3 = Math.pow(1.3, resilience) * 100;
+	if (h3 + totalCost > totalRadonEarned) h3 = Infinity;
 	
 	h4 = Math.pow(1.3, criticality) * 100;
+	if (h4 + totalCost > totalRadonEarned) h4 = Infinity;
 	
 	h5 = Math.pow(1.5, equality);
+	if (h5 + totalCost > totalRadonEarned) h5 = Infinity;
 	
 	h6 = Math.pow(1.3, carpentry) * 25;
+	if (h6 + totalCost > totalRadonEarned) h6 = Infinity;
 	
 	h7 = Math.pow(1.3, artisanistry) * 15;
+	if (h7 + totalCost > totalRadonEarned) h7 = Infinity;
 	
 	h8 = Math.pow(1.3, motivation) * 2;
+	if (h8 + totalCost > totalRadonEarned) h8 = Infinity;
 	
 	h9 = Math.pow(1.3, power) * 1;
+	if (h9 + totalCost > totalRadonEarned) h9 = Infinity;
 	
 	h10 = Math.pow(1.3, toughness) * 1;
+	if (h10 + totalCost > totalRadonEarned) h10 = Infinity;
 	
 	h11 = Math.pow(1.3, looting) * 1;
+	if (h11 + totalCost > totalRadonEarned) h11 = Infinity;
 	
 	h12 = Math.pow(1.3, prismal) * 1;
+	if (h12 + totalCost > totalRadonEarned) h12 = Infinity;
 	
 	h13 = Math.pow(1.3, greed) * Math.pow(10, 10);
+	if (h13 + totalCost > totalRadonEarned) h13 = Infinity;
 	
 	var i2 = Math.log(g2) / h2;
 	
