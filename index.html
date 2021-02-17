@@ -445,7 +445,7 @@ var clearClasses = function() {
 	}
 }
 
-var setMax = function(whichOne, index, gain, maxed) {
+var setMax = function(whichOne, index, gain, maxed, colorsOnly) {
 	if (whichOne == 'use-total')
 		return;
 
@@ -458,6 +458,7 @@ var setMax = function(whichOne, index, gain, maxed) {
 		} else {
 			element.setAttribute("style", "background: rgba(11, 200, 35, " + opacity + ");");
 		}
+		if (colorsOnly) return;
 		if (index == 0) {
 			element.setAttribute("data-max", "true");
 		}
@@ -465,27 +466,27 @@ var setMax = function(whichOne, index, gain, maxed) {
 	}
 }
 
-var setMaxes = function(j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13, loop, index, tenacity, prismal, greed) {
+var setMaxes = function(j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13, loop, index, tenacity, prismal, greed, colorsOnly) {
 	var max = Math.max(j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13);
 	
-	     if (j2  == max) { setMax("tenacity", index, tenacity < maxTenacity ? j2 : 0, tenacity == maxTenacity); j2 = -1e+100; }
-	else if (j3  == max) { setMax("resilience", index, j3); j3 = -1e+100; }
-	else if (j4  == max) { setMax("criticality", index, j4); j4 = -1e+100; }
-	else if (j5  == max) { setMax("equality", index, 0); j5 = -1e+100; }
-	else if (j6  == max) { setMax("carpentry", index, j6); j6 = -1e+100; }
-	else if (j7  == max) { setMax("artisanistry", index, j7); j7 = -1e+100; }
-	else if (j8  == max) { setMax("motivation", index, j8); j8 = -1e+100; }
-	else if (j9  == max) { setMax("power", index, j9); j9 = -1e+100; }
-	else if (j10 == max) { setMax("toughness", index, j10); j10 = -1e+100; }
-	else if (j11 == max) { setMax("looting", index, j11); j11 = -1e+100; }
-	else if (j12 == max) { setMax("prismal", index, prismal < maxPrismal ? j12 : 0, prismal == maxPrismal); j12 = -1e+100; }
-	else if (j13 == max) { setMax("greed", index, greed < maxGreed ? j13 : 0, greed == maxGreed); j13 = -1e+100; }
+	     if (j2  == max) { setMax("tenacity", index, tenacity < maxTenacity ? j2 : 0, tenacity == maxTenacity, colorsOnly); j2 = -1e+100; }
+	else if (j3  == max) { setMax("resilience", index, j3, false, colorsOnly); j3 = -1e+100; }
+	else if (j4  == max) { setMax("criticality", index, j4, false, colorsOnly); j4 = -1e+100; }
+	else if (j5  == max) { setMax("equality", index, j5, false, colorsOnly); j5 = -1e+100; }
+	else if (j6  == max) { setMax("carpentry", index, j6, false, colorsOnly); j6 = -1e+100; }
+	else if (j7  == max) { setMax("artisanistry", index, j7, false, colorsOnly); j7 = -1e+100; }
+	else if (j8  == max) { setMax("motivation", index, j8, false, colorsOnly); j8 = -1e+100; }
+	else if (j9  == max) { setMax("power", index, j9, false, colorsOnly); j9 = -1e+100; }
+	else if (j10 == max) { setMax("toughness", index, j10, false, colorsOnly); j10 = -1e+100; }
+	else if (j11 == max) { setMax("looting", index, j11, false, colorsOnly); j11 = -1e+100; }
+	else if (j12 == max) { setMax("prismal", index, prismal < maxPrismal ? j12 : 0, prismal == maxPrismal, colorsOnly); j12 = -1e+100; }
+	else if (j13 == max) { setMax("greed", index, greed < maxGreed ? j13 : 0, greed == maxGreed, colorsOnly); j13 = -1e+100; }
 	
 	if (max == Math.max(j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13))
 		index--;
 	
 	if (loop < 11)
-		setMaxes(j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13, loop + 1, index + 1, tenacity, prismal, greed);
+		setMaxes(j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13, loop + 1, index + 1, tenacity, prismal, greed, colorsOnly);
 }
 
 var setMaxes2 = function(s5, s6, s7, s8, s9, loop, index, prismalShield) {
@@ -753,40 +754,28 @@ var calculate = function() {
 	//     for example refactoring this to use array looping (which would require more far-reaching changes elsewhere in the source).
 	
 	h2 = Math.pow(1.3, tenacity) * 50000000;
-	if (h2 + totalCost > totalRadonEarned) h2 = Infinity;
 	
 	h3 = Math.pow(1.3, resilience) * 100;
-	if (h3 + totalCost > totalRadonEarned) h3 = Infinity;
 	
 	h4 = Math.pow(1.3, criticality) * 100;
-	if (h4 + totalCost > totalRadonEarned) h4 = Infinity;
 	
 	h5 = Math.pow(1.5, equality);
-	if (h5 + totalCost > totalRadonEarned) h5 = Infinity;
 	
 	h6 = Math.pow(1.3, carpentry) * 25;
-	if (h6 + totalCost > totalRadonEarned) h6 = Infinity;
 	
-	h7 = Math.pow(1.3, artisanistry) * 15;
-	if (h7 + totalCost > totalRadonEarned) h7 = Infinity;
+	h7 = Math.pow(1.3, artisanistry) * 15
 	
 	h8 = Math.pow(1.3, motivation) * 2;
-	if (h8 + totalCost > totalRadonEarned) h8 = Infinity;
-	
+
 	h9 = Math.pow(1.3, power) * 1;
-	if (h9 + totalCost > totalRadonEarned) h9 = Infinity;
 	
 	h10 = Math.pow(1.3, toughness) * 1;
-	if (h10 + totalCost > totalRadonEarned) h10 = Infinity;
 	
 	h11 = Math.pow(1.3, looting) * 1;
-	if (h11 + totalCost > totalRadonEarned) h11 = Infinity;
 	
 	h12 = Math.pow(1.3, prismal) * 1;
-	if (h12 + totalCost > totalRadonEarned) h12 = Infinity;
 	
 	h13 = Math.pow(1.3, greed) * Math.pow(10, 10);
-	if (h13 + totalCost > totalRadonEarned) h13 = Infinity;
 	
 	var i2 = Math.log(g2) / h2;
 	
@@ -812,32 +801,49 @@ var calculate = function() {
 	
 	var i13 = Math.log(g13) / h13;
 	
-	var j2 = !enabledTenacity || tenacity >= maxTenacity ? 0 : i2 / Math.max(i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13);
+	var maxI = Math.max(i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13);
 	
-	var j3 = !enabledResilience  ? 0 :  i3 / Math.max(i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13);
+	var j2 = !enabledTenacity || tenacity >= maxTenacity ? 0 : i2 / maxI;
 	
-	var j4 = !enabledCriticality  ? 0 :  i4 / Math.max(i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13);
+	var j3 = !enabledResilience  ? 0 :  i3 / maxI;
 	
-	var j5 = !enabledEquality  ? 0 :  i5 / Math.max(i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13);
+	var j4 = !enabledCriticality  ? 0 :  i4 / maxI;
 	
-	var j6 = !enabledCarpentry  ? 0 :  i6 / Math.max(i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13);
+	var j5 = !enabledEquality  ? 0 :  i5 / maxI;
 	
-	var j7 = !enabledArtisanistry  ? 0 :  i7 / Math.max(i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13);
+	var j6 = !enabledCarpentry  ? 0 :  i6 / maxI;
 	
-	var j8 = !enabledMotivation  ? 0 :  i8 / Math.max(i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13);
+	var j7 = !enabledArtisanistry  ? 0 :  i7 / maxI;
 	
-	var j9 = !enabledPower  ? 0 :  i9 / Math.max(i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13);
+	var j8 = !enabledMotivation  ? 0 :  i8 / maxI;
 	
-	var j10 = !enabledToughness  ? 0 :  i10 / Math.max(i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13);
+	var j9 = !enabledPower  ? 0 :  i9 / maxI;
 	
-	var j11 = !enabledLooting  ? 0 :  i11 / Math.max(i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13);
+	var j10 = !enabledToughness  ? 0 :  i10 / maxI;
 	
-	var j12 = !enabledPrismal || prismal >= maxPrismal ? 0 : i12 / Math.max(i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13);
+	var j11 = !enabledLooting  ? 0 :  i11 / maxI;
 	
-	var j13 = !enabledGreed || greed >= maxGreed ? 0 : i13 / Math.max(i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13);
+	var j12 = !enabledPrismal || prismal >= maxPrismal ? 0 : i12 / maxI;
+	
+	var j13 = !enabledGreed || greed >= maxGreed ? 0 : i13 / maxI;
+	
+	var budget = totalRadonEarned - totalCost;
 	
 	clearClasses();
-	setMaxes(j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13, 0, 0, tenacity, prismal, greed);
+	setMaxes(h2 > budget ? 0 : j2, 
+		 h3 > budget ? 0 : j3, 
+		 h4 > budget ? 0 : j4, 
+		 h5 > budget ? 0 : j5, 
+		 h6 > budget ? 0 : j6, 
+		 h7 > budget ? 0 : j7, 
+		 h8 > budget ? 0 : j8, 
+		 h9 > budget ? 0 : j9, 
+		 h10 > budget ? 0 : j10, 
+		 h11 > budget ? 0 : j11, 
+		 h12 > budget ? 0 : j12, 
+		 h13 > budget ? 0 : j13, 
+		 0, 0, tenacity, prismal, greed); // use 0 efficiency for unaffordable perks
+	setMaxes(j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13, 0, 0, tenacity, prismal, greed, true); // update row colors only with raw efficiencies
 	
 	totalCost = getTotalCost(tenacity, resilience, criticality, equality, carpentry, artisanistry, motivation, power, toughness, looting, prismal, greed);
 		
