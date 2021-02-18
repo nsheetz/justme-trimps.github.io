@@ -184,11 +184,6 @@ input[type=checkbox], input[type=radio] {
 			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-prismal" /></div>
 		</div>
 		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-prismal-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-prismal" for="input-prismal">Prismal </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-prismal" /></div>
-		</div>
-		<div class="row">
 			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-range-enabled" /></div>
 			<label class="col-sm-6 col-form-label" id="label-range" for="input-range">Range </label>
 			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-range" /></div>
@@ -1003,12 +998,9 @@ function exportPerks() {
 // zero out perk inputs and autobuy
 function clearAndAutobuyPerks() {
 	if (perks.perksRadon > 0) {
-		var elements = document.getElementById('perks-col').getElementsByClassName('row');
-		for (var i = elements.length - 1; i >= 0; i--) {
-			var input = elements[i].getElementsByTagName('input')[1];
-			if (typeof(input) !== "undefined") {
-				input.value = 0;
-			}
+		for (var [key, value] of Object.entries(perks)) {
+			if (typeof(value) !== "object" || !value.hasOwnProperty("optimize") || !value.optimize) continue; // iterating over the perks, ignoring aux values and non-optimized perks
+			inputs[key.toLowerCase()].value = 0;
 		}
 		autobuyPerks();
 	}
