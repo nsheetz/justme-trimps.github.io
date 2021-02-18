@@ -119,14 +119,19 @@ input[type=checkbox], input[type=radio] {
   <div class="row mt-3">
     <div class="col-sm mr-3" id="perks-col">
 		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-tenacity-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-tenacity" for="input-tenacity">Tenacity </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="40" id="input-tenacity" /></div>
-		</div>
-		<div class="row">
 			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-resilience-enabled" /></div>
 			<label class="col-sm-6 col-form-label" id="label-resilience" for="input-resilience">Resilience </label>
 			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-resilience" /></div>
+		</div>
+		<div class="row">
+			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-greed-enabled" /></div>
+			<label class="col-sm-6 col-form-label" id="label-greed" for="input-greed">Greed </label>
+			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="40" id="input-greed" /></div>
+		</div>
+		<div class="row">
+			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-tenacity-enabled" /></div>
+			<label class="col-sm-6 col-form-label" id="label-tenacity" for="input-tenacity">Tenacity </label>
+			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="40" id="input-tenacity" /></div>
 		</div>
 		<div class="row">
 			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-criticality-enabled" /></div>
@@ -147,6 +152,11 @@ input[type=checkbox], input[type=radio] {
 			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-artisanistry-enabled" /></div>
 			<label class="col-sm-6 col-form-label" id="label-artisanistry" for="input-artisanistry">Artisanistry </label>
 			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-artisanistry" /></div>
+		</div>
+		<div class="row">
+			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-packrat-enabled" /></div>
+			<label class="col-sm-6 col-form-label" id="label-packrat" for="input-packrat">Packrat </label>
+			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-packrat" /></div>
 		</div>
 		<div class="row">
 			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-motivation-enabled" /></div>
@@ -174,9 +184,49 @@ input[type=checkbox], input[type=radio] {
 			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-prismal" /></div>
 		</div>
 		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-greed-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-greed" for="input-greed">Greed </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="40" id="input-greed" /></div>
+			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-prismal-enabled" /></div>
+			<label class="col-sm-6 col-form-label" id="label-prismal" for="input-prismal">Prismal </label>
+			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-prismal" /></div>
+		</div>
+		<div class="row">
+			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-range-enabled" /></div>
+			<label class="col-sm-6 col-form-label" id="label-range" for="input-range">Range </label>
+			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-range" /></div>
+		</div>
+		<div class="row">
+			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-agility-enabled" /></div>
+			<label class="col-sm-6 col-form-label" id="label-agility" for="input-agility">Agility </label>
+			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-agility" /></div>
+		</div>
+		<div class="row">
+			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-bait-enabled" /></div>
+			<label class="col-sm-6 col-form-label" id="label-bait" for="input-bait">Bait </label>
+			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-bait" /></div>
+		</div>
+		<div class="row">
+			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-trumps-enabled" /></div>
+			<label class="col-sm-6 col-form-label" id="label-trumps" for="input-trumps">Trumps </label>
+			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-trumps" /></div>
+		</div>
+		<div class="row">
+			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-pheromones-enabled" /></div>
+			<label class="col-sm-6 col-form-label" id="label-pheromones" for="input-pheromones">Pheromones </label>
+			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-pheromones" /></div>
+		</div>
+		<div class="row">
+			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-hunger-enabled" /></div>
+			<label class="col-sm-6 col-form-label" id="label-hunger" for="input-hunger">Hunger </label>
+			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-hunger" /></div>
+		</div>
+		<div class="row">
+			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-frenzy-enabled" /></div>
+			<label class="col-sm-6 col-form-label" id="label-frenzy" for="input-frenzy">Frenzy </label>
+			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-frenzy" /></div>
+		</div>
+		<div class="row">
+			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-observation-enabled" /></div>
+			<label class="col-sm-6 col-form-label" id="label-observation" for="input-observation">Observation </label>
+			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-observation" /></div>
 		</div>
 		<div class="row mt-2">
 			<div class="col-sm-1"></div>
@@ -208,34 +258,29 @@ input[type=checkbox], input[type=radio] {
 			<div class="col-sm-5"><input class="form-control" value="1" type="number" min="1" title="Number of boots you're aiming for" id="input-armor-levels" /></div>
 		</div>
 		<div class="row mt-2">
-			<label class="col-sm-6 col-form-label" id="label-health-weight" for="input-health-weight">Health weight </label>
-			<div class="col-sm-5"><input class="form-control" value="1" type="number" min="0" id="input-health-weight" maxlength="3" /></div>
+			<label class="col-sm-6 col-form-label" id="label-clear-weight" for="input-clear-weight">Clearspeed (atk*hp) weight </label>
+			<div class="col-sm-5"><input class="form-control" value="1" title="This is the weight applied to attack*health, which determines your clear-speed with non-zero but less than max equality." type="number" min="0" id="input-clear-weight" maxlength="3" /></div>
 		</div>
 		<div class="row">
-			<label class="col-sm-6 col-form-label" id="label-attack-weight" for="input-attack-weight">Attack weight </label>
-			<div class="col-sm-5"><input class="form-control" value="5" type="number" min="0" id="input-attack-weight" maxlength="3" /></div>
+			<label class="col-sm-6 col-form-label" id="label-survival-weight" for="input-survival-weight">Survivability (at max equality) weight </label>
+			<div class="col-sm-5"><input class="form-control" value="0.01" title="This is the ADDITIONAL weight placed on max effective HP at max equality. It is the weight used for equality itself, and also adds to the health weight. Unless you are doing a very hard push this should be a small fraction of the clearspeed weight." type="number" min="0" id="input-survival-weight" maxlength="3" /></div>
 		</div>
 		<div class="row">
 			<label class="col-sm-6 col-form-label" id="label-radon-weight" for="input-radon-weight">Radon weight </label>
-			<div class="col-sm-5"><input class="form-control" value="10" type="number" min="0" id="input-radon-weight" maxlength="3" /></div>
+			<div class="col-sm-5"><input class="form-control" value="10" title="This is the weight applied to Radon gains, and will tend to increase perks that boost Radon (like Looting and Greed)." type="number" min="0" id="input-radon-weight" maxlength="3" /></div>
 		</div>
 		<div class="row mt-2">
-			<label class="col-sm-6 col-form-label" id="label-tenacity-multiplier" for="input-tenacity-multiplier">Tenacity multiplier </label>
-			<div class="col-sm-5"><input class="form-control" value="1.1" id="input-tenacity-multiplier" /></div>
+			<label class="col-sm-6 col-form-label" id="label-tenacity-time" for="input-tenacity-time">Tenacity time (mins) </label>
+			<div class="col-sm-5"><input class="form-control" value="0" title="How much Tenacity time do you want to optimize for?" id="input-tenacity-time" /></div>
 		</div>
 		<div class="row">
-			<label class="col-sm-6 col-form-label" id="label-carp-coord-multiplier" for="input-carp-coord-multiplier">Carp/Coord multiplier </label>
-			<div class="col-sm-5"><input class="form-control" value="1" title="Use '1' if you're not coord limited or '1.1' if you are coord limited" id="input-carp-coord-multiplier" /></div>
+			<label class="col-sm-6 col-form-label" id="label-coord-limited" for="input-coord-limited">Coord limited </label>
+			<div class="col-sm-5"><input class="form-control" value="1" title="This is used to give additional weight to population when more population can give more coords. Use '0' if you are definitely not coord limited, '1' if you are definitely coord limited, and something in between if you only need to give a little more weight to population to get all coords. " id="input-coord-limited" /></div>
 		</div>
 		<div class="row">
 			<label class="col-sm-6 col-form-label" id="label-tribute-count" for="input-tribute-count">Tribute count (for Greed) </label>
 			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-tribute-count" /></div>
-		</div>
-		<div class="row">
-			<label class="col-sm-6 col-form-label" id="label-hits-per-gamma" for="input-hits-per-gamma">Hits per gamma </label>
-			<div class="col-sm-5"><input class="form-control" value="5" type="number" min="1" id="input-hits-per-gamma" /></div>
-		</div>
-		
+		</div>		
 		<div class="row mt-2">
 			<label class="col-sm-6 col-form-label" id="label-crit-damage" for="input-crit-damage">Crit damage </label>
 			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-crit-damage" /></div>
@@ -245,32 +290,236 @@ input[type=checkbox], input[type=radio] {
 			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="250" id="input-prismal-shield" /></div>
 		</div>
 		<div class="row">
-			<label class="col-sm-6 col-form-label" id="label-trimp-attack" for="input-trimp-attack">Trimp attack </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-trimp-attack" /></div>
-		</div>
-		<div class="row">
-			<label class="col-sm-6 col-form-label" id="label-trimp-health" for="input-trimp-health">Trimp health </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-trimp-health" /></div>
-		</div>
-		<div class="row">
-			<label class="col-sm-6 col-form-label" id="label-gamma-burst" for="input-gamma-burst">Gamma burst </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-gamma-burst" /></div>
+			<label class="col-sm-6 col-form-label" id="label-scruffy-level" for="input-scruffy-level">Scruffy level </label>
+			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="20" id="input-scruffy-level" /></div>
 		</div>
     </div>
   </div>
 </div>
 
 <script type="text/javascript">
-const maxTenacity = 40;
-const maxPrismal = 100;
-const maxGreed = 40;
 const maxPrismalShield = 250;
+// prestige equipment scaling, used when equip levels are small
+const equipScalingPrestige = {
+	attack: Math.pow(Math.pow(1.19,13),1/Math.log(Math.pow(1.069,(57*0.85)))),
+	health: Math.pow(Math.pow(1.19,14),1/Math.log(Math.pow(1.069,(57*0.85)))),
+}
 
-var totalRadonEarned = 0;
-var totalRadonEarnedWithoutCurrentRun = 0;
-var totalRadonEarnedWithCurrentRun = 0;
-var totalRadonSpentOnOtherPerks = 0;
-var totalCost = 0;
+var perks = {};
+
+// initialize perks object to default values
+function initPerks() {
+    perks = {
+		portalRadon: 0,	// total radon available to use on the current portal
+		earnedRadon: 0,	// total radon, including that earned this run
+		perksRadon: 0,  // total radon available for perks in this optimization run
+		radonSpent: 0,  // radon spent on perks so far
+		//shieldCC: 0, // TODO: strictly, this matters. sort of. if it's <100% it affects the value of criticality. also in Duel. but we can ignore this for a start.
+		baseCD: 0,
+		basePrismal: 0,
+		prismLayers: 1,
+		smithyScaling: 50,
+		tenacityTime: 0, // minutes of tenacity to optimize for
+		coordLimited: 0, // 0-1 value of "how coord limited" we are
+		clearWeight: 1,
+		survivalWeight: 1,
+		radonWeight: 1,
+		bestPerk: "", // 
+		// scaling^log(resource boost) = atk or hp boost
+		equipScaling: {
+			attack: equipScalingPrestige.attack,
+			health: equipScalingPrestige.health,
+		},
+		Agility: {
+			optimize: false,
+			locked: true,
+			level: 0,
+			priceBase: 4,
+			priceFact: 1.3,
+			max: 20,
+		},
+		Artisanistry: {
+			optimize: true,
+			locked: true,
+			level: 0,
+			priceBase: 15,
+			priceFact: 1.3,
+			effect: 1/0.95,
+			efficiency: 0,
+		},
+		Bait: {
+			optimize: false,
+			locked: true,
+			level: 0,
+			priceBase: 4,
+			priceFact: 1.3,
+		},
+		Carpentry: {
+			optimize: true,
+			locked: true,
+			level: 0,
+			priceBase: 25,
+			priceFact: 1.3,
+			effect: 1.1,
+			efficiency: 0,
+		},
+		Criticality: {
+			optimize: true,
+			locked: true,
+			level: 0,
+			priceBase: 100,
+			priceFact: 1.3,
+			effect: 0.1,
+			efficiency: 0,
+		},
+		Equality: {
+			optimize: true,
+			locked: true,
+			level: 0,
+			priceBase: 1,
+			priceFact: 1.5,
+			effect: 1/0.9,
+			efficiency: 0,
+		},
+		Frenzy: {
+			optimize: false, // TODO to figure out how frenzy works
+			locked: true,
+			level: 0,
+			priceBase: 1000000000000000,
+			priceFact: 1.3,
+			effect: 0,
+			efficiency: 0,
+		},
+		Greed: {
+			optimize: true,
+			locked: true,
+			level: 0,
+			priceBase: 10000000000,
+			priceFact: 1.3,
+			effect: 0, // based on tributes
+			max: 40,
+			efficiency: 0,
+		},
+		Hunger: {
+			optimize: false,
+			locked: true,
+			level: 0,
+			priceBase: 1000000,
+			priceFact: 1.3,
+			max: 30,
+		},
+		Looting: {
+			optimize: true,
+			locked: true,
+			level: 0,
+			priceBase: 1,
+			priceFact: 1.3,
+			effect: 0.05,
+			efficiency: 0,
+		},
+		Motivation: {
+			optimize: true,
+			locked: true,
+			level: 0,
+			priceBase: 2,
+			priceFact: 1.3,
+			effect: 0.05,
+			efficiency: 0,
+		},
+		Observation: {
+			optimize: false, // TODO to figure out how observation works
+			locked: true,
+			level: 0,
+			priceBase: 5000000000000000000,
+			priceFact: 2,
+			trinkets: 0,
+			max: 50,
+			efficiency: 0,
+		},
+		Packrat: {
+			optimize: true,
+			locked: true,
+			level: 0,
+			priceBase: 3,
+			priceFact: 1.3,
+			effect: 0.2,
+			efficiency: 0,
+		},
+		Pheromones: {
+			optimize: false, // TODO: SHOULD we optimize this? might need to in endgame
+			locked: true,
+			level: 0,
+			priceBase: 3,
+			priceFact: 1.3,
+			effect: 0.1,
+			efficiency: 0,
+		},
+		Power: {
+			optimize: true,
+			locked: true,
+			level: 0,
+			priceBase: 1,
+			priceFact: 1.3,
+			effect: 0.05,
+			efficiency: 0,
+		},
+		Prismal: {
+			optimize: true,
+			locked: true,
+			level: 0,
+			priceBase: 1,
+			priceFact: 1.3,
+			effect: 0.01,
+			max: 100,
+			efficiency: 0,
+		},
+		Range: {
+			optimize: false,
+			locked: true,
+			level: 0,
+			priceBase: 1,
+			priceFact: 1.3,
+			max: 10,
+		},
+		Resilience: {
+			optimize: true,
+			locked: true,
+			level: 0,
+			priceBase: 100,
+			priceFact: 1.3,
+			effect: 1.1,
+			efficiency: 0,
+		},
+		Tenacity: {
+			optimize: true,
+			locked: true,
+			level: 0,
+			priceBase: 50000000,
+			priceFact: 1.3,
+			effect: 0, // based on tenacityTime
+			max: 40,
+			efficiency: 0,
+		},
+		Toughness: {
+			optimize: true,
+			locked: true,
+			level: 0,
+			priceBase: 1,
+			priceFact: 1.3,
+			effect: 0.05,
+			efficiency: 0,
+		},
+		Trumps: {
+			optimize: false,
+			locked: true,
+			level: 0,
+			priceBase: 3,
+			priceFact: 1.3,
+		},
+	};
+}
+		
+
 
 var LZString=function(){function o(o,r){if(!t[o]){t[o]={};for(var n=0;n<o.length;n++)t[o][o.charAt(n)]=n}return t[o][r]}var r=String.fromCharCode,n="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",e="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$",t={},i={compressToBase64:function(o){if(null==o)return"";var r=i._compress(o,6,function(o){return n.charAt(o)});switch(r.length%4){default:case 0:return r;case 1:return r+"===";case 2:return r+"==";case 3:return r+"="}},decompressFromBase64:function(r){return null==r?"":""==r?null:i._decompress(r.length,32,function(e){return o(n,r.charAt(e))})},compressToUTF16:function(o){return null==o?"":i._compress(o,15,function(o){return r(o+32)})+" "},decompressFromUTF16:function(o){return null==o?"":""==o?null:i._decompress(o.length,16384,function(r){return o.charCodeAt(r)-32})},compressToUint8Array:function(o){for(var r=i.compress(o),n=new Uint8Array(2*r.length),e=0,t=r.length;t>e;e++){var s=r.charCodeAt(e);n[2*e]=s>>>8,n[2*e+1]=s%256}return n},decompressFromUint8Array:function(o){if(null===o||void 0===o)return i.decompress(o);for(var n=new Array(o.length/2),e=0,t=n.length;t>e;e++)n[e]=256*o[2*e]+o[2*e+1];var s=[];return n.forEach(function(o){s.push(r(o))}),i.decompress(s.join(""))},compressToEncodedURIComponent:function(o){return null==o?"":i._compress(o,6,function(o){return e.charAt(o)})},decompressFromEncodedURIComponent:function(r){return null==r?"":""==r?null:(r=r.replace(/ /g,"+"),i._decompress(r.length,32,function(n){return o(e,r.charAt(n))}))},compress:function(o){return i._compress(o,16,function(o){return r(o)})},_compress:function(o,r,n){if(null==o)return"";var e,t,i,s={},p={},u="",c="",a="",l=2,f=3,h=2,d=[],m=0,v=0;for(i=0;i<o.length;i+=1)if(u=o.charAt(i),Object.prototype.hasOwnProperty.call(s,u)||(s[u]=f++,p[u]=!0),c=a+u,Object.prototype.hasOwnProperty.call(s,c))a=c;else{if(Object.prototype.hasOwnProperty.call(p,a)){if(a.charCodeAt(0)<256){for(e=0;h>e;e++)m<<=1,v==r-1?(v=0,d.push(n(m)),m=0):v++;for(t=a.charCodeAt(0),e=0;8>e;e++)m=m<<1|1&t,v==r-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}else{for(t=1,e=0;h>e;e++)m=m<<1|t,v==r-1?(v=0,d.push(n(m)),m=0):v++,t=0;for(t=a.charCodeAt(0),e=0;16>e;e++)m=m<<1|1&t,v==r-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}l--,0==l&&(l=Math.pow(2,h),h++),delete p[a]}else for(t=s[a],e=0;h>e;e++)m=m<<1|1&t,v==r-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;l--,0==l&&(l=Math.pow(2,h),h++),s[c]=f++,a=String(u)}if(""!==a){if(Object.prototype.hasOwnProperty.call(p,a)){if(a.charCodeAt(0)<256){for(e=0;h>e;e++)m<<=1,v==r-1?(v=0,d.push(n(m)),m=0):v++;for(t=a.charCodeAt(0),e=0;8>e;e++)m=m<<1|1&t,v==r-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}else{for(t=1,e=0;h>e;e++)m=m<<1|t,v==r-1?(v=0,d.push(n(m)),m=0):v++,t=0;for(t=a.charCodeAt(0),e=0;16>e;e++)m=m<<1|1&t,v==r-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}l--,0==l&&(l=Math.pow(2,h),h++),delete p[a]}else for(t=s[a],e=0;h>e;e++)m=m<<1|1&t,v==r-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;l--,0==l&&(l=Math.pow(2,h),h++)}for(t=2,e=0;h>e;e++)m=m<<1|1&t,v==r-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;for(;;){if(m<<=1,v==r-1){d.push(n(m));break}v++}return d.join("")},decompress:function(o){return null==o?"":""==o?null:i._decompress(o.length,32768,function(r){return o.charCodeAt(r)})},_decompress:function(o,n,e){var t,i,s,p,u,c,a,l,f=[],h=4,d=4,m=3,v="",w=[],A={val:e(0),position:n,index:1};for(i=0;3>i;i+=1)f[i]=i;for(p=0,c=Math.pow(2,2),a=1;a!=c;)u=A.val&A.position,A.position>>=1,0==A.position&&(A.position=n,A.val=e(A.index++)),p|=(u>0?1:0)*a,a<<=1;switch(t=p){case 0:for(p=0,c=Math.pow(2,8),a=1;a!=c;)u=A.val&A.position,A.position>>=1,0==A.position&&(A.position=n,A.val=e(A.index++)),p|=(u>0?1:0)*a,a<<=1;l=r(p);break;case 1:for(p=0,c=Math.pow(2,16),a=1;a!=c;)u=A.val&A.position,A.position>>=1,0==A.position&&(A.position=n,A.val=e(A.index++)),p|=(u>0?1:0)*a,a<<=1;l=r(p);break;case 2:return""}for(f[3]=l,s=l,w.push(l);;){if(A.index>o)return"";for(p=0,c=Math.pow(2,m),a=1;a!=c;)u=A.val&A.position,A.position>>=1,0==A.position&&(A.position=n,A.val=e(A.index++)),p|=(u>0?1:0)*a,a<<=1;switch(l=p){case 0:for(p=0,c=Math.pow(2,8),a=1;a!=c;)u=A.val&A.position,A.position>>=1,0==A.position&&(A.position=n,A.val=e(A.index++)),p|=(u>0?1:0)*a,a<<=1;f[d++]=r(p),l=d-1,h--;break;case 1:for(p=0,c=Math.pow(2,16),a=1;a!=c;)u=A.val&A.position,A.position>>=1,0==A.position&&(A.position=n,A.val=e(A.index++)),p|=(u>0?1:0)*a,a<<=1;f[d++]=r(p),l=d-1,h--;break;case 2:return w.join("")}if(0==h&&(h=Math.pow(2,m),m++),f[l])v=f[l];else{if(l!==d)return null;v=s+s.charAt(0)}w.push(v),f[d++]=s+v.charAt(0),h--,s=v,0==h&&(h=Math.pow(2,m),m++)}}};return i}();"function"==typeof define&&define.amd?define(function(){return LZString}):"undefined"!=typeof module&&null!=module&&(module.exports=LZString);
 
@@ -315,71 +564,34 @@ var loadSave = function() {
 			return;
 		}
 		
-		game.portal.Tenacity.priceBase = 50000000.0;
-		game.portal.Resilience.priceBase = 100.0;
-		game.portal.Criticality.priceBase = 100.0;
-		game.portal.Equality.priceBase = 1.0;
-		game.portal.Equality.specialGrowth = 1.5;
-		game.portal.Carpentry.priceBase = 25.0;
-		game.portal.Artisanistry.priceBase = 15.0;
-		game.portal.Motivation.priceBase = 2.0;
-		game.portal.Power.priceBase = 1.0;
-		game.portal.Toughness.priceBase = 1.0;
-		game.portal.Looting.priceBase = 1.0;
-		game.portal.Prismal.priceBase = 1.0;
-		game.portal.Greed.priceBase = 10000000000.0;
+		if (typeof(game.portal) !== "object") {
+			saveTextArea.value = "That wasn't a save string (possibly a perk string?). Try again."
+			return;
+		}
 	
 		var portal = game.portal;
-		if (portal.Tenacity && portal.Tenacity.radLevel)         { inputs["tenacity"].value = game.portal.Tenacity.radLevel; }         else { inputs["tenacity"].value = 0; }
-		if (portal.Resilience && portal.Resilience.radLevel)     { inputs["resilience"].value = game.portal.Resilience.radLevel; }     else { inputs["resilience"].value = 0; }
-		if (portal.Criticality && portal.Criticality.radLevel)   { inputs["criticality"].value = game.portal.Criticality.radLevel; }   else { inputs["criticality"].value = 0; }
-		if (portal.Equality && portal.Equality.radLevel)         { inputs["equality"].value = game.portal.Equality.radLevel; }         else { inputs["equality"].value = 0; }
-		if (portal.Carpentry && portal.Carpentry.radLevel)       { inputs["carpentry"].value = game.portal.Carpentry.radLevel; }       else { inputs["carpentry"].value = 0; }
-		if (portal.Artisanistry && portal.Artisanistry.radLevel) { inputs["artisanistry"].value = game.portal.Artisanistry.radLevel; } else { inputs["artisanistry"].value = 0; }
-		if (portal.Motivation && portal.Motivation.radLevel)     { inputs["motivation"].value = game.portal.Motivation.radLevel; }     else { inputs["motivation"].value = 0; }
-		if (portal.Power && portal.Power.radLevel)               { inputs["power"].value = game.portal.Power.radLevel; }               else { inputs["power"].value = 0; }
-		if (portal.Toughness && portal.Toughness.radLevel)       { inputs["toughness"].value = game.portal.Toughness.radLevel; }       else { inputs["toughness"].value = 0; }
-		if (portal.Looting && portal.Looting.radLevel)           { inputs["looting"].value = game.portal.Looting.radLevel; }           else { inputs["looting"].value = 0; }
-		if (portal.Prismal && portal.Prismal.radLevel)           { inputs["prismal"].value = game.portal.Prismal.radLevel; }           else { inputs["prismal"].value = 0; }
-		if (portal.Greed && portal.Greed.radLevel)               { inputs["greed"].value = game.portal.Greed.radLevel; }               else { inputs["greed"].value = 0; }
 		
-		var tmpRows = document.getElementById('perks-col').getElementsByClassName('temp');
+		// set perk object to default values
+		initPerks();
 		
-		for (var i = tmpRows.length - 1; i > -1; i--) {
-			tmpRows[i].remove();
+		// read save into input perk fields
+		// enable perks (in input fields and perks object) based on locked status from save
+		// DO NOT update perk object levels yet
+		for (var [key, value] of Object.entries(perks)) {
+			if (typeof(value) !== "object" || !value.hasOwnProperty("optimize")) continue; // iterating over the perks, ignoring aux values
+			var portalPerk = portal[key];
+			var calcPerk = perks[key];
+			var level = portalPerk.radLevel;
+			inputs[key.toLowerCase()].value = level;
+			calcPerk.locked = portalPerk.radLocked;
+			inputs[key.toLowerCase() + "-enabled"].checked = !portalPerk.radLocked;
 		}
 		
-		totalRadonSpentOnOtherPerks = 0.0;	
-		var totalRadonCostDiv = document.getElementById('total-radon-cost');
-		for (const [key, value] of Object.entries(game.portal)) {
-			if (value.radLocked == false) {
-				var id = 'input-' + key.toLowerCase();
-				if (document.getElementById(id) == null) {
-					var tmpRow = document.createElement('div');
-					tmpRow.setAttribute('class', 'row temp');
-					tmpRow.innerHTML = '<div class="col-sm-1"></div><label class="col-sm-6 col-form-label">' +
-						key + ' </label><div class="col-sm-5"><input disabled="" class="form-control" value="'+ value.radLevel + '" type="number" id="input-' + key.toLowerCase() + '"></div>';
-					totalRadonCostDiv.parentElement.parentElement.insertBefore(tmpRow, totalRadonCostDiv.parentElement);
-					
-					totalRadonSpentOnOtherPerks += value.radSpent;
-				}
-			}
-		}
+		// calculate Scruffy level (adapted from Fluffy.getLevel() in the game source code)
+		perks.scruffyLevel = Math.floor(Math.log(((game.global.fluffyExp2 / 1000) * 3) + 1) / Math.log(4));
+		inputs["scruffy-level"].value = perks.scruffyLevel;
 		
-		if (portal.Tenacity && !portal.Tenacity.radLocked)         { inputs["tenacity-enabled"].checked = true; }    else { inputs["tenacity-enabled"].checked = false; }      
-		if (portal.Resilience && !portal.Resilience.radLocked)     { inputs["resilience-enabled"].checked = true; }    else { inputs["resilience-enabled"].checked = false; }      
-		if (portal.Criticality && !portal.Criticality.radLocked)   { inputs["criticality-enabled"].checked = true; }    else { inputs["criticality-enabled"].checked = false; }      
-		if (portal.Equality && !portal.Equality.radLocked)         { inputs["equality-enabled"].checked = true; }    else { inputs["equality-enabled"].checked = false; }      
-		if (portal.Carpentry && !portal.Carpentry.radLocked)       { inputs["carpentry-enabled"].checked = true; }    else { inputs["carpentry-enabled"].checked = false; }      
-		if (portal.Artisanistry && !portal.Artisanistry.radLocked) { inputs["artisanistry-enabled"].checked = true; }    else { inputs["artisanistry-enabled"].checked = false; }      
-		if (portal.Motivation && !portal.Motivation.radLocked)     { inputs["motivation-enabled"].checked = true; }    else { inputs["motivation-enabled"].checked = false; }      
-		if (portal.Power && !portal.Power.radLocked)               { inputs["power-enabled"].checked = true; }    else { inputs["power-enabled"].checked = false; }      
-		if (portal.Toughness && !portal.Toughness.radLocked)       { inputs["toughness-enabled"].checked = true; }    else { inputs["toughness-enabled"].checked = false; }      
-		if (portal.Looting && !portal.Looting.radLocked)           { inputs["looting-enabled"].checked = true; }    else { inputs["looting-enabled"].checked = false; }      
-		if (portal.Prismal && !portal.Prismal.radLocked)           { inputs["prismal-enabled"].checked = true; }    else { inputs["prismal-enabled"].checked = false; }      
-		if (portal.Greed && !portal.Greed.radLocked)               { inputs["greed-enabled"].checked = true; }    else { inputs["greed-enabled"].checked = false; }      
-		
-		var shield = null
+		var shield = null;
 
 		if (game.global.universe == 2)
 			shield = game.global.ShieldEquipped;
@@ -391,48 +603,173 @@ var loadSave = function() {
 		if (shield) {
 			var critDamageMod = shield.mods.find(function (el) { return el[0] == "critDamage"; });
 			var prismalMod = shield.mods.find(function (el) { return el[0] == "prismatic"; });
-			var gammaBurstMod = shield.mods.find(function (el) { return el[0] == "gammaBurst"; });
-			var trimpAttackMod = shield.mods.find(function (el) { return el[0] == "trimpAttack"; });
-			var trimpHealthMod = shield.mods.find(function (el) { return el[0] == "trimpHealth"; });
 			
 			if (critDamageMod)  { inputs["crit-damage"].value    = Math.round(critDamageMod[1] / 10); }  else { inputs["crit-damage"].value    = 0; }
 			if (prismalMod)     { inputs["prismal-shield"].value = Math.round(prismalMod[1]); }     else { inputs["prismal-shield"].value = 0; }
-			if (gammaBurstMod)  { inputs["gamma-burst"].value    = Math.round(gammaBurstMod[1] / 10); }  else { inputs["gamma-burst"].value    = 0; }
-			if (trimpAttackMod) { inputs["trimp-attack"].value   = Math.round(trimpAttackMod[1] / 10); } else { inputs["trimp-attack"].value   = 0; }
-			if (trimpHealthMod) { inputs["trimp-health"].value   = Math.round(trimpHealthMod[1] / 10); } else { inputs["trimp-health"].value   = 0; }
-			
-			if ((parseInt(inputs["hits-per-gamma"].value) || 0) == 0) inputs["hits-per-gamma"].value = 5;
-			
-			inputs["weapon-levels"].value = game.equipment.Dagger.level;
-			inputs["armor-levels"].value = game.equipment.Boots.level;
-			inputs["tribute-count"].value = (game.global.universe == 2) ? game.buildings.Tribute.owned : 0;
 		}
+		
+		// TODO: add checkboxes to lock these fields 
+		inputs["weapon-levels"].value = game.equipment.Dagger.level;		
+		inputs["armor-levels"].value = game.equipment.Boots.level;
+		
+		// TODO: this also needs a lock
+		if (game.global.universe == 2) inputs["tribute-count"].value = game.buildings.Tribute.owned;
+		
+		// read and process all input fields
+		readInputs();    
+		
 		colorCheckboxRows();
 
-		//totalRadonSpentOnOtherPerks = game.portal["Range"].radSpent
-		//	+ game.portal["Overkill"].radSpent
-		//	+ game.portal["Agility"].radSpent
-		//	+ game.portal["Bait"].radSpent
-		//	+ game.portal["Trumps"].radSpent
-		//	+ game.portal["Pheromones"].radSpent
-		//	+ game.portal["Packrat"].radSpent;
-
-		totalRadonEarnedWithoutCurrentRun = game.global.totalRadonEarned - game.resources.radon.owned;
-		totalRadonEarnedWithCurrentRun = game.global.totalRadonEarned;
+		perks.portalRadon = game.global.totalRadonEarned - game.resources.radon.owned;
+		perks.earnedRadon = game.global.totalRadonEarned;
 		switchTotalRadon();
-
-		
-		//var overkillLevel = (portal.Overkill && portal.Overkill.radLevel) || 0;
-		//var rangeLevel = (portal.Range && portal.Range.radLevel) || 0;
-		//var agilityLevel = (portal.Agility && portal.Agility.radLevel) || 0;
-		//var baitLevel = (portal.Bait && portal.Bait.radLevel) || 0;
-		//var trumpsLevel = (portal.Trumps && portal.Trumps.radLevel) || 0;
-		//var pheromonesLevel = (portal.Pheromones && portal.Pheromones.radLevel) || 0;
-		//var packratLevel = (portal.Packrat && portal.Packrat.radLevel) || 0;
-		
 			
-	}, 1);
-  //} catch(err) {}
+	}, 1); // save-load timeout = 1
+}
+
+function getPerkCost(whichPerk, numLevels, fromZero) {
+	if (numLevels === 0) return 0;
+	var perk = perks[whichPerk];
+	if (!perk.hasOwnProperty("optimize")) console.log("ERROR getting perk cost: " + whichPerk + " is not a known perk.");
+	var level = fromZero ? 0 : perk.level;
+	// if the perk can't be leveled, return infinite cost to naturally avoid buying the perk
+	if (perk.locked || perk.hasOwnProperty("max") && (level + numLevels > perk.max)) return Infinity;
+	var cost = 0;
+	for (var i=0; i<numLevels; i++) {
+		cost += Math.ceil(level/2 + perk.priceBase * Math.pow(perk.priceFact,level));
+		level++;
+	}
+	return cost;
+}
+
+function couldBuyPerk(whichPerk,actuallyBuy) {
+	var perk = perks[whichPerk];
+	if (perk.hasOwnProperty("max")) {
+		if (perk.level > perk.max) console.log("ERROR: perk " + whichPerk + " exceeded max level!");
+		if (perk.level >= perk.max) return false;
+	}
+	var cost = getPerkCost(whichPerk, 1);
+	if (cost + perks.radonSpent > perks.perksRadon) return false;
+	if (actuallyBuy) {
+		perks.radonSpent += cost;
+		perk.level++;
+	}
+	return true;
+}
+
+function buyPerk(whichPerk) {
+	return couldBuyPerk(whichPerk,true);
+}
+
+function getGreedEffect(tribs) {
+	if (tribs > 1250) tribs = 1250;
+	tribs -= 600;
+	var mod = 1.025;
+	if (tribs > 0) {
+		mod += (0.00015 * tribs); //+0.015% per tribute above 600
+		mod += (Math.floor(tribs / 25) * 0.0035); //+0.35% per 25 tributes above 600
+	}
+	return mod;
+}
+
+function getTenacityEffect(time) {
+	if (time <= 60){
+		time *= (10 / 6)
+	}
+	else {
+		time -= 60;
+		time *= (2 / 6);
+		time += 100;
+	}
+	return (1.1 + (Math.floor(time / 4) * 0.01));
+}
+
+function readInputs() {
+	// get perk levels and locked/unlocked status, and calculate total Rn cost
+	for (var [perkName, perkObj] of Object.entries(perks)) {
+		if (typeof(perkObj) !== "object" || !perkObj.hasOwnProperty("optimize")) continue; // iterating over the perks, ignoring aux values
+		perkObj.locked = !inputs[perkName.toLowerCase() + "-enabled"].checked;
+		perkObj.level = parseInt(inputs[perkName.toLowerCase()].value) || 0;
+		if (perkObj.hasOwnProperty("max") && perkObj.level > perkObj.max) {
+			perkObj.level = perkObj.max;
+			inputs[perkName.toLowerCase()].value = perkObj.max;
+		}
+	}
+	perks.radonSpent = getTotalPerksCost();
+	
+	// get optimization weights
+	perks.clearWeight = parseFloat(inputs["clear-weight"].value) || 1;
+	perks.survivalWeight = parseFloat(inputs["survival-weight"].value) || 0.01;
+	perks.radonWeight = parseFloat(inputs["radon-weight"].value) || 10;
+	
+	// get weapon/armor levels and calculate resource scaling for atk/hp
+	var wLev = parseInt(inputs["weapon-levels"].value) || 1;
+	var wLevScaling = Math.pow((wLev+1)/(wLev),1/Math.log(1.2));
+	perks.equipScaling.attack = Math.max(wLevScaling,equipScalingPrestige.attack);
+	
+	var aLev = parseInt(inputs["armor-levels"].value) || 1;
+	var aLevScaling = Math.pow((aLev+1)/(aLev),1/Math.log(1.2));
+	perks.equipScaling.health = Math.max(aLevScaling,equipScalingPrestige.health);
+	
+	// calculate greed effect from tribute count
+	perks.Greed.effect = getGreedEffect(parseInt(inputs["tribute-count"].value) || 0);
+	
+	// get shield properties
+	perks.baseCD = parseInt(inputs["crit-damage"].value);
+	// includes prismalicious and prismatic
+	perks.basePrismal = (parseInt(inputs["prismal-shield"].value) || 0) + 100;
+	if (perks.basePrismal > maxPrismalShield) perks.basePrismal = maxPrismalShield;
+	
+	// Scruffy adjustments
+	perks.scruffyLevel = parseInt(inputs["scruffy-level"].value) || 0;
+	if (perks.scruffyLevel >= 1) perks.basePrismal += 25;
+	if (perks.scruffyLevel >= 10) perks.prismLayers = 2;
+	else perks.prismLayers = 1;
+	if (perks.scruffyLevel >= 15) perks.smithyScaling = 40;
+	else perks.smithyScaling = 50;
+	
+	// get aux properties
+	perks.tenacityTime = parseFloat(inputs["tenacity-time"].value) || 0;
+	if (perks.tenacityTime < 0) perks.tenacityTime = 0;
+	if (perks.tenacityTime > 120) perks.tenacityTime = 120;
+	perks.Tenacity.effect = getTenacityEffect(perks.tenacityTime);
+	perks.coordLimited = parseFloat(inputs["coord-limited"].value) || 0;
+	if (perks.coordLimited < 0) perks.coordLimited = 0;
+	if (perks.coordLimited > 1) perks.coordLimited = 1;
+}
+
+function getTotalPerksCost() {
+	var cost = 0;
+	for (var [perkName, perkObj] of Object.entries(perks)) {
+		if (typeof(perkObj) !== "object" || !perkObj.hasOwnProperty("optimize")) continue; // iterating over the perks, ignoring aux values
+		cost += getPerkCost(perkName,perkObj.level,true);
+	}
+	return cost;
+}
+
+function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve) {
+	
+	var Wa = perks.clearWeight; // attack weight
+	var Wh = perks.clearWeight + perks.survivalWeight; // health weight
+	var We = perks.survivalWeight; // equality weight
+	var Wr = perks.radonWeight; // radon weight
+	
+	// use equip scaling to convert resource value to atk/hp value
+	Va *= Math.pow(perks.equipScaling.attack,Math.log(Vgear));
+	Vh *= Math.pow(perks.equipScaling.health,Math.log(Vgear));
+	
+	// account for smithies: 1.25x atk/hp per 50x resources
+	Va *= Math.pow(1.25,Math.log(Vres)/Math.log(perks.smithyScaling));
+	Vh *= Math.pow(1.25,Math.log(Vres)/Math.log(perks.smithyScaling));
+	
+	// TODO: do we want 2nd-order effects for more resources giving more tributes for Greed? (probably not but making a note of it)
+	
+	// A perk's total weighted value is:
+	//   Va^Wa * Vh^Wh * Ve^We * Vrad^Wr.
+	// For efficiency we use the log of this value, which simplifies to:
+	//   Wa*log(A) + Wh*log(H) + We*log(E) + Wr*log(R)
+	
+	return Wa*Math.log(Va) + Wh*Math.log(Vh) + We*Math.log(Ve) + Wr*Math.log(Vrad);
 }
 
 var clearClasses = function() {
@@ -440,553 +777,172 @@ var clearClasses = function() {
 	for (var i = elements.length - 1; i >= 0; i--) {
 		var element = elements[i];
 		element.setAttribute("style", "");
-		element.removeAttribute("data-max");
-		element.removeAttribute("data-gain");
 	}
 }
 
-var setMax = function(whichOne, index, gain, maxed, colorsOnly) {
-	if (whichOne == 'use-total')
-		return;
-
-	var id = "label-" + whichOne;
-	var element = document.getElementById(id).parentElement;
-	var opacity = Math.max(1.0 - index * 0.20, 0.15);
-	if (element.getAttribute('class').indexOf('grey') == -1) {
-		if (maxed) {
-			element.setAttribute("style", "background: #666;");
-		} else {
-			element.setAttribute("style", "background: rgba(11, 200, 35, " + opacity + ");");
+// color perk rows by efficiency, and flag the most efficient perk
+function efficiencyColorAndFlag() {
+	var eList = [];
+	var pList = [];
+	var bestEff = 0;
+	var bestAffordableEff = 0;
+	perks.bestPerk = ""; // don't flag a perk if we don't find an affordable one!
+	for (var [perkName, perkObj] of Object.entries(perks)) {
+		if (   typeof(perkObj) !== "object" 
+		    || !perkObj.hasOwnProperty("optimize")
+			|| !perkObj.optimize ) continue; // iterating over the perks, ignoring aux values
+		eList.push(perkObj.efficiency);
+		pList.push(perkName);
+		if (perkObj.efficiency > bestEff) {
+			bestEff = perkObj.efficiency;
 		}
-		if (colorsOnly) return;
-		if (index == 0) {
-			element.setAttribute("data-max", "true");
-		}
-		element.setAttribute("data-gain", gain);
-	}
-}
-
-var setMaxes = function(j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13, loop, index, tenacity, prismal, greed, colorsOnly) {
-	var max = Math.max(j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13);
-	
-	     if (j2  == max) { setMax("tenacity", index, tenacity < maxTenacity ? j2 : 0, tenacity == maxTenacity, colorsOnly); j2 = -1e+100; }
-	else if (j3  == max) { setMax("resilience", index, j3, false, colorsOnly); j3 = -1e+100; }
-	else if (j4  == max) { setMax("criticality", index, j4, false, colorsOnly); j4 = -1e+100; }
-	else if (j5  == max) { setMax("equality", index, j5, false, colorsOnly); j5 = -1e+100; }
-	else if (j6  == max) { setMax("carpentry", index, j6, false, colorsOnly); j6 = -1e+100; }
-	else if (j7  == max) { setMax("artisanistry", index, j7, false, colorsOnly); j7 = -1e+100; }
-	else if (j8  == max) { setMax("motivation", index, j8, false, colorsOnly); j8 = -1e+100; }
-	else if (j9  == max) { setMax("power", index, j9, false, colorsOnly); j9 = -1e+100; }
-	else if (j10 == max) { setMax("toughness", index, j10, false, colorsOnly); j10 = -1e+100; }
-	else if (j11 == max) { setMax("looting", index, j11, false, colorsOnly); j11 = -1e+100; }
-	else if (j12 == max) { setMax("prismal", index, prismal < maxPrismal ? j12 : 0, prismal == maxPrismal, colorsOnly); j12 = -1e+100; }
-	else if (j13 == max) { setMax("greed", index, greed < maxGreed ? j13 : 0, greed == maxGreed, colorsOnly); j13 = -1e+100; }
-	
-	if (max == Math.max(j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13))
-		index--;
-	
-	if (loop < 11)
-		setMaxes(j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13, loop + 1, index + 1, tenacity, prismal, greed, colorsOnly);
-}
-
-var setMaxes2 = function(s5, s6, s7, s8, s9, loop, index, prismalShield) {
-	var max = Math.max(s5, s6, s7, s8, s9);
-	
-	     if (s5  == max)  { setMax("crit-damage", index, s5);    s5 = -1e+100; }
-	else if (s6  == max)  { setMax("prismal-shield", index, s6, prismalShield == maxPrismalShield); s6 = -1e+100; }
-	else if (s7  == max)  { setMax("trimp-attack", index, s7);   s7 = -1e+100; }
-	else if (s8  == max)  { setMax("trimp-health", index, s8);   s8 = -1e+100; }
-	else if (s9  == max)  { setMax("gamma-burst", index, s9);    s9 = -1e+100; }
-	
-	if (max == Math.max(s5, s6, s7, s8, s9))
-		index--;
-	
-	if (loop < 4)
-		setMaxes2(s5, s6, s7, s8, s9, loop + 1, index + 1, prismalShield);
-}
-
-function getPerkBuyCount() { return 0; }
-function getPerkLevel() { return 0; }
-
-function getPortalUpgradePrice(what, removing, forceAmt){
-	var toCheck = game.portal[what];
-	var tempLevel;
-	var nextLevel;
-	var toAmt;
-	if (!removing){
-		toAmt = (forceAmt) ? forceAmt : getPerkBuyCount(what);
-		nextLevel = tempLevel + toAmt;
-	}
-	tempLevel =  0;//getPerkLevel(what, true) + toCheck.levelTemp;
-	var amt = 0;
-	if (toCheck.additive){
-		if (removing)
-			nextLevel = tempLevel - forceAmt;
-		else
-			nextLevel = tempLevel + toAmt;
-		amt = getAdditivePrice(nextLevel, toCheck) - getAdditivePrice(tempLevel, toCheck);
-		if (removing) amt = Math.abs(amt);
-	}
-	else {
-		if (removing){
-			toAmt = forceAmt;
-			tempLevel -= forceAmt;
-		}
-		if (toAmt > 1000) return Infinity;
-		var growth = (toCheck.specialGrowth) ? toCheck.specialGrowth : 1.3;
-		//if (portalUniverse == 2 && !toCheck.specialGrowth) growth = 1.5;
-		for (var x = 0; x < toAmt; x++){
-			amt += Math.ceil(((tempLevel + x) / 2) + toCheck.priceBase * Math.pow(growth, tempLevel + x));
+		if (couldBuyPerk(perkName,false) && perkObj.efficiency > bestAffordableEff) {
+			bestAffordableEff = perkObj.efficiency;
+			perks.bestPerk = perkName;
 		}
 	}
-	return amt;
-}
-
-var getTotalCost = function(tenacity, resilience, criticality, equality, carpentry, artisanistry, motivation, power, toughness, looting, prismal, greed) {
-	return 0.0	
-		+ getPortalUpgradePrice('Tenacity', false, tenacity)
-		+ getPortalUpgradePrice('Resilience', false, resilience)
-		+ getPortalUpgradePrice('Criticality', false, criticality)
-		+ getPortalUpgradePrice('Equality', false, equality)
-		+ getPortalUpgradePrice('Carpentry', false, carpentry)
-		+ getPortalUpgradePrice('Artisanistry', false, artisanistry)
-		+ getPortalUpgradePrice('Motivation', false, motivation)
-		+ getPortalUpgradePrice('Power', false, power)
-		+ getPortalUpgradePrice('Toughness', false, toughness)
-		+ getPortalUpgradePrice('Looting', false, looting)
-		+ getPortalUpgradePrice('Prismal', false, prismal)
-		+ getPortalUpgradePrice('Greed', false, greed)
-		+ totalRadonSpentOnOtherPerks;
+	for (var i=0; i < eList.length; i++) {
+		var opacity = Math.max(eList[i]/bestEff,0.15);
+		var id = "label-" + pList[i].toLowerCase();
+		var element = document.getElementById(id).parentElement;
+		if (element.getAttribute('class').indexOf('grey') == -1) {
+			if (eList[i] == 0) {
+				element.setAttribute("style", "background: #666;");
+			} else {
+				element.setAttribute("style", "background: rgba(11, 200, 35, " + opacity + ");");
+			}
+		}
+	}
 }
 
 var switchTotalRadon = function() {
 	if (document.getElementById('input-use-total').checked) {
-		totalRadonEarned = totalRadonEarnedWithCurrentRun;
+		perks.perksRadon = perks.earnedRadon;
 	} else {
-		totalRadonEarned = totalRadonEarnedWithoutCurrentRun
+		perks.perksRadon = perks.portalRadon;
 	}
 	
-	if (totalRadonEarned > 0) {
+	if (perks.perksRadon > 0) {
 		document.getElementById('clear-autobuy-button').disabled = false;
 		document.getElementById('autobuy-button').disabled = false;
 		document.getElementById('export-button').disabled = false;
 		document.getElementById('input-export').disabled = false;
 		document.getElementById('input-export').value = "";
 	}
-	
-	calculate();
+
+	evaluatePerks();
 }
 
-var calculate = function() {
-	//if (parseInt(inputs["health-weight"].value) || 0 < 1) inputs["health-weight"].value = 1;
-	//if (parseInt(inputs["attack-weight"].value) || 0 < 1) inputs["attack-weight"].value = 1;
-	//if (parseInt(inputs["radon-weight"].value)  || 0 < 1) inputs["radon-weight"].value  = 1;
+// get perk efficiencies at current levels and color code them accordingly
+var evaluatePerks = function(debug) {
 
-	var tenacity = parseInt(inputs["tenacity"].value) || 0;
-	var resilience = parseInt(inputs["resilience"].value) || 0;
-	var criticality = parseInt(inputs["criticality"].value) || 0;
-	var equality = parseInt(inputs["equality"].value) || 0;
-	var carpentry = parseInt(inputs["carpentry"].value) || 0;
-	var artisanistry = parseInt(inputs["artisanistry"].value) || 0;
-	var motivation = parseInt(inputs["motivation"].value) || 0;
-	var power = parseInt(inputs["power"].value) || 0;
-	var toughness = parseInt(inputs["toughness"].value) || 0;
-	var looting = parseInt(inputs["looting"].value) || 0;
-	var prismal = parseInt(inputs["prismal"].value) || 0;
-	var greed = parseInt(inputs["greed"].value) || 0;
-	
-	if (tenacity > maxTenacity)
-		inputs["tenacity"].value = tenacity = maxTenacity;
-
-	if (prismal > maxPrismal)
-		inputs["prismal"].value = prismal = maxPrismal;
-
-	if (greed > maxGreed)
-		inputs["greed"].value = greed = maxGreed;
-
-	var enabledTenacity = inputs["tenacity-enabled"].checked;
-	var enabledResilience = inputs["resilience-enabled"].checked;
-	var enabledCriticality = inputs["criticality-enabled"].checked;
-	var enabledEquality = inputs["equality-enabled"].checked;
-	var enabledCarpentry = inputs["carpentry-enabled"].checked;
-	var enabledArtisanistry = inputs["artisanistry-enabled"].checked;
-	var enabledMotivation = inputs["motivation-enabled"].checked;
-	var enabledPower = inputs["power-enabled"].checked;
-	var enabledToughness = inputs["toughness-enabled"].checked;
-	var enabledLooting = inputs["looting-enabled"].checked;
-	var enabledPrismal = inputs["prismal-enabled"].checked;
-	var enabledGreed = inputs["greed-enabled"].checked;
-	
-	var weaponLevels = parseInt(inputs["weapon-levels"].value) || 1;
-	var armorLevels = parseInt(inputs["armor-levels"].value) || 1;
-	
-	var healthWeight = parseFloat(inputs["health-weight"].value) || 0.0001;
-	var attackWeight = parseFloat(inputs["attack-weight"].value) || 0.0001;
-	var radonWeight = parseFloat(inputs["radon-weight"].value) || 0;
-	
+	readInputs();
+		
 	var trimpWeights = {
-		healthWeight: healthWeight,
-		attackWeight: attackWeight,
-		radonWeight: radonWeight
+		clearWeight: perks.clearWeight,
+		survivalWeight: perks.survivalWeight,
+		radonWeight: perks.radonWeight
 	};
 	
 	window.localStorage.setItem("trimpWeights", JSON.stringify(trimpWeights));
-	
-	var tenacityMultiplier = parseFloat(inputs["tenacity-multiplier"].value) || 1.1;
-	var carpCoordMultiplier = parseFloat(inputs["carp-coord-multiplier"].value) || 0;
-	var tributeCount = parseInt(inputs["tribute-count"].value) || 0;
 
-	var critDamage = parseInt(inputs["crit-damage"].value) || 0;
-	var prismalShield = parseInt(inputs["prismal-shield"].value) || 0;
-	var trimpAttack = parseInt(inputs["trimp-attack"].value) || 0;
-	var trimpHealth = parseInt(inputs["trimp-health"].value) || 0;
-	var gammaBurst = parseInt(inputs["gamma-burst"].value) || 0;
-	var hitsPerGamma = parseInt(inputs["hits-per-gamma"].value) || 0;
+	// NOTE:
+	// getLogWeightedAttackValue(atk gain, hp gain, equip resource gain, other resource gain, radon gain, equality gain)
+	// A "gain" of 1 is no effect.
 	
-	if (prismalShield > maxPrismalShield)
-		inputs["prismal-shield"].value = prismalShield = maxPrismalShield;
-
-	var d13 = (tributeCount < 601) 
-				?  1.025 
-				: ( 1.025 + (tributeCount - 600) * 0.00029 );
-	var d11 = (tributeCount < 601 || tributeCount > 1249) 
-				? 1 
-				: Math.pow((1.025 + ((1.0 * tributeCount + Math.baseLog((1.0 * looting+21)/(1.0 * looting+20),1.05))-600)*0.00029) / d13, greed)
+	// Artisanistry:
+	//   resource gain for equipment only
+	perks.Artisanistry.efficiency = getLogWeightedValue(1,1,perks.Artisanistry.effect,1,1,1)/getPerkCost("Artisanistry",1);
 	
-	var d8 = (tributeCount < 601 || tributeCount > 1249)
-				? 1
-				: Math.pow(((1.025+((tributeCount+ Math.baseLog((motivation+21)/(motivation+20),1.05))-600)*0.00029)/d13), greed);
-				
-	var d6 = (tributeCount < 601 || tributeCount > 1249)
-				? 1
-				: Math.pow(((1.025+((tributeCount+Math.baseLog(1.1,1.05))-600)*0.00029)/d13), greed)
-				
-	var c13 = (tributeCount < 601)
-				? 1
-				: Math.pow(((1.025+((tributeCount+Math.baseLog(d13,1.05))-600)*0.00029)/d13), greed)
+	// Carpentry:
+	//   resource gain from population
+	var carpPop = perks.Carpentry.effect;
+	//   coord atk/hp gain (with exponent scaled from 0 to 1 by the coordLimited input)
+	var carpCoord = Math.pow(1.25,Math.log(carpPop)/Math.log(1.25) * perks.coordLimited);
+	perks.Carpentry.efficiency = getLogWeightedValue(carpCoord,carpCoord,carpPop,1,1,1)/getPerkCost("Carpentry",1);
 	
-	var e2 = tenacityMultiplier;
 	
-	var e3 = 1.0;
+	// Criticality:
+	//   attack gain from crits (TODO: assumes 100% CC, might want a CC input for e.g. Duel)
+	var CD = 1 + perks.baseCD/100 + perks.Criticality.level * perks.Criticality.effect;
+	var CC = 1;
+	var critGain = ((1-CC) + CC * (CD + perks.Criticality.effect))/((1-CC) + CC*CD);
+	perks.Criticality.efficiency = getLogWeightedValue(critGain,1,1,1,1,1)/getPerkCost("Criticality",1);
 	
-	var e4 = (1.1 + 1.0 * criticality / 10 + 1.0 * critDamage / 100) / (1 + 1.0 * criticality / 10 + 1.0 * critDamage / 100)
+	// Equality:
+	perks.Equality.efficiency = getLogWeightedValue(1,1,1,1,1,perks.Equality.effect)/getPerkCost("Equality",1);
 	
-	var e5 = 0.9;
+	// Frenzy TODO
 	
-	var e6 = Math.pow((((Math.baseLog(1.1,1.2)+weaponLevels)/weaponLevels)), 
-				(  Math.pow(1.2, weaponLevels) /(Math.pow(1.2, weaponLevels)+5)))
-				* Math.pow(1.1, (Math.log(1.25)/Math.log(50))) * carpCoordMultiplier;
-				
-	var e7 = Math.pow(((Math.baseLog(1/0.95,1.2)+weaponLevels)/weaponLevels), 
-				(Math.pow(1.2, weaponLevels)/(Math.pow(1.2, weaponLevels)+5)))
-				
-	var e8 = Math.pow((((Math.baseLog((motivation+21)/(motivation+20), 1.2)+weaponLevels) / weaponLevels)), (Math.pow(1.2, weaponLevels)/(Math.pow(1.2, weaponLevels)+5))) *
-				Math.pow(((motivation+21)/(motivation+20)), (Math.log(1.25) / Math.log(50)))
+	// Greed:
+	//   all-resource and radon gain
+	var greedGain = perks.Greed.effect;
+	perks.Greed.efficiency = getLogWeightedValue(1,1,greedGain,greedGain,greedGain,1)/getPerkCost("Greed",1);
 	
-	var e9 = (1.0 * power + 21)/(power+20);
+	// Looting:
+	//   all-resource and radon gain
+	var loot = 1 + perks.Looting.level * perks.Looting.effect;
+	var lootGain = (loot + perks.Looting.effect) / loot;
+	perks.Looting.efficiency = getLogWeightedValue(1,1,lootGain,lootGain,lootGain,1)/getPerkCost("Looting",1);
 	
-	var e10 = 1;
+	// Motivation:
+	//   all-resource gain (no radon)
+	var motiv = 1 + perks.Motivation.level * perks.Motivation.effect;
+	var motivGain = (motiv + perks.Motivation.effect) / motiv;
+	perks.Motivation.efficiency = getLogWeightedValue(1,1,motivGain,motivGain,1,1)/getPerkCost("Motivation",1);
 	
-	var e11 = Math.pow((((Math.baseLog((looting+21)/(looting+20), 1.2)+weaponLevels) / weaponLevels)), (Math.pow(1.2, weaponLevels)/(Math.pow(1.2, weaponLevels)+5))) *
-	          	Math.pow(((looting+21)/(looting+20)), (Math.log(1.25) / Math.log(50)));
+	// Observation TODO
 	
-	var e12 = 1;
+	// Packrat:
+	//   all-resource gain from decreased storage costs (no radon)
+	var storeTax = 0.25 / (1 + perks.Packrat.level * perks.Packrat.effect);
+	var storeTaxNext = 0.25 / (1 + (perks.Packrat.level + 1) * perks.Packrat.effect);
+	var ratGain = (1 - storeTaxNext) / (1 - storeTax);
+	perks.Packrat.efficiency = getLogWeightedValue(1,1,ratGain,ratGain,1,1)/getPerkCost("Packrat",1);
 	
-	var e13 = Math.pow((((Math.baseLog(d13,1.2)+weaponLevels)/weaponLevels)), (Math.pow(1.2, weaponLevels)/(Math.pow(1.2, weaponLevels)+5)))
-				*Math.pow((d13), (Math.log(1.25)/Math.log(50)))
-
-	var f2 = 1;
-
-	var f3 = 1.1;
-
-	var f4 = 1;
-
-	var f5 = 1.11111111111111;
-
-	var f6 = Math.pow((((Math.baseLog(1.1, 1.2)+armorLevels)/armorLevels)), (Math.pow(1.2, armorLevels)/(Math.pow(1.2, armorLevels)+5)))
-			* Math.pow(1.1, (Math.log(1.25)/Math.log(50)))
-			* carpCoordMultiplier;
-
-	var f7 = Math.pow((((Math.baseLog(1/0.95,1.2)+armorLevels)/armorLevels)), (Math.pow(1.2, armorLevels)/(Math.pow(1.2, armorLevels)+5)));
-
-	var f8 = Math.pow((((Math.baseLog((motivation+21)/(motivation+20),1.2)+armorLevels)/armorLevels)), (Math.pow(1.2, armorLevels)/(Math.pow(1.2, armorLevels)+5)))*
-		Math.pow(((motivation+21)/(motivation+20)), (Math.log(1.25)/Math.log(50)));
-
-	var f9 = 1;
-
-	var f10 = (toughness+21)/(toughness+20);
-
-	var f11 = Math.pow((((Math.baseLog((looting+21)/(looting+20),1.2)+armorLevels)/armorLevels)), (Math.pow(1.2, armorLevels)/(Math.pow(1.2, armorLevels)+5)))*
-		Math.pow(((looting+21)/(looting+20)), (Math.log(1.25)/Math.log(50)));
-
-	var f12 = (226+prismal+prismalShield)/(225+prismal+prismalShield);
-
-	var f13 = Math.pow((((Math.baseLog(d13,1.2)+armorLevels)/armorLevels)), (Math.pow(1.2, armorLevels)/(Math.pow(1.2, armorLevels)+5)))
-				*Math.pow((d13), (Math.log(1.25)/Math.log(50)))
-				
-	var g2 = Math.pow(e2, attackWeight) * Math.pow(f2, healthWeight);
-				
-	var g3 = Math.pow(e3, attackWeight) * Math.pow(f3, healthWeight);
-				
-	var g4 = Math.pow(e4, attackWeight) * Math.pow(f4, healthWeight);
-				
-	var g5 = Math.pow(e5, attackWeight) * Math.pow(f5, healthWeight);
-				
-	var g6 = Math.pow(e6, attackWeight) * Math.pow(f6, healthWeight) * Math.pow(d6, radonWeight);
-				
-	var g7 = Math.pow(e7, attackWeight) * Math.pow(f7, healthWeight);
-				
-	var g8 = Math.pow(e8, attackWeight) * Math.pow(f8, healthWeight) * Math.pow(d8, radonWeight);
-				
-	var g9 = Math.pow(e9, attackWeight) * Math.pow(f9, healthWeight);
-				
-	var g10 = Math.pow(e10, attackWeight) * Math.pow(f10, healthWeight);
-				
-	var g11 = Math.pow(((1.0 * looting+21)/(looting+20)), radonWeight) * Math.pow(e11, attackWeight) * Math.pow(f11, healthWeight) * Math.pow(d11, radonWeight);
-				
-	var g12 = Math.pow(e12, attackWeight) * Math.pow(f12, healthWeight);
-				
-	var g13 = Math.pow(e13, attackWeight) * Math.pow(f13, healthWeight) * Math.pow(d13, radonWeight) * Math.pow(c13, radonWeight);
+	// Pheromones TODO (or not)
 	
-	// nsheetz changes to make the calc keep spending Rn beyond the most efficient perk when unaffordable:
-	//  -> Simply check whether the raw calculated cost fits in the Rn budget, and if not set the cost to Infinity.
-	//     This is an egregious quick-and-dirty hack for now. Eventually I want to rewrite the calculation code from the ground up, so I'm not
-	//     for example refactoring this to use array looping (which would require more far-reaching changes elsewhere in the source).
+	// Power:
+	//   attack gain
+	var pow = 1 + perks.Power.level * perks.Power.effect;
+	var powGain = (pow + perks.Power.effect) / pow;
+	perks.Power.efficiency = getLogWeightedValue(powGain,1,1,1,1,1)/getPerkCost("Power",1);
 	
-	h2 = Math.pow(1.3, tenacity) * 50000000;
+	// Prismal:
+	//   health gain from increased shielding
+	//   basePrismal: as a % - includes shield, Scruffy bonus, prismatic, prismalicious
+	var prismHP = 1 + (perks.basePrismal/100 + perks.Prismal.level * perks.Prismal.effect)*perks.prismLayers;
+	var prismGain = (prismHP + perks.Prismal.effect * perks.prismLayers) / prismHP;
+	perks.Prismal.efficiency = getLogWeightedValue(1,prismGain,1,1,1,1)/getPerkCost("Prismal",1);
 	
-	h3 = Math.pow(1.3, resilience) * 100;
+	// Resilience:
+	//   health gain (compounding)
+	perks.Resilience.efficiency = getLogWeightedValue(1,perks.Resilience.effect,1,1,1,1)/getPerkCost("Resilience",1);
 	
-	h4 = Math.pow(1.3, criticality) * 100;
+	// Tenacity:
+	//   attack gain (compounding, pre-calculated into the effect field)
+	perks.Tenacity.efficiency = getLogWeightedValue(perks.Tenacity.effect,1,1,1,1,1)/getPerkCost("Tenacity",1);
 	
-	h5 = Math.pow(1.5, equality);
+	// Toughness:
+	//   health gain
+	var tough = 1 + perks.Toughness.level * perks.Toughness.effect;
+	var toughGain = (tough + perks.Toughness.effect) / tough;
+	perks.Toughness.efficiency = getLogWeightedValue(1,toughGain,1,1,1,1)/getPerkCost("Toughness",1);
 	
-	h6 = Math.pow(1.3, carpentry) * 25;
-	
-	h7 = Math.pow(1.3, artisanistry) * 15
-	
-	h8 = Math.pow(1.3, motivation) * 2;
-
-	h9 = Math.pow(1.3, power) * 1;
-	
-	h10 = Math.pow(1.3, toughness) * 1;
-	
-	h11 = Math.pow(1.3, looting) * 1;
-	
-	h12 = Math.pow(1.3, prismal) * 1;
-	
-	h13 = Math.pow(1.3, greed) * Math.pow(10, 10);
-	
-	var i2 = Math.log(g2) / h2;
-	
-	var i3 = Math.log(g3) / h3;
-	
-	var i4 = Math.log(g4) / h4;
-	
-	var i5 = Math.log(g5) / h5;
-	
-	var i6 = Math.log(g6) / h6;
-	
-	var i7 = Math.log(g7) / h7;
-	
-	var i8 = Math.log(g8) / h8;
-	
-	var i9 = Math.log(g9) / h9;
-	
-	var i10 = Math.log(g10) / h10;
-	
-	var i11 = Math.log(g11) / h11;
-	
-	var i12 = Math.log(g12) / h12;
-	
-	var i13 = Math.log(g13) / h13;
-	
-	var maxI = Math.max(i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13);
-	
-	var j2 = !enabledTenacity || tenacity >= maxTenacity ? 0 : i2 / maxI;
-	
-	var j3 = !enabledResilience  ? 0 :  i3 / maxI;
-	
-	var j4 = !enabledCriticality  ? 0 :  i4 / maxI;
-	
-	var j5 = !enabledEquality  ? 0 :  i5 / maxI;
-	
-	var j6 = !enabledCarpentry  ? 0 :  i6 / maxI;
-	
-	var j7 = !enabledArtisanistry  ? 0 :  i7 / maxI;
-	
-	var j8 = !enabledMotivation  ? 0 :  i8 / maxI;
-	
-	var j9 = !enabledPower  ? 0 :  i9 / maxI;
-	
-	var j10 = !enabledToughness  ? 0 :  i10 / maxI;
-	
-	var j11 = !enabledLooting  ? 0 :  i11 / maxI;
-	
-	var j12 = !enabledPrismal || prismal >= maxPrismal ? 0 : i12 / maxI;
-	
-	var j13 = !enabledGreed || greed >= maxGreed ? 0 : i13 / maxI;
-	
-	var budget = totalRadonEarned - totalCost;
-	
+	// reset row colors (and any other property removal we might wish to do later in development & maintenance)
 	clearClasses();
-	setMaxes(h2 > budget ? 0 : j2, 
-		 h3 > budget ? 0 : j3, 
-		 h4 > budget ? 0 : j4, 
-		 h5 > budget ? 0 : j5, 
-		 h6 > budget ? 0 : j6, 
-		 h7 > budget ? 0 : j7, 
-		 h8 > budget ? 0 : j8, 
-		 h9 > budget ? 0 : j9, 
-		 h10 > budget ? 0 : j10, 
-		 h11 > budget ? 0 : j11, 
-		 h12 > budget ? 0 : j12, 
-		 h13 > budget ? 0 : j13, 
-		 0, 0, tenacity, prismal, greed); // use 0 efficiency for unaffordable perks
-	setMaxes(j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13, 0, 0, tenacity, prismal, greed, true); // update row colors only with raw efficiencies
 	
-	totalCost = getTotalCost(tenacity, resilience, criticality, equality, carpentry, artisanistry, motivation, power, toughness, looting, prismal, greed);
+	// color perks by raw efficiency, and store the most efficient perk name in perks.bestPerk
+	efficiencyColorAndFlag();
+	
+	var totalCost = getTotalPerksCost();
 		
 	document.getElementById('total-radon-cost').innerText = (totalCost > 10000) ? totalCost.toExponential(3) : Math.round(totalCost);
 	
-	var p5 = 7500 * Math.pow(1.03, (critDamage / 2 - 42.5));
-	var p6 = Math.pow(1.03, (prismalShield - 50)) *7500;
-	var p7 = Math.pow(1.03, (trimpAttack - 46)) *7500;
-	var p8 = Math.pow(1.03, (trimpHealth - 46)) *7500;
-	var p9 = Math.pow(1.03, (gammaBurst / 10 - 20)) *7500;
-	
-	var q5 = (102 + critDamage + criticality * 10) / (100 + critDamage + criticality * 10);
-	var q6 = (226 + prismalShield + prismal) / (225 + prismalShield + prismal);
-	var q7 = (trimpAttack+101)/(trimpAttack+100);
-	var q8 = (trimpHealth+101)/(trimpHealth+100);
-	var q9 = (gammaBurst+10+100*hitsPerGamma)/(gammaBurst+100*hitsPerGamma);
-	
-	var r5 = Math.baseLog(Math.pow(q5, attackWeight), 10);
-	var r6 = Math.baseLog(Math.pow(q6, healthWeight), 10);
-	var r7 = Math.baseLog(Math.pow(q7, attackWeight), 10);
-	var r8 = Math.baseLog(Math.pow(q8, healthWeight), 10);
-	var r9 = Math.baseLog(Math.pow(q9, attackWeight), 10);
-	
-	var s5 = (critDamage == 0) ? 0 : r5/p5;
-	var s6 = (prismalShield == 0 || prismalShield == 250) ? 0 : r6/p6;
-	var s7 = (trimpAttack == 0) ? 0 : r7/p7;
-	var s8 = (trimpHealth == 0) ? 0 : r8/p8;
-	var s9 = (gammaBurst == 0) ? 0 : r9/p9;
-	
-	setMaxes2(s5, s6, s7, s8, s9, 0, 0, prismalShield);
-	
 	document.getElementById('input-export').value = "";
 	
-	if (typeof (vars["debug"]) !== "undefined") {
-		console.log("C13: " + c13);
-		console.log("\n");
-		console.log("D6: " + d6);
-		console.log("D8: " + d8);
-		console.log("D11: " + d11);
-		console.log("D13: " + d13);
-		console.log("\n");
-		console.log("E2: " + e2);
-		console.log("E3: " + e3);
-		console.log("E4: " + e4);
-		console.log("E5: " + e5);
-		console.log("E6: " + e6);
-		console.log("E7: " + e7);
-		console.log("E8: " + e8);
-		console.log("E9: " + e9);
-		console.log("E10: " + e10);
-		console.log("E11: " + e11);
-		console.log("E12: " + e12);
-		console.log("E13: " + e13);
-		console.log("\n");
-		console.log("F2: " + f2);
-		console.log("F3: " + f3);
-		console.log("F4: " + f4);
-		console.log("F5: " + f5);
-		console.log("F6: " + f6);
-		console.log("F7: " + f7);
-		console.log("F8: " + f8);
-		console.log("F9: " + f9);
-		console.log("F10: " + f10);
-		console.log("F11: " + f11);
-		console.log("F12: " + f12);
-		console.log("F13: " + f13);
-		console.log("\n");
-		console.log("G2: " + g2);
-		console.log("G3: " + g3);
-		console.log("G4: " + g4);
-		console.log("G5: " + g5);
-		console.log("G6: " + g6);
-		console.log("G7: " + g7);
-		console.log("G8: " + g8);
-		console.log("G9: " + g9);
-		console.log("G10: " + g10);
-		console.log("G11: " + g11);
-		console.log("G12: " + g12);
-		console.log("G13: " + g13);
-		console.log("\n");
-		console.log("H2: " + h2);
-		console.log("H3: " + h3);
-		console.log("H4: " + h4);
-		console.log("H5: " + h5);
-		console.log("H6: " + h6);
-		console.log("H7: " + h7);
-		console.log("H8: " + h8);
-		console.log("H9: " + h9);
-		console.log("H10: " + h10);
-		console.log("H11: " + h11);
-		console.log("H12: " + h12);
-		console.log("H13: " + h13);
-		console.log("\n");
-		console.log("I2: " + i2);
-		console.log("I3: " + i3);
-		console.log("I4: " + i4);
-		console.log("I5: " + i5);
-		console.log("I6: " + i6);
-		console.log("I7: " + i7);
-		console.log("I8: " + i8);
-		console.log("I9: " + i9);
-		console.log("I10: " + i10);
-		console.log("I11: " + i11);
-		console.log("I12: " + i12);
-		console.log("I13: " + i13);
-		console.log("\n");
-		console.log("J2: " + j2);
-		console.log("J3: " + j3);
-		console.log("J4: " + j4);
-		console.log("J5: " + j5);
-		console.log("J6: " + j6);
-		console.log("J7: " + j7);
-		console.log("J8: " + j8);
-		console.log("J9: " + j9);
-		console.log("J10: " + j10);
-		console.log("J11: " + j11);
-		console.log("J12: " + j12);
-		console.log("J13: " + j13);
-		console.log("\n");
-		console.log("P5: " + p5);
-		console.log("P6: " + p6);
-		console.log("P7: " + p7);
-		console.log("P8: " + p8);
-		console.log("P9: " + p9);
-		console.log("\n");
-		console.log("Q5: " + q5);
-		console.log("Q6: " + q6);
-		console.log("Q7: " + q7);
-		console.log("Q8: " + q8);
-		console.log("Q9: " + q9);
-		console.log("\n");
-		console.log("R5: " + r5);
-		console.log("R6: " + r6);
-		console.log("R7: " + r7);
-		console.log("R8: " + r8);
-		console.log("R9: " + r9);
-		console.log("\n");
-		console.log("S5: " + s5);
-		console.log("S6: " + s6);
-		console.log("S7: " + s7);
-		console.log("S8: " + s8);
-		console.log("S9: " + s9);
-		console.log("\n");
+	if (debug) {
+		console.log("evaluatePerks(): generic debug message");
 	}
 }
 
@@ -1007,10 +963,10 @@ for (var i = inputElements.length - 1; i >=0; i--) {
 	inputs[inputId] = input;
 	
 	if (inputId != 'export') {
-		input.onkeyup = calculate;
-		input.onchange = calculate;
-		input.onpaste = calculate;
-		input.oncut = calculate;
+		input.onkeyup = evaluatePerks;
+		input.onchange = evaluatePerks;
+		input.onpaste = evaluatePerks;
+		input.oncut = evaluatePerks;
 	}
 	
 	if (typeof(input.getAttribute('type')) != "undefined" && input.getAttribute('type') == "checkbox") {
@@ -1021,7 +977,7 @@ for (var i = inputElements.length - 1; i >=0; i--) {
 		  } else {
 			row.setAttribute('class', row.getAttribute('class').replace('grey', '') + ' grey');
 		  }
-		  calculate();
+		  evaluatePerks();
 		})
 	}
 }
@@ -1030,27 +986,12 @@ function exportPerks() {
 	var exportedPerks = {};
 	var saveTextArea = document.getElementById('save-text-area');
 	var game = JSON.parse(LZString.decompressFromBase64(saveTextArea.value));
-	
-	for (var item in game.portal){
-		//For smaller strings and backwards compatibility, perks not added to the object will be treated as if the perk is supposed to be level 0.
-		if (game.portal[item].radLocked !== false || game.portal[item]["radLevel"] <= 0) continue;
-		//Add the perk to the object with the desired level
-		exportedPerks[item] = game.portal[item]["radLevel"];
+
+	for (var [key, value] of Object.entries(perks)) {
+		if (typeof(value) !== "object" || !value.hasOwnProperty("optimize")) continue; // iterating over the perks, ignoring aux values
+		exportedPerks[key] = value.level;
 	}
 	
-	if (document.getElementById('input-tenacity-enabled').checked) exportedPerks["Tenacity"] =     parseInt(inputs["tenacity"].value || 0);
-	if (document.getElementById('input-resilience-enabled').checked) exportedPerks["Resilience"] =   parseInt(inputs["resilience"].value || 0);
-	if (document.getElementById('input-criticality-enabled').checked) exportedPerks["Criticality"] =  parseInt(inputs["criticality"].value || 0);
-	if (document.getElementById('input-equality-enabled').checked) exportedPerks["Equality"] =     parseInt(inputs["equality"].value || 0);
-	if (document.getElementById('input-carpentry-enabled').checked) exportedPerks["Carpentry"] =    parseInt(inputs["carpentry"].value || 0);
-	if (document.getElementById('input-artisanistry-enabled').checked) exportedPerks["Artisanistry"] = parseInt(inputs["artisanistry"].value || 0);
-	if (document.getElementById('input-motivation-enabled').checked) exportedPerks["Motivation"] =   parseInt(inputs["motivation"].value || 0);
-	if (document.getElementById('input-power-enabled').checked) exportedPerks["Power"] =        parseInt(inputs["power"].value || 0);
-	if (document.getElementById('input-toughness-enabled').checked) exportedPerks["Toughness"] =    parseInt(inputs["toughness"].value || 0);
-	if (document.getElementById('input-looting-enabled').checked) exportedPerks["Looting"] =      parseInt(inputs["looting"].value || 0);
-	if (document.getElementById('input-prismal-enabled').checked) exportedPerks["Prismal"] =      parseInt(inputs["prismal"].value || 0);
-	if (document.getElementById('input-greed-enabled').checked) exportedPerks["Greed"] =        parseInt(inputs["greed"].value || 0);
-
 	exportedPerks = JSON.stringify(exportedPerks);
 	var input = document.getElementById('input-export');
 	input.value = LZString.compressToBase64(exportedPerks);
@@ -1059,8 +1000,9 @@ function exportPerks() {
 	document.execCommand('copy');
 }
 
+// zero out perk inputs and autobuy
 function clearAndAutobuyPerks() {
-	if (totalRadonEarned > 0) {
+	if (perks.perksRadon > 0) {
 		var elements = document.getElementById('perks-col').getElementsByClassName('row');
 		for (var i = elements.length - 1; i >= 0; i--) {
 			var input = elements[i].getElementsByTagName('input')[1];
@@ -1068,75 +1010,24 @@ function clearAndAutobuyPerks() {
 				input.value = 0;
 			}
 		}
-		totalCost = totalRadonSpentOnOtherPerks;
-		autobuyPerks(/*true for spendEverything */);
+		autobuyPerks();
 	}
 }
 
-function autobuyPerks(spendEverything) {
-	var maxed = false;
-	while (totalRadonEarned > totalCost) {
-		if (spendEverything) {
-			if (parseInt(inputs["tenacity"].value) >= maxTenacity) {
-				h2 = Infinity;
-			}
-			if (parseInt(inputs["prismal"].value) >= maxPrismal) {
-				h12 = Infinity;
-			}
-			if (parseInt(inputs["greed"].value) >= maxGreed) {
-				h13 = Infinity;
-			}
-			
-			var minCost = Math.min(h2, h3, h4, h6, h7, h8, h9, h10, h11, h12, h13);
-			if (totalCost + minCost > totalRadonEarned) {
-				return;
-			}
+// autobuy from current input perk levels
+function autobuyPerks() {
+	evaluatePerks();
+	while (perks.bestPerk !== "") {
+		var bestName = perks.bestPerk;
+		var bestObj = perks[bestName];
+		if (!buyPerk(bestName) || bestObj.efficiency < 0) {
+			console.log("ERROR: a maxed, unaffordable, or inefficient perk was flagged as best: " + bestName);
+			return;
 		}
-	
-		var elements = document.getElementById('perks-col').getElementsByClassName('row');
-		
-		for (var i = elements.length - 2; i >= 0; i--) {
-			if (elements[i].getAttribute('data-max') !== null) {
-				//console.log("Increasing perk number " + i);
-				var input = elements[i].getElementsByTagName('input')[1];
-				input.value = parseInt(input.value) + 1;
-				calculate();
-				if (totalCost > totalRadonEarned) {
-					input.value = parseInt(input.value) - 1;
-					calculate();
-					if (spendEverything) {
-						elements[i].setAttribute('data-gain', 0);
-						elements[i].removeAttribute('data-max');
-						var maxGain = 0;
-						var theElement = null;
-						
-						for (var j = elements.length - 1; j >= 0; j--) {
-							if (elements[j].getAttribute('data-gain')) {
-								var gain = parseFloat(elements[j].getAttribute('data-gain'));
-								if (gain > maxGain) {
-									maxGain = gain;
-									theElement = elements[j];
-								}
-							}
-						}
-						
-						if (theElement != null) {
-							theElement.setAttribute('data-max', 'true');
-						} else {
-							console.log("Should never be here");
-							maxed = true;
-						}
-						
-					} else {
-						maxed = true;
-					}
-				}
-				break;
-			}
-		}
-		if (maxed) break;
+		inputs[bestName.toLowerCase()].value = bestObj.level;
+		evaluatePerks();
 	}
-	console.log("Total Radon Earned: " + totalRadonEarned + ", Total Radon Spent: " + totalCost);
+	console.log("Total Radon for perks: " + perks.perksRadon + ", Total Radon Spent: " + perks.radonSpent);
 }
 
 if (window.localStorage.getItem("trimpWeights")) {
