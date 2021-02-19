@@ -114,6 +114,7 @@ input[type=checkbox], input[type=radio] {
 	<div class="row">
 		<div class="col-sm-12">
 		<h2>Perks <span>The greener, the better</span></h2>
+		<p>Left checkbox: Unlocked. Right checkbox: Optimize</p>
 		</div>
 	</div>
   <div class="row mt-3">
@@ -245,6 +246,9 @@ input[type=checkbox], input[type=radio] {
     </div>
     <div class="col-sm">
 		<div class="row mt-2">
+			<p><b>Mouseover fields for more info.</b></p>
+		</div>
+		<div class="row mt-2">
 			<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-lock-aux" /></div>
 			<label class="col-sm-11 col-form-label" id="label-lock-aux" for="input-lock-aux">Lock inputs below on save-load </label>
 		</div>
@@ -258,11 +262,11 @@ input[type=checkbox], input[type=radio] {
 		</div>
 		<div class="row mt-2">
 			<label class="col-sm-6 col-form-label" id="label-clear-weight" for="input-clear-weight">Clearspeed (atk*hp) weight </label>
-			<div class="col-sm-5"><input class="form-control" value="1" title="This is the weight applied to attack*health, which determines your clear-speed with non-zero but less than max equality." type="number" min="0" id="input-clear-weight" maxlength="3" /></div>
+			<div class="col-sm-5"><input class="form-control" value="1" title="This is the weight applied to attack*health, which determines your clear-speed with non-zero but less than max equality. If you are used to Attack weight, set this to your old Attack weight." type="number" min="0" id="input-clear-weight" maxlength="3" /></div>
 		</div>
 		<div class="row">
 			<label class="col-sm-6 col-form-label" id="label-survival-weight" for="input-survival-weight">Survivability (at max equality) weight </label>
-			<div class="col-sm-5"><input class="form-control" value="0.01" title="This is the ADDITIONAL weight placed on max effective HP at max equality. It is the weight used for equality itself, and also adds to the health weight. Unless you are doing a very hard push this should be a small fraction of the clearspeed weight." type="number" min="0" id="input-survival-weight" maxlength="3" /></div>
+			<div class="col-sm-5"><input class="form-control" value="0.01" title="This is the ADDITIONAL weight placed on max effective HP at max equality. It is the weight used for equality itself, and also adds to the health weight. Unless you are doing a very hard push this should be a small fraction of the clearspeed weight. If you are used to Attack and Health weights, set this to your old Health weight minus Attack weight." type="number" min="0" id="input-survival-weight" maxlength="3" /></div>
 		</div>
 		<div class="row">
 			<label class="col-sm-6 col-form-label" id="label-radon-weight" for="input-radon-weight">Radon weight </label>
@@ -281,7 +285,7 @@ input[type=checkbox], input[type=radio] {
 			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-tribute-count" /></div>
 		</div>		
 		<div class="row mt-2">
-			<label class="col-sm-6 col-form-label" id="label-crit-damage" for="input-crit-damage">Crit damage </label>
+			<label class="col-sm-6 col-form-label" id="label-crit-damage" for="input-crit-damage">Shield crit damage </label>
 			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-crit-damage" /></div>
 		</div>
 		<div class="row">
@@ -712,6 +716,11 @@ function getTenacityEffect(time) {
 	return (1.1 + (Math.floor(time / 4) * 0.01));
 }
 
+function legalizeInput(val,backup) {
+	if (val == null) return backup;
+	return val;
+}
+
 function readInputs() {
 	// get perk levels and locked/unlocked status, and calculate total Rn cost
 	for (var [perkName, perkObj] of Object.entries(perks)) {
@@ -726,16 +735,16 @@ function readInputs() {
 	perks.radonSpent = getTotalPerksCost();
 	
 	// get optimization weights
-	perks.clearWeight = parseFloat(inputs["clear-weight"].value) || 1;
-	perks.survivalWeight = parseFloat(inputs["survival-weight"].value) || 0.01;
-	perks.radonWeight = parseFloat(inputs["radon-weight"].value) || 10;
+	perks.clearWeight = legalizeInput(parseFloat(inputs["clear-weight"].value),1);
+	perks.survivalWeight = legalizeInput(parseFloat(inputs["survival-weight"].value),0.01);
+	perks.radonWeight = legalizeInput(parseFloat(inputs["radon-weight"].value),10);
 	
 	// get weapon/armor levels and calculate resource scaling for atk/hp
-	perks.weaponLevels = parseInt(inputs["weapon-levels"].value) || 1;
+	perks.weaponLevels = legalizeInput(parseInt(inputs["weapon-levels"].value),1);
 	var wLevScaling = Math.pow((perks.weaponLevels+1)/(perks.weaponLevels),1/Math.log(1.2));
 	perks.equipScaling.attack = Math.min(wLevScaling,equipScalingPrestige.attack);
 	
-	perks.armorLevels = parseInt(inputs["armor-levels"].value) || 1;
+	perks.armorLevels = legalizeInput(parseInt(inputs["armor-levels"].value),);
 	var aLevScaling = Math.pow((perks.armorLevels+1)/(perks.armorLevels),1/Math.log(1.2));
 	perks.equipScaling.health = Math.min(aLevScaling,equipScalingPrestige.health);
 	
@@ -940,8 +949,10 @@ var evaluatePerks = function(debug) {
 	
 	// Packrat:
 	//   all-resource gain from decreased storage costs (no radon)
-	var storeTax = 0.25 / (1 + perks.Packrat.level * perks.Packrat.effect);
-	var storeTaxNext = 0.25 / (1 + (perks.Packrat.level + 1) * perks.Packrat.effect);
+	// Note: 0.125 because you only pay taxes on the half of your last storage that you filled before buying it
+	// Note: / 2 because we might guess you spend as many resources as you can store after your last storage building
+	var storeTax = 0.125 / (1 + perks.Packrat.level * perks.Packrat.effect) / 2;
+	var storeTaxNext = 0.125 / (1 + (perks.Packrat.level + 1) * perks.Packrat.effect) / 2;
 	var ratGain = (1 - storeTaxNext) / (1 - storeTax);
 	perks.Packrat.efficiency = getLogWeightedValue(1,1,ratGain,ratGain,1,1)/getPerkCost("Packrat",1);
 	
