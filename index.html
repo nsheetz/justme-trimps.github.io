@@ -244,6 +244,10 @@ input[type=checkbox], input[type=radio] {
 		</div>
     </div>
     <div class="col-sm">
+		<div class="row mt-2">
+			<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-lock-aux" /></div>
+			<label class="col-sm-11 col-form-label" id="label-lock-aux" for="input-lock-aux">Lock inputs below on save-load </label>
+		</div>
 		<div class="row">
 			<label class="col-sm-6 col-form-label" id="label-weapon-levels" for="input-weapon-levels">Weapon levels </label>
 			<div class="col-sm-5"><input class="form-control" value="1" type="number" min="1" title="Number of daggers you're aiming for" id="input-weapon-levels" /></div>
@@ -310,15 +314,19 @@ function initPerks() {
 		perksRadon: 0,  // total radon available for perks in this optimization run
 		radonSpent: 0,  // radon spent on perks so far
 		//shieldCC: 0, // TODO: strictly, this matters. sort of. if it's <100% it affects the value of criticality. also in Duel. but we can ignore this for a start.
-		baseCD: 0,
-		basePrismal: 0,
-		prismLayers: 1,
+		shieldCD: 0,
+		shieldPrismal: 0,
 		smithyScaling: 50,
+		tributes: 0,
 		tenacityTime: 0, // minutes of tenacity to optimize for
 		coordLimited: 0, // 0-1 value of "how coord limited" we are
 		clearWeight: 1,
 		survivalWeight: 1,
 		radonWeight: 1,
+		scruffyLevel: 0,
+		weaponLevels: 1,
+		armorLevels: 1,
+		lockAux: 0,
 		bestPerk: "", // 
 		// scaling^log(resource boost) = atk or hp boost
 		equipScaling: {
@@ -528,7 +536,8 @@ var colorCheckboxRows = function() {
 		var input = inputElements[i];
 		
 		if (typeof(input.getAttribute('type')) != "undefined" && input.getAttribute('type') == "checkbox") {
-			if (input.getAttribute('id') == 'input-use-total') 
+			if (   input.getAttribute('id') == 'input-use-total'
+			    || input.getAttribute('id') == 'input-lock-aux') 
 				continue;
 			
 			var row = input.parentElement.parentElement;
@@ -582,33 +591,43 @@ var loadSave = function() {
 			inputs[key.toLowerCase() + "-enabled"].checked = !portalPerk.radLocked;
 		}
 		
-		// calculate Scruffy level (adapted from Fluffy.getLevel() in the game source code)
-		perks.scruffyLevel = Math.floor(Math.log(((game.global.fluffyExp2 / 1000) * 3) + 1) / Math.log(4));
-		inputs["scruffy-level"].value = perks.scruffyLevel;
+		perks.lockAux = inputs["lock-aux"].checked;
 		
-		var shield = null;
-
-		if (game.global.universe == 2)
-			shield = game.global.ShieldEquipped;
-		
-		if (game.global.universe == 1 && game.global.lastHeirlooms.u2 && game.global.lastHeirlooms.u2.Shield) {
-			shield = game.global.heirloomsCarried.find(function (s) { return s.id == game.global.lastHeirlooms.u2.Shield; });
-		}
-		
-		if (shield) {
-			var critDamageMod = shield.mods.find(function (el) { return el[0] == "critDamage"; });
-			var prismalMod = shield.mods.find(function (el) { return el[0] == "prismatic"; });
+		if (!perks.lockAux) {
 			
-			if (critDamageMod)  { inputs["crit-damage"].value    = Math.round(critDamageMod[1] / 10); }  else { inputs["crit-damage"].value    = 0; }
-			if (prismalMod)     { inputs["prismal-shield"].value = Math.round(prismalMod[1]); }     else { inputs["prismal-shield"].value = 0; }
-		}
+			// calculate Scruffy level (adapted from Fluffy.getLevel() in the game source code)
+			perks.scruffyLevel = Math.floor(Math.log(((game.global.fluffyExp2 / 1000) * 3) + 1) / Math.log(4));
+			inputs["scruffy-level"].value = perks.scruffyLevel || 0;
+			
+			var shield = null;
+
+			if (game.global.universe == 2)
+				shield = game.global.ShieldEquipped;
+			
+			if (game.global.universe == 1 && game.global.lastHeirlooms.u2 && game.global.lastHeirlooms.u2.Shield) {
+				shield = game.global.heirloomsCarried.find(function (s) { return s.id == game.global.lastHeirlooms.u2.Shield; });
+			}
+			
+			if (shield) {
+				var critDamageMod = shield.mods.find(function (el) { return el[0] == "critDamage"; });
+				var prismalMod = shield.mods.find(function (el) { return el[0] == "prismatic"; });
+				
+				if (critDamageMod)  { inputs["crit-damage"].value    = Math.round(critDamageMod[1] / 10); }  else { inputs["crit-damage"].value    = 0; }
+				if (prismalMod)     { inputs["prismal-shield"].value = Math.round(prismalMod[1]); }     else { inputs["prismal-shield"].value = 0; }
+			}
+			
+			// TODO: add checkboxes to lock these fields 
+			inputs["weapon-levels"].value = game.equipment.Dagger.level;		
+			inputs["armor-levels"].value = game.equipment.Boots.level;
+			
+			// TODO: meteorologists and antennas, for resource -> Rn feedback (and resource -> resource feedback, and with A10 resource -> health feedback)
+			
+			// TODO: get housing from save, just collectors or hubs. we assume this scales with food at say 1.12-1.15 base.
+			
+			// TODO: this also needs a lock
+			if (game.global.universe == 2) inputs["tribute-count"].value = game.buildings.Tribute.owned;
 		
-		// TODO: add checkboxes to lock these fields 
-		inputs["weapon-levels"].value = game.equipment.Dagger.level;		
-		inputs["armor-levels"].value = game.equipment.Boots.level;
-		
-		// TODO: this also needs a lock
-		if (game.global.universe == 2) inputs["tribute-count"].value = game.buildings.Tribute.owned;
+		} // end skipping inputs for lockAux
 		
 		// read and process all input fields
 		readInputs();    
@@ -637,7 +656,7 @@ function getPerkCost(whichPerk, numLevels, fromZero) {
 	return cost;
 }
 
-function couldBuyPerk(whichPerk,actuallyBuy) {
+function couldBuyPerk(whichPerk,actuallyBuy=false) {
 	var perk = perks[whichPerk];
 	if (perk.hasOwnProperty("max")) {
 		if (perk.level > perk.max) console.log("ERROR: perk " + whichPerk + " exceeded max level!");
@@ -665,6 +684,20 @@ function getGreedEffect(tribs) {
 		mod += (Math.floor(tribs / 25) * 0.0035); //+0.35% per 25 tributes above 600
 	}
 	return mod;
+}
+
+// get the first-order feedback from Greed of a given boost to resources via more tributes
+function getGreedResourceFeedback(resBoost) {
+	var tribs = perks.tributes;
+	if (tribs >= 1250) return 1;
+	var tribsGained = Math.log(resBoost)/Math.log(1.05);
+	if (tribs + tribsGained < 600) return 1;
+	if (tribs + tribsGained > 1250) tribsGained = 1250 - tribs;
+	if (tribs < 600) tribsGained = tribs + tribsGanied - 600;
+	// don't go by specific breakpoints which we'd be foolish to tie to a specific resource gain, just smooth the every-25 bonus out evenly per tribute
+	var baseGreed = getGreedEffect(tribs);
+	var greedGain = (baseGreed + 0.00029*tribsGained) / baseGreed;
+	return Math.pow(greedGain,perks.Greed.level);
 }
 
 function getTenacityEffect(time) {
@@ -698,30 +731,29 @@ function readInputs() {
 	perks.radonWeight = parseFloat(inputs["radon-weight"].value) || 10;
 	
 	// get weapon/armor levels and calculate resource scaling for atk/hp
-	var wLev = parseInt(inputs["weapon-levels"].value) || 1;
-	var wLevScaling = Math.pow((wLev+1)/(wLev),1/Math.log(1.2));
-	perks.equipScaling.attack = Math.max(wLevScaling,equipScalingPrestige.attack);
+	perks.weaponLevels = parseInt(inputs["weapon-levels"].value) || 1;
+	var wLevScaling = Math.pow((perks.weaponLevels+1)/(perks.weaponLevels),1/Math.log(1.2));
+	perks.equipScaling.attack = Math.min(wLevScaling,equipScalingPrestige.attack);
 	
-	var aLev = parseInt(inputs["armor-levels"].value) || 1;
-	var aLevScaling = Math.pow((aLev+1)/(aLev),1/Math.log(1.2));
-	perks.equipScaling.health = Math.max(aLevScaling,equipScalingPrestige.health);
+	perks.armorLevels = parseInt(inputs["armor-levels"].value) || 1;
+	var aLevScaling = Math.pow((perks.armorLevels+1)/(perks.armorLevels),1/Math.log(1.2));
+	perks.equipScaling.health = Math.min(aLevScaling,equipScalingPrestige.health);
 	
 	// calculate greed effect from tribute count
-	perks.Greed.effect = getGreedEffect(parseInt(inputs["tribute-count"].value) || 0);
+	perks.tributes = parseInt(inputs["tribute-count"].value) || 0;
+	perks.Greed.effect = getGreedEffect(perks.tributes);
 	
 	// get shield properties
-	perks.baseCD = parseInt(inputs["crit-damage"].value);
+	perks.shieldCD = parseInt(inputs["crit-damage"].value) || 0;
 	// includes prismalicious and prismatic
-	perks.basePrismal = (parseInt(inputs["prismal-shield"].value) || 0) + 100;
-	if (perks.basePrismal > maxPrismalShield) perks.basePrismal = maxPrismalShield;
+	perks.shieldPrismal = (parseInt(inputs["prismal-shield"].value) || 0);
+	if (perks.shieldPrismal > maxPrismalShield) {
+		perks.shieldPrismal = maxPrismalShield;
+		inputs["prismal-shield"].value = maxPrismalShield;
+	}
 	
 	// Scruffy adjustments
 	perks.scruffyLevel = parseInt(inputs["scruffy-level"].value) || 0;
-	if (perks.scruffyLevel >= 1) perks.basePrismal += 25;
-	if (perks.scruffyLevel >= 10) perks.prismLayers = 2;
-	else perks.prismLayers = 1;
-	if (perks.scruffyLevel >= 15) perks.smithyScaling = 40;
-	else perks.smithyScaling = 50;
 	
 	// get aux properties
 	perks.tenacityTime = parseFloat(inputs["tenacity-time"].value) || 0;
@@ -742,26 +774,38 @@ function getTotalPerksCost() {
 	return cost;
 }
 
-function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve) {
+function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve=1,Vp=1) {
 	
 	var Wa = perks.clearWeight; // attack weight
 	var Wh = perks.clearWeight + perks.survivalWeight; // health weight
 	var We = perks.survivalWeight; // equality weight
 	var Wr = perks.radonWeight; // radon weight
 	
+	// TODO: account for pop gain from more resources
+	
+	// Greed gives significant resource->resource&radon feedback from resources via buying more tributes
+	var greedback = getGreedResourceFeedback(Vres);
+	Vgear *= greedback;
+	Vres *= greedback;
+	Vrad *= greedback;
+	
 	// use equip scaling to convert resource value to atk/hp value
 	Va *= Math.pow(perks.equipScaling.attack,Math.log(Vgear));
 	Vh *= Math.pow(perks.equipScaling.health,Math.log(Vgear));
 	
 	// account for smithies: 1.25x atk/hp per 50x resources
-	Va *= Math.pow(1.25,Math.log(Vres)/Math.log(perks.smithyScaling));
-	Vh *= Math.pow(1.25,Math.log(Vres)/Math.log(perks.smithyScaling));
+	var smithyGain = Math.pow(1.25,Math.log(Vres)/Math.log(perks.smithyScaling));
+	Va *= smithyGain;
+	Vh *= smithyGain;
 	
-	// TODO: do we want 2nd-order effects for more resources giving more tributes for Greed? (probably not but making a note of it)
+	// if coord limited, account for population gain to coords
+	var coordGain = Math.pow(1.25,Math.log(Vp)/Math.log(1.25) * perks.coordLimited);
+	Va *= coordGain;
+	Vh *= coordGain;	
 	
 	// A perk's total weighted value is:
 	//   Va^Wa * Vh^Wh * Ve^We * Vrad^Wr.
-	// For efficiency we use the log of this value, which simplifies to:
+	// For cost-efficiency between perks with wildly different costs & effects we use the log of this value, which simplifies to:
 	//   Wa*log(A) + Wh*log(H) + We*log(E) + Wr*log(R)
 	
 	return Wa*Math.log(Va) + Wh*Math.log(Vh) + We*Math.log(Ve) + Wr*Math.log(Vrad);
@@ -833,33 +877,39 @@ var evaluatePerks = function(debug) {
 
 	readInputs();
 		
-	var trimpWeights = {
+	var saveFields = {
 		clearWeight: perks.clearWeight,
 		survivalWeight: perks.survivalWeight,
-		radonWeight: perks.radonWeight
+		radonWeight: perks.radonWeight,
+		tributes: perks.tributes,
+		coordLimited: perks.coordLimited,
+		tenacityTime: perks.tenacityTime,
+		scruffyLevel: perks.scruffyLevel,
+		shieldCD: perks.shieldCD,
+		shieldPrismal: perks.shieldPrismal,
+		weaponLevels: perks.weaponLevels,
+		armorLevels: perks.armorLevels,
+		lockAux: perks.lockAux,
 	};
 	
-	window.localStorage.setItem("trimpWeights", JSON.stringify(trimpWeights));
-
-	// NOTE:
-	// getLogWeightedAttackValue(atk gain, hp gain, equip resource gain, other resource gain, radon gain, equality gain)
-	// A "gain" of 1 is no effect.
+	if (perks.scruffyLevel >= 15) perks.smithyScaling = 40;
+	else perks.smithyScaling = 50;
+	
+	window.localStorage.setItem("saveFields", JSON.stringify(saveFields));
 	
 	// Artisanistry:
 	//   resource gain for equipment only
 	perks.Artisanistry.efficiency = getLogWeightedValue(1,1,perks.Artisanistry.effect,1,1,1)/getPerkCost("Artisanistry",1);
 	
 	// Carpentry:
-	//   resource gain from population
+	//   population gain, also gives resources
 	var carpPop = perks.Carpentry.effect;
-	//   coord atk/hp gain (with exponent scaled from 0 to 1 by the coordLimited input)
-	var carpCoord = Math.pow(1.25,Math.log(carpPop)/Math.log(1.25) * perks.coordLimited);
-	perks.Carpentry.efficiency = getLogWeightedValue(carpCoord,carpCoord,carpPop,1,1,1)/getPerkCost("Carpentry",1);
+	perks.Carpentry.efficiency = getLogWeightedValue(1,1,carpPop,carpPop,1,1,carpPop)/getPerkCost("Carpentry",1);
 	
 	
 	// Criticality:
 	//   attack gain from crits (TODO: assumes 100% CC, might want a CC input for e.g. Duel)
-	var CD = 1 + perks.baseCD/100 + perks.Criticality.level * perks.Criticality.effect;
+	var CD = 1 + perks.shieldCD/100 + perks.Criticality.level * perks.Criticality.effect;
 	var CC = 1;
 	var critGain = ((1-CC) + CC * (CD + perks.Criticality.effect))/((1-CC) + CC*CD);
 	perks.Criticality.efficiency = getLogWeightedValue(critGain,1,1,1,1,1)/getPerkCost("Criticality",1);
@@ -905,9 +955,12 @@ var evaluatePerks = function(debug) {
 	
 	// Prismal:
 	//   health gain from increased shielding
-	//   basePrismal: as a % - includes shield, Scruffy bonus, prismatic, prismalicious
-	var prismHP = 1 + (perks.basePrismal/100 + perks.Prismal.level * perks.Prismal.effect)*perks.prismLayers;
-	var prismGain = (prismHP + perks.Prismal.effect * perks.prismLayers) / prismHP;
+	var prismLayers = 1;
+	var basePrismal = perks.shieldPrismal + 100;
+	if (perks.scruffyLevel >= 1) basePrismal += 25;
+	if (perks.scruffyLevel >= 10) prismLayers = 2;
+	var prismHP = 1 + (basePrismal/100 + perks.Prismal.level * perks.Prismal.effect)*prismLayers;
+	var prismGain = (prismHP + perks.Prismal.effect * prismLayers) / prismHP;
 	perks.Prismal.efficiency = getLogWeightedValue(1,prismGain,1,1,1,1)/getPerkCost("Prismal",1);
 	
 	// Resilience:
@@ -1022,11 +1075,20 @@ function autobuyPerks() {
 	console.log("Total Radon for perks: " + perks.perksRadon + ", Total Radon Spent: " + perks.radonSpent);
 }
 
-if (window.localStorage.getItem("trimpWeights")) {
-	var trimpWeights = JSON.parse(window.localStorage.getItem("trimpWeights"));
-	if (trimpWeights.attackWeight != null) inputs["attack-weight"].value = trimpWeights.attackWeight;
-	if (trimpWeights.healthWeight != null) inputs["health-weight"].value = trimpWeights.healthWeight;
-	if (trimpWeights.radonWeight != null) inputs["radon-weight"].value = trimpWeights.radonWeight;
+if (window.localStorage.getItem("saveFields")) {
+	var saveFields = JSON.parse(window.localStorage.getItem("saveFields"));
+	if (saveFields.clearWeight != null) inputs["clear-weight"].value = saveFields.clearWeight;
+	if (saveFields.survivalWeight != null) inputs["survival-weight"].value = saveFields.survivalWeight;
+	if (saveFields.radonWeight != null) inputs["radon-weight"].value = saveFields.radonWeight;
+	if (saveFields.tributes != null) inputs["tribute-count"].value = saveFields.tributes;
+	if (saveFields.coordLimited != null) inputs["coord-limited"].value = saveFields.coordLimited;
+	if (saveFields.tenacityTime != null) inputs["tenacity-time"].value = saveFields.tenacityTime;
+	if (saveFields.scruffyLevel != null) inputs["scruffy-level"].value = saveFields.scruffyLevel;
+	if (saveFields.shieldCD != null) inputs["crit-damage"].value = saveFields.shieldCD;
+	if (saveFields.shieldPrismal != null) inputs["prismal-shield"].value = saveFields.shieldPrismal;
+	if (saveFields.weaponLevels != null) inputs["weapon-levels"].value = saveFields.weaponLevels;
+	if (saveFields.armorLevels != null) inputs["armor-levels"].value = saveFields.armorLevels;
+	if (saveFields.lockAux != null) inputs["lock-aux"].checked = saveFields.lockAux;
 }
 // order of perks
 // buy 2nd, 3rd...
