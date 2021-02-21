@@ -215,8 +215,10 @@ input[type=checkbox], input[type=radio] {
 		</div>
 		<div class="row">
 			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-observation-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-observation" for="input-observation">Observation </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-observation" /></div>
+			<label class="col-sm-3 col-form-label" id="label-observation" for="input-observation">Observation </label>
+			<label class="col-sm-3 col-form-label" style="text-align: right;" id="label-observation-noopt" for="input-observation-noopt">lock level: </label>
+			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-observation-noopt" /></div>
+			<div class="col-sm-4"><input class="form-control" value="0" type="number" min="0" max="100" id="input-observation" /></div>
 		</div>
 		<div class="row mt-2">
 			<div class="col-sm-1"></div>
@@ -264,7 +266,19 @@ const equipScalingPrestige = {
 //   I expect this is plenty good enough for our small 2nd-order resource->population corrections at any stage of U2, without
 //   asking the user to look at yet another input field for "best housing building", which must be maintained especially when
 //   loading a U1 save to prep for a U2 run.
-const housingScaling = 1.18;
+const logHousingScaling = Math.log(1.18);
+// Zone scaling after 60 (always used, just means we're a bit conservative at lower zones)
+//  HP: sqrt(zone) * (3.265^(1/2) * 1.1 * 1.32)^zone
+// ATK: sqrt(zone) * (3.27^(1/2) * 1.15 * 1.32)^zone 
+// Note that sqrt(zone) is accounted for in the props after getting a target zone from the user.
+const logEnemyHealthScaling = Math.log(Math.sqrt(3.265) * 1.1 * 1.32);
+const logEnemyAttackScaling = Math.log(Math.sqrt(3.27) * 1.15 * 1.32);
+// Quick and dirty hack: estimate about 60% Rn from VMs for VS1.
+// This can and should be a user input if and when we make such things hide-able.
+const vmRadFrac = 0.6;
+
+var DEBUGITER = 0;
+var DEBUGITER2 = 0;
 
 var perks = {};
 var props = {};
@@ -277,11 +291,18 @@ function initPerks() {
 		earnedRadon: 0,	// total radon, including that earned this run
 		perksRadon: 0,  // total radon available for perks in this optimization run
 		radonSpent: 0,  // radon spent on perks so far
+		radonPerRun: 0, // radon per farming run (needed to value trinket gains)
+		radonPerTrinket: 0, // the Rn-equivalent value of a marginal trinket
+		trinketRadonPerRun: 0, // baseline total radon value of expected trinkets gained per run at current perks
+		baselineTrinketsNext: 0, // end of next run expected trinket count at current Observation
 		//shieldCC: 0, // TODO: strictly, this matters. sort of. if it's <100% it affects the value of criticality. also in Duel. but we can ignore this for a start.
 		shieldCD: 0,
 		shieldPrismal: 0,
 		smithyScaling: 50,
 		tributes: 0,
+		trinkets: 0,
+		housingCount: 0,
+		meteorologists: 0,
 		tenacityTime: 0, // minutes of tenacity to optimize for
 		coordLimited: 0, // 0-1 value of "how coord limited" we are
 		clearWeight: 1,
@@ -296,6 +317,7 @@ function initPerks() {
 			attack: equipScalingPrestige.attack,
 			health: equipScalingPrestige.health,
 		},
+		logEnemyScaling: (logEnemyAttackScaling + logEnemyHealthScaling),
 	};
 	perks = {
 		Agility: {
@@ -395,14 +417,15 @@ function initPerks() {
 			efficiency: 0,
 		},
 		Observation: {
-			optimize: false, // TODO to figure out how observation works
+			optimize: true,
 			locked: true,
+			canDisable: true,
 			level: 0,
 			priceBase: 5000000000000000000,
 			priceFact: 2,
-			trinkets: 0,
 			max: 50,
 			efficiency: 0,
+			efficiency2: 0, // we check for buying 2 obs levels as this may be super-extra-efficient for the extra guaranteed Rt drops
 		},
 		Packrat: {
 			optimize: true,
@@ -507,7 +530,7 @@ const auxInputList = [
 		divId: 'clear-weight',
 		spacer: true,
 		label: "Attack & Health weight",
-		title: "Weight for how much you value attack * health, which determines clear speed at less than max equality. If you are used to Attack Weight and Health Weight, enter your old Attack Weight here. This weight is not used for Equality at all.",
+		title: "If you are farming and it's trivial to complete your radon challenge, set this to 0! It will still be valued for the effect of pushing power on radon gains (from Scruffy level 3, for example). This is the weight for how much you value attack * health, which determines clear speed at less than max equality. If you are used to Attack Weight and Health Weight, this is equivalent to Attack weight. This weight is not used for Equality at all.",
 		type: "float",
 		value: 1,
 		min: 0,
@@ -523,9 +546,17 @@ const auxInputList = [
 	{	keyName: "radonWeight",
 		divId: 'radon-weight',
 		label: "Radon weight",
-		title: "Weight for how much you value pure radon gains as separate from attack & health",
+		title: "Weight for how much you value growth from radon (and trinkets). If you are purely farming and can easily complete your radon challenge, this is the only weight you need, other than a tiny bit of survival weight (like 0.0001) to get some equality.",
 		type: "float",
 		value: 10,
+		min: 0,
+		max: null, },
+	{   keyName: "radonPerRun",
+		divId: 'radon-perrun',
+		label: "Radon per Run (if Rn weight > 0)",
+		title: "Typical Radon gains in a farming run. Needed for Observation (until your trinkets are capped). Can be extracted from your save if you paste a save from the end of a farming run. Doesn't need to be exact but a pretty good estimate is recommended. Only used when Rn weight > 0.",
+		type: "float",
+		value: 0,
 		min: 0,
 		max: null, },
 	{	keyName: "weaponLevels",
@@ -780,6 +811,8 @@ var loadSave = function() {
 		// SHINIES
 		setAuxInput("trinkets",game.portal.Observation.trinkets);
 		
+		setAuxInput("radonPerRun",game.resources.radon.owned);
+		
 		saveLoaded = true;
 		
 		// read and process all input fields
@@ -794,7 +827,7 @@ var loadSave = function() {
 	}, 1); // save-load timeout = 1
 }
 
-function getPerkCost(whichPerk, numLevels, fromZero) {
+function getPerkCost(whichPerk, numLevels, fromZero=false) {
 	if (numLevels === 0) return 0;
 	var perk = perks[whichPerk];
 	if (!perk.hasOwnProperty("optimize")) console.log("ERROR getting perk cost: " + whichPerk + " is not a known perk.");
@@ -809,23 +842,23 @@ function getPerkCost(whichPerk, numLevels, fromZero) {
 	return cost;
 }
 
-function couldBuyPerk(whichPerk,actuallyBuy=false) {
+function couldBuyPerk(whichPerk,actuallyBuy=false,numLevels=1) {
 	var perk = perks[whichPerk];
 	if (perk.hasOwnProperty("max")) {
 		if (perk.level > perk.max) console.log("ERROR: perk " + whichPerk + " exceeded max level!");
-		if (perk.level >= perk.max) return false;
+		if (perk.level + numLevels > perk.max) return false;
 	}
-	var cost = getPerkCost(whichPerk, 1);
+	var cost = getPerkCost(whichPerk, numLevels);
 	if (cost + props.radonSpent > props.perksRadon) return false;
 	if (actuallyBuy) {
 		props.radonSpent += cost;
-		perk.level++;
+		perk.level += numLevels;
 	}
 	return true;
 }
 
-function buyPerk(whichPerk) {
-	return couldBuyPerk(whichPerk,true);
+function buyPerk(whichPerk,numLevels=1) {
+	return couldBuyPerk(whichPerk,true,numLevels);
 }
 
 function getGreedEffect(tribs) {
@@ -840,17 +873,16 @@ function getGreedEffect(tribs) {
 }
 
 // get the first-order feedback from Greed of a given boost to resources via more tributes
-function getGreedResourceFeedback(resBoost) {
-	var tribs = props.tributes;
-	if (tribs >= 1250) return 1;
+function getGreedResourceFeedback(resBoost,tribs) {
+	if (tribs >= 1250) return [1,tribs];
 	var tribsGained = Math.log(resBoost)/Math.log(1.05);
-	if (tribs + tribsGained < 600) return 1;
+	if (tribs + tribsGained < 600) return [1,tribs];
 	if (tribs + tribsGained > 1250) tribsGained = 1250 - tribs;
 	if (tribs < 600) tribsGained = tribs + tribsGanied - 600;
 	// don't go by specific breakpoints which we'd be foolish to tie to a specific resource gain, just smooth the every-25 bonus out evenly per tribute
 	var baseGreed = getGreedEffect(tribs);
 	var greedGain = (baseGreed + 0.00029*tribsGained) / baseGreed;
-	return Math.pow(greedGain,perks.Greed.level);
+	return [Math.pow(greedGain,perks.Greed.level),tribs+tribsGained];
 }
 
 function getTenacityEffect(time) {
@@ -882,6 +914,8 @@ function readInputs() {
 		}
 	}
 	props.radonSpent = getTotalPerksCost();
+	
+	perks.Observation.optimize = !inputs['observation-noopt'].checked;
 
 	// shove all aux input fields into the props structure
 	for (var i=0; i<auxInputList.length; i++) {
@@ -909,6 +943,10 @@ function readInputs() {
 		}
 		props[key] = legalizeInput(val,def);
 	}
+	
+	// final enemy HP/ATK scaling including the sqrt(zone) component:
+	//   (note we don't divide by 2, because we're adding the two log sqrt components together)
+	props.logEnemyScaling = logEnemyHealthScaling + logEnemyAttackScaling + Math.log(1 + 1/props.targetZone);
 	
 	// calculate equipment resource scaling for atk/hp based on weaponl/armor levels
 	var wLevScaling = Math.pow((props.weaponLevels+1)/(props.weaponLevels),1/Math.log(1.2));
@@ -941,41 +979,301 @@ function getTotalPerksCost() {
 	return cost;
 }
 
-function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve=1,Vp=1) {
+// Calculate the absolute Rn-equivalent value of gaining trinkets (RIP to relativism :<<<)
+//    This is just the Rn cost of buying enough Mot/Pow/Tough to get the same boost to power stats as
+//    a trinket would give you. The baseline above which we're measuring is whatever trinkets we'd expect
+//    to have after next run if we didn't gain any marginal trinkets.
+// We return 3 values:
+//    1. The Rn value of all expected trinkets gained in a run at baseline perks.
+//    2. The additional Rn value of a marginal trinket above those gained at baseline perks.
+//    3. The baseline number of trinkets we expect to have at the end of the next run at current Obs.
+// INPUTS:
+//	  gain factor at current level and cost for each of the basic powerlevel gain perks (Mot/Pow/Tough)
+// NOTE that this weight does NOT capture the direct powerlevel gain value of more trinkets, which is captured elsewhere,
+//   including feedback mechanisms via more resources and further pushing that aren't appropriate to use for "Radon-like"
+//   growth weight. This is only capturing the long term growth value of additional trinket drops.
+function getTrinketValues(	motivGain,motivCost,
+							powGain,powCost,
+							toughGain,toughCost,
+						 ) {
+	// trinket gain from pushing power will be 0 when Obs level is 0, so go ahead and calculate
+	//   the value of trinket growth based on 1 Obs level to help evaluate the value of the first Obs
+	//   level itself.
+	var obsLevel = Math.max(1,perks.Observation.level);
+	
+	// Get the expected Rt at the end of the next run with the current Obs level.
+	var shinies = 0;
+	var shinies = props.trinkets + shinyCollect(perks.Observation.level,props.targetZone);
+	if (props.trinkets == 0) {
+		shinies += 10; // first Obs level gives 10 trinkets
+	}
+	shinies = Math.min(shinies, obsLevel * 1000);
+	
+	var cappedBaseTrinkets = Math.min(props.trinkets, obsLevel * 1000);
+	
+	// marginal shine gain per run (for baseline perks)
+	var marginalShinePerRun = (100 + shinies * obsLevel) / (100 + cappedBaseTrinkets * obsLevel);
+	// marginal shine gain of one additional trinket
+	var marginalShinePerTrinket = 1 + obsLevel/(100 + shinies * obsLevel);
+	
+	var res = [];
+	for (var marginalShine of [marginalShinePerRun,marginalShinePerTrinket]) {	
+		// For each of Mot/Pow/Tough, presuming those levels are efficient, calculate the Rn cost of getting 
+		//   the equivalent boost the marginal shine.
+		// NOTE: We don't account for diminishing returns of Mot/Pow/Tough here, since the return curve is locally
+		//   very flat in the small marginalShine ranges we're likely to see with nearly optimized perks, so it should be 
+		//   vastly dominated by the exponential cost scaling of these perks.
+		// Total cost of N levels for a compounding price factor of F and next level cost of C:
+		//   C/(F-1) * (F^N - 1)
+		// Converting from gain factor G to number of levels needed N using a 1-level gain of H is approximately:
+		//   N = (G-1)/(H-1), given that G is close to 1 and the gain curve for these perks is quite flat for small gains.
+		var motF = perks.Motivation.priceFact;
+		var motN = (marginalShine-1)/(motivGain-1);
+		var motShineCost = motivCost/(motF-1) * (Math.pow(motF,motN) - 1);
+		var powF = perks.Power.priceFact;
+		var powN = (marginalShine-1)/(powGain-1);
+		var powShineCost = powCost/(powF-1) * (Math.pow(powF,powN) - 1);
+		var touF = perks.Toughness.priceFact;
+		var touN = (marginalShine-1)/(toughGain-1);
+		var touShineCost = toughCost/(touF-1) * (Math.pow(touF,touN) - 1);
+		// sum up all the costs of the powerlevel perks
+		var totShineCost = motShineCost + powShineCost + touShineCost;
+		res.push(totShineCost);
+	}
+	res.push(shinies); // also return the expected trinket count next run at baseline Obs
+	return res;
+}
+
+// Observation has a direct gain component (powering up each trinket), and a growth component (due to marginal trinket
+//   droprate). This function returns the direct power gain (calculated based on the expected trinkets after the next run)
+//   and the increase in trinkets gained next run specifically due to the droprate increase.
+// Note this can calculate for any number of increased Obs levels, though we expect to use just +1 and +2.
+//   +2 is useful because free trinkets at even levels are a major growth driver, so +2 levels may actually end up being
+//   more cost efficient than +1 level at times.
+function getObservationGains(levels) {
+	var obsLevel = perks.Observation.level; // this gets referred to a lot, shortening the reference
+	
+	// Get expected trinket count at end of next run with the old Obs level
+	var shinies = props.trinkets + shinyCollect(obsLevel,props.targetZone);
+	shinies = Math.min(shinies, obsLevel * 1000);
+	
+	//console.log("obs shinies: " + shinies);
+	
+	// Get expected trinket count at end of next run with the new Obs level
+	var shiniesNext = props.trinkets + shinyCollect(obsLevel+levels,props.targetZone);
+	if (obsLevel == 0) shiniesNext += 10; // 10 free trinkets for first Obs level
+	shiniesNext = Math.min(shiniesNext, (obsLevel+levels)*1000);
+	
+	//console.log("obs shiniesNext: " + shiniesNext);
+	
+	// Calculate the direct gain in powerlevel at end of next run. Note this is the total powerlevel gain
+	//   INCLUDING power immediately gained due to marginal trinket drops. This is because the Rn-like value
+	//   of trinkets is valued as if those trinkets had no effect until the subsequent run (as true Rn
+	//   gains on the next run would not have an effect within the same run).
+	var directGain = (100 + shiniesNext * (obsLevel+levels))/(100 + shinies * obsLevel);
+	
+	//console.log("obs direct gain: " + directGain);
+	
+	// TODO: FIXME: we don't want to value marginal trinket droprate above our current cap
+	
+	// Calculate the marginal gain in trinket power next run specifically due to the increased drop rate.
+	//   Note the baseline includes the increased per-trinket value. We want to isolate the trinket growth gain from the
+	//   direct powerlevel gain.
+	var moreTrinkets = shiniesNext - shinies;
+	
+	//console.log("obs moreTrinkets: " + moreTrinkets);
+	
+	return [directGain,moreTrinkets];
+}
+
+
+
+// Do one iteration step of applying all gain feedback mechanisms in some semblance of a smart priority order
+// INPUTS (also the output):
+// values as gain factors: attack, health, metal, food, F/M/L, radon/growth, population, equality
+// key values driving gain feedback to avoid endless positive feedback:
+//   tribute count (for greed), housing count, meteorologist count
+// trinket droprate and trinket count (increase in trinket count must be converted to a value outside this function)
+// also need to keep track of what gains have already been applied (and should not be continuously re-applied):
+//   Vpushed = Va * Vh already applied
+//   V<x>Done = V<x> already applied
+// Everything from increased trinket count and onwards is optional, and defaults to values that should be passed at the
+//   start of the iteration process (0 trinkets gained, all other gain values at 1 i.e. no gain)
+// NOTE: "metal" includes gear discount here. if someday metal gain is a primary determinant of some
+//   important mechanic other than equipment, there would need to be a separate gear discount input.
+// NOTE: metal/food are MUTLIPLICATIVE gain over and above the unified F/M/L gain.
+function iterateValueFeedback(valueArray) {
+	var [Va,Vh,Vm,Vf,Vres,Vrad,Vp,Ve,
+		 tribs,housing,mets,
+		 trinketRate,trinkets,
+		 Vpushed=1,VmDone=1,VfDone=1,VresDone=1,VpDone=1] = valueArray;
+	
+	
+	// when tribute count is < 1250, resource->resource/radon feedback is strong via Greed
+	if (tribs < 1250) {
+		var [greedback,tribs] = getGreedResourceFeedback(Vf*Vres/(VfDone*VresDone),tribs);
+		Vres *= greedback;
+		Vrad *= greedback;
+	}
+	
+	// more resources buy more housing, which feeds back to more resources and population
+	var housingGain = 1 + Math.log(Vres/VresDone)/logHousingScaling/housing;
+	Vres *= housingGain;
+	Vp *= housingGain;
+	housing += housingGain;
+	
+	// use equip scaling to convert resource value to atk/hp value
+	var VmAdjusted = Vm*Vres/(VmDone*VresDone);
+	Va *= Math.pow(props.equipScaling.attack,Math.log(VmAdjusted));
+	Vh *= Math.pow(props.equipScaling.health,Math.log(VmAdjusted));
+	
+	// account for smithies: 1.25x atk/hp per 50x resources
+	var smithyGain = Math.pow(1.25,Math.log(Vres/VresDone)/Math.log(props.smithyScaling));
+	Va *= smithyGain;
+	Vh *= smithyGain;
+	
+	// if coord limited, account for population gain to coords
+	var coordGain = Math.pow(1.25,Math.log(Vp/VpDone)/Math.log(1.25) * props.coordLimited);
+	Va *= coordGain;
+	Vh *= coordGain;	
+		
+	// more food buys more Mets, which have various effects depending on antennas
+	var moreMets = Math.log(Vf*Vres/(VfDone*VresDone))/Math.log(5);
+	var metEff = 0.01 + 0.0005 * props.antennae;
+	var metRes = 0.5 + 0.25*(props.antennae >= 20 ? (Math.floor(props.antennae/5) - 3) : 0);
+	var metProd = mets * metEff;
+	var metProdNext = (mets + moreMets) * metEff;
+	var metRadGain = (1 + metProdNext)/(1 + metProd);
+	var metFoodGain = props.antennae >= 5 ? (1 + metProdNext*metRes)/(1 + metProd*metRes) : 1;
+	var metHPGain = props.antennae >= 10 ? (1 + metProdNext*metRes)/(1 + metProd*metRes) : 1;
+	var metMineGain = props.antennae >= 15 ? (1 + metProdNext*metRes)/(1 + metProd*metRes) : 1;
+	Vrad *= metRadGain;
+	Vf *= metFoodGain;
+	Vh *= metHPGain;
+	Vm *= metMineGain;
+	mets += moreMets;
+
+	// Feedback from pushing power
+	var pushPower = Va * Vh / Vpushed;
+	var pushZones = Math.log(pushPower) / props.logEnemyScaling;
+	// speedbooks give 25% resources per zone
+	Vres *= Math.pow(1.25,pushZones);
+	// Scruffy level 3 gives compounding 3% Rn per additional zone
+	if (props.scruffyLevel >= 3) Vrad *= Math.pow(1.03,pushZones);
+	// VS1 gives additive 0.25% VM Rn per additional zone
+	// TODO: vmRadFrac is a hacky constant for now, should probably be a user input after we clean up the volume of user inputs
+	//  (learn how to fold them into an element that can be clicked to expand/collapse?)
+	Vrad *= 1 + vmRadFrac * ((props.targetZone + pushZones)/props.targetZone - 1);
+	// trinket gain: use a fixed drop rate based on target zone, which should be fine assuming the user has entered
+	//   a sensible value and we're only optimizing at the margins of a fractional zone (or maybe 1-2 zones)
+	moreTrinkets = pushZones * trinketRate;
+	trinketGain = 1 + moreTrinkets * perks.Observation.level / (100 + trinkets * perks.Observation.level);
+	Va *= trinketGain;
+	Vh *= trinketGain;
+	Vres *= trinketGain;
+	trinkets += moreTrinkets;
+	
+	// copy the values back into the same array reference rather than creating a new array
+	// WARNING: If any of these positions change, we also must update getLogWeightedValue appropriately
+	valueArray[0] = Va;
+	valueArray[1] = Vh;
+	valueArray[2] = Vm;
+	valueArray[3] = Vf;
+	valueArray[4] = Vres;
+	valueArray[5] = Vrad;
+	valueArray[6] = Vp;
+	valueArray[7] = Ve;
+	valueArray[8] = tribs;
+	valueArray[9] = housing;
+	valueArray[10] = mets;
+	valueArray[11] = trinketRate;
+	valueArray[12] = trinkets;
+	valueArray[13] = Va * Vh;
+	valueArray[14] = Vm;
+	valueArray[15] = Vf;
+	valueArray[16] = Vres;
+	valueArray[17] = Vp;
+}
+
+const iterateValueLoops = 3;
+// Inputs: gain values for atk, hp, equip discount (or metal), radon, equality, pop
+//         moreTrinkets: increased count of trinkets on next run from Obs droprate increase
+function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve=1,Vp=1,moreTrinkets=0) {
 	
 	var Wa = props.clearWeight; // attack weight
 	var Wh = props.clearWeight + props.survivalWeight; // health weight
 	var We = props.survivalWeight; // equality weight
 	var Wr = props.radonWeight; // radon weight
+
+	// from iterateValueFeedback:
+	//   [Va,Vh,Vm,Vf,Vres,Vrad,Vp,Ve,
+	//	  tribs,housing,mets,
+	//	  trinketRate,trinkets,
+	//	  Vpushed=1,VmDone=1,VfDone=1,VresDone=1,VpDone=1] = valueArray;
+
+	// if there's any additional trinkets being valued, that indicates we're evaluating an increase in Obs level
+	var obsLevel = (moreTrinkets > 0) ? perks.Observation.level + 1 : perks.Observation.level;
 	
-	// TODO: account for pop gain from more resources
-		
-	// Greed gives significant resource->resource&radon feedback from resources via buying more tributes
-	var greedback = getGreedResourceFeedback(Vres);
-	Vgear *= greedback;
-	Vres *= greedback;
-	Vrad *= greedback;
+	var valueArray = [	Va,Vh,Vgear,1,Vres,Vrad,Vp,Ve,
+						props.tributes,props.housingCount,props.meteorologists,
+						obsDropRate(obsLevel,props.targetZone),props.baselineTrinketsNext,
+						1,1,1,1,1,
+					 ];
 	
-	// use equip scaling to convert resource value to atk/hp value
-	Va *= Math.pow(props.equipScaling.attack,Math.log(Vgear));
-	Vh *= Math.pow(props.equipScaling.health,Math.log(Vgear));
+	for (var i=0; i<iterateValueLoops; i++) iterateValueFeedback(valueArray);
 	
-	// account for smithies: 1.25x atk/hp per 50x resources
-	var smithyGain = Math.pow(1.25,Math.log(Vres)/Math.log(props.smithyScaling));
-	Va *= smithyGain;
-	Vh *= smithyGain;
+	Va = valueArray[0];
+	Vh = valueArray[1];
+	Vrad = valueArray[5];
+	Ve = valueArray[7];
 	
-	// if coord limited, account for population gain to coords
-	var coordGain = Math.pow(1.25,Math.log(Vp)/Math.log(1.25) * props.coordLimited);
-	Va *= coordGain;
-	Vh *= coordGain;	
+	// calculate unified Rn-like growth gain:
+	var Vgrowth = (Vrad * props.radonPerRun + props.trinketRadonPerRun 
+					+ props.radonPerTrinket * moreTrinkets
+				    ) / (props.radonPerRun + props.trinketRadonPerRun);
 	
 	// A perk's total weighted value is:
 	//   Va^Wa * Vh^Wh * Ve^We * Vrad^Wr.
 	// For cost-efficiency between perks with wildly different costs & effects we use the log of this value, which simplifies to:
 	//   Wa*log(A) + Wh*log(H) + We*log(E) + Wr*log(R)
 	
-	return Wa*Math.log(Va) + Wh*Math.log(Vh) + We*Math.log(Ve) + Wr*Math.log(Vrad);
+	return Wa*Math.log(Va) + Wh*Math.log(Vh) + We*Math.log(Ve) + Wr*Math.log(Vgrowth);
+}
+
+function obsDropRate(level,zone) {
+	if (zone < 101) return 0;
+	if (zone > 200) zone = 200;
+	return ((1 + ((level - 1) / 2)) * Math.pow(1.03, (zone - 100)));
+}
+
+// how many trinkets do we expect to get by clearing the target zone?
+function shinyCollectLoop(level,zone) {
+	var shinies = 0;
+	// the game checks for the drop after advancing the zone counter, so go to zone+1.
+	for (var i=101; i<=zone+1; i++) {
+		shinies += obsDropRate(level,i) / 100;
+		if (i % 25 == 0) {
+			var free = Math.floor(level/2);
+			if (free > 0) shinies += free;
+		}
+	}
+	return shinies;
+}
+
+function shinyCollect(level,zone) {
+	var shinies = 0;
+	if (zone < 100) return 0;
+	var excess = 0;
+	if (zone > 199) {
+		excess = zone - 199;
+		scalingZones = 100;
+	} else {
+		scalingZones = zone+1-100;
+	}
+	var scalingShinies = (1 + (level - 1)/2) * ((Math.pow(1.03,scalingZones+1) - 1)/0.03 - 1) / 100;
+	var excessShinies = (1 + (level - 1)/2) * Math.pow(1.03,100) / 100 * excess;
+	var freeShinies = Math.floor((zone+1-100)/25) * Math.floor(level/2);
+	return scalingShinies + excessShinies + freeShinies;
 }
 
 var clearClasses = function() {
@@ -1005,6 +1303,15 @@ function efficiencyColorAndFlag() {
 		if (couldBuyPerk(perkName,false) && perkObj.efficiency > bestAffordableEff) {
 			bestAffordableEff = perkObj.efficiency;
 			props.bestPerk = perkName;
+		}
+		if (perkObj.hasOwnProperty("efficiency2")) {
+			if (perkObj.efficiency2 > bestEff) {
+				bestEff = perkObj.efficiency2;
+			}
+			if (couldBuyPerk(perkName,false,2) && perkObj.efficiency2 > bestAffordableEff) {
+				bestAffordableEff = perkObj.efficiency2;
+				props.bestPerk = perkName;
+			}
 		}
 	}
 	for (var i=0; i < eList.length; i++) {
@@ -1045,6 +1352,7 @@ var switchTotalRadon = function() {
 	evaluatePerks();
 }
 
+
 // get perk efficiencies at current levels and color code them accordingly
 var evaluatePerks = function(debug=false) {
 
@@ -1062,6 +1370,34 @@ var evaluatePerks = function(debug=false) {
 		
 	if (!saveLoaded) return;
 	
+	// TODO: most perks don't change other perks' efficiencies (given our assumptions of local flatness)
+	//  So move the efficiency calculations to functions owned by each perk, and only update efficiency when actually
+	//  buying a perk. Notable exception for Observation (and carefully look for other exceptions), which will require
+	//  some exception mechanism to update interdependent perks' efficiencies.
+	// Now that we're doing a complex feedback iteration process for each perk efficiency, this is going to become necessary
+	//  to avoid exploding computation time.
+	
+	// Get various gain factors needed to calculate the value of trinkets (and also used to value their respective perks).
+	//  Motivation
+	var motiv = 1 + perks.Motivation.level * perks.Motivation.effect;
+	var motivGain = (motiv + perks.Motivation.effect) / motiv;
+	var motivCost = getPerkCost("Motivation",1);
+	// Power
+	var pow = 1 + perks.Power.level * perks.Power.effect;
+	var powGain = (pow + perks.Power.effect) / pow;
+	var powCost = getPerkCost("Power",1);
+	// Toughness
+	var tough = 1 + perks.Toughness.level * perks.Toughness.effect;
+	var toughGain = (tough + perks.Toughness.effect) / tough;
+	var toughCost = getPerkCost("Toughness",1);
+	
+	// Get the absolute Rn values for trinkets expected at baseline Observation and per marginal trinket,
+	//   and the expected count of trinkets at the end of this run at baseline Observation.
+	[props.trinketRadonPerRun,props.radonPerTrinket,props.baselineTrinketsNext]
+				= getTrinketValues(	motivGain,motivCost,
+									powGain  ,powCost  ,
+									toughGain,toughCost);
+	
 	// Artisanistry:
 	//   resource gain for equipment only
 	perks.Artisanistry.efficiency = getLogWeightedValue(1,1,perks.Artisanistry.effect,1,1,1)/getPerkCost("Artisanistry",1);
@@ -1069,7 +1405,7 @@ var evaluatePerks = function(debug=false) {
 	// Carpentry:
 	//   population gain, also gives resources
 	var carpPop = perks.Carpentry.effect;
-	perks.Carpentry.efficiency = getLogWeightedValue(1,1,carpPop,carpPop,1,1,carpPop)/getPerkCost("Carpentry",1);
+	perks.Carpentry.efficiency = getLogWeightedValue(1,1,1,carpPop,1,1,carpPop)/getPerkCost("Carpentry",1);
 	
 	
 	// Criticality:
@@ -1087,22 +1423,19 @@ var evaluatePerks = function(debug=false) {
 	// Greed:
 	//   all-resource and radon gain
 	var greedGain = perks.Greed.effect;
-	perks.Greed.efficiency = getLogWeightedValue(1,1,greedGain,greedGain,greedGain,1)/getPerkCost("Greed",1);
+	perks.Greed.efficiency = getLogWeightedValue(1,1,1,greedGain,greedGain,1)/getPerkCost("Greed",1);
 	
 	// Looting:
 	//   all-resource and radon gain
 	var loot = 1 + perks.Looting.level * perks.Looting.effect;
 	var lootGain = (loot + perks.Looting.effect) / loot;
-	perks.Looting.efficiency = getLogWeightedValue(1,1,lootGain,lootGain,lootGain,1)/getPerkCost("Looting",1);
+	var lootCost = getPerkCost("Looting",1);
+	perks.Looting.efficiency = getLogWeightedValue(1,1,1,lootGain,lootGain,1)/lootCost;
 	
 	// Motivation:
 	//   all-resource gain (no radon)
-	var motiv = 1 + perks.Motivation.level * perks.Motivation.effect;
-	var motivGain = (motiv + perks.Motivation.effect) / motiv;
-	perks.Motivation.efficiency = getLogWeightedValue(1,1,motivGain,motivGain,1,1)/getPerkCost("Motivation",1);
-	
-	// Observation TODO
-	
+	perks.Motivation.efficiency = getLogWeightedValue(1,1,1,motivGain,1,1)/motivCost;
+		
 	// Packrat:
 	//   all-resource gain from decreased storage costs (no radon)
 	// Note: 0.125 because you only pay taxes on the half of your last storage that you filled before buying it
@@ -1110,15 +1443,13 @@ var evaluatePerks = function(debug=false) {
 	var storeTax = 0.125 / (1 + perks.Packrat.level * perks.Packrat.effect) / 2;
 	var storeTaxNext = 0.125 / (1 + (perks.Packrat.level + 1) * perks.Packrat.effect) / 2;
 	var ratGain = (1 - storeTaxNext) / (1 - storeTax);
-	perks.Packrat.efficiency = getLogWeightedValue(1,1,ratGain,ratGain,1,1)/getPerkCost("Packrat",1);
+	perks.Packrat.efficiency = getLogWeightedValue(1,1,1,ratGain,1,1)/getPerkCost("Packrat",1);
 	
 	// Pheromones TODO (or not)
 	
 	// Power:
 	//   attack gain
-	var pow = 1 + perks.Power.level * perks.Power.effect;
-	var powGain = (pow + perks.Power.effect) / pow;
-	perks.Power.efficiency = getLogWeightedValue(powGain,1,1,1,1,1)/getPerkCost("Power",1);
+	perks.Power.efficiency = getLogWeightedValue(powGain,1,1,1,1,1)/powCost;
 	
 	// Prismal:
 	//   health gain from increased shielding
@@ -1140,9 +1471,22 @@ var evaluatePerks = function(debug=false) {
 	
 	// Toughness:
 	//   health gain
-	var tough = 1 + perks.Toughness.level * perks.Toughness.effect;
-	var toughGain = (tough + perks.Toughness.effect) / tough;
-	perks.Toughness.efficiency = getLogWeightedValue(1,toughGain,1,1,1,1)/getPerkCost("Toughness",1);
+	perks.Toughness.efficiency = getLogWeightedValue(1,toughGain,1,1,1,1)/toughCost;
+	
+	// Observation:
+	//  See getObservationGains for more details on valuation.
+	// NOTE we check for +1 and +2 levels, as +2 levels can be more efficient due to the extra free trinket drop.						
+	var [obsDirectGain,obsMoreTrinkets] = getObservationGains(1);
+	perks.Observation.efficiency = getLogWeightedValue(obsDirectGain,obsDirectGain,1,obsDirectGain,1,1,1,obsMoreTrinkets)/getPerkCost("Observation",1);
+	
+	// No point checking for 2-level efficiency if we can't afford 2 levels.
+	// (And more to the point, it breaks the way we flag the best perk if we give non-zero efficiency for the 2-level version....)
+	if (couldBuyPerk("Observation",false,2)) {
+		var [obsDirectGain2,obsMoreTrinkets2] = getObservationGains(2);
+		perks.Observation.efficiency2 = getLogWeightedValue(obsDirectGain2,obsDirectGain2,1,obsDirectGain2,1,1,1,obsMoreTrinkets2)/getPerkCost("Observation",2);
+	} else {
+		perks.Observation.efficiency2 = 0;
+	}
 	
 	// reset row colors (and any other property removal we might wish to do later in development & maintenance)
 	clearClasses();
@@ -1166,6 +1510,9 @@ var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,k
 	vars[key] = value;
 });
 
+var switchObsNoopt = function() {
+	perks.Observation.optimize = !input['observation-noopt'].checked;
+}
 
 var inputs = [];
 var inputElements = document.getElementById('perks-col').getElementsByTagName("INPUT");
@@ -1177,6 +1524,11 @@ for (var i = inputElements.length - 1; i >=0; i--) {
 	inputs[inputId] = input;
 		
 	if (inputId == "use-total") continue;
+	
+	if (inputId == "observation-noopt") {
+		input.onchange = switchObsNoopt;
+		continue;
+	}
 	
 	if (inputId != 'export') {
 		input.onkeyup = evaluatePerks;
@@ -1250,8 +1602,13 @@ function autobuyPerks() {
 	while (props.bestPerk !== "") {
 		var bestName = props.bestPerk;
 		var bestObj = perks[bestName];
-		if (!buyPerk(bestName) || bestObj.efficiency < 0) {
-			console.log("ERROR: a maxed, unaffordable, or inefficient perk was flagged as best: " + bestName);
+		var buy2 = bestObj.hasOwnProperty("efficiency2") && bestObj.efficiency2 > bestObj.efficiency;
+		if (buy2) {
+			if (!buyPerk(bestName,2) || bestObj.efficiency2 < 0) {
+				throw("ERROR: a perk was flagged to buy 2 levels at once, but it was unaffordable or had a negative efficiency: " + bestName);
+			}
+		} else if (!buyPerk(bestName) || bestObj.efficiency < 0) {
+			throw("ERROR: a maxed, unaffordable, or inefficient perk was flagged as best: " + bestName);
 			return;
 		}
 		inputs[bestName.toLowerCase()].value = bestObj.level;
