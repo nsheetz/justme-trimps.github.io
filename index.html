@@ -181,44 +181,44 @@ input[type=checkbox], input[type=radio] {
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-range-enabled" /></div>
             <label class="col-sm-6 col-form-label" id="label-range" for="input-range">Range </label>
-            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-range" /></div>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-range" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-agility-enabled" /></div>
             <label class="col-sm-6 col-form-label" id="label-agility" for="input-agility">Agility </label>
-            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-agility" /></div>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="20" id="input-agility" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-bait-enabled" /></div>
             <label class="col-sm-6 col-form-label" id="label-bait" for="input-bait">Bait </label>
-            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-bait" /></div>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-bait" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-trumps-enabled" /></div>
             <label class="col-sm-6 col-form-label" id="label-trumps" for="input-trumps">Trumps </label>
-            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-trumps" /></div>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-trumps" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-pheromones-enabled" /></div>
             <label class="col-sm-6 col-form-label" id="label-pheromones" for="input-pheromones">Pheromones </label>
-            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-pheromones" /></div>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-pheromones" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-hunger-enabled" /></div>
             <label class="col-sm-6 col-form-label" id="label-hunger" for="input-hunger">Hunger </label>
-            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-hunger" /></div>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="30" id="input-hunger" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-frenzy-enabled" /></div>
             <label class="col-sm-6 col-form-label" id="label-frenzy" for="input-frenzy">Frenzy </label>
-            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-frenzy" /></div>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-frenzy" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-observation-enabled" /></div>
             <label class="col-sm-3 col-form-label" id="label-observation" for="input-observation">Observation </label>
             <label class="col-sm-3 col-form-label" style="text-align: right;" id="label-observation-noopt" for="input-observation-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-observation-noopt" /></div>
-            <div class="col-sm-4"><input class="form-control" value="0" type="number" min="0" max="100" id="input-observation" /></div>
+            <div class="col-sm-4"><input class="form-control" value="0" type="number" min="0" id="input-observation" /></div>
         </div>
         <div class="row mt-2">
             <div class="col-sm-1"></div>
@@ -686,11 +686,12 @@ for (var i=0; i<auxInputList.length; i++) {
     
     var tmpRow = document.createElement('div');
     tmpRow.setAttribute('class','row' + (iObj.spacer ? ' mt-2' : ''));
+    var step = (iObj.type == 'float') ? ' step="any" ' : "";
     var minMaxSrc = (iObj.min === null ? "" : ' min="' + iObj.min + '" ') + (iObj.max === null ? "" : ' max="' + iObj.max + '" ');
     tmpRow.innerHTML = '<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="' + checkboxDivName + 
             '" /></div><label class="col-sm-6 col-form-label" id="' + labelDivName + '" for="' + inputDivName + '">' + iObj.label +
             ' </label><div class="col-sm-5"><input class="form-control" value="' + iObj.value + '" title="' + iObj.title + 
-            '" type="number" ' + minMaxSrc + 'id="' + inputDivName + '" /></div>';
+            '" type="number" ' + step + minMaxSrc + 'id="' + inputDivName + '" /></div>';
     auxColumnElement.insertBefore(tmpRow,null); // insert at end of the aux column
     
     // insert into auxInputs object for easy reference later
