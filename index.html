@@ -90,166 +90,166 @@ input[type=checkbox], input[type=radio] {
 </head>
 <body>
 <div class="container-fluid mt-3 mb-3">
-	<div class="row">
-		<div class="col-sm-12">
-			<h1 class="mr-3">
-			Trimps U2 perks
-			<span>UI adapted from justme's calc</span>
-			</h1>
-		</div>
-	</div>
+    <div class="row">
+        <div class="col-sm-12">
+            <h1 class="mr-3">
+            Trimps U2 perks
+            <span>UI adapted from justme's calc</span>
+            </h1>
+        </div>
+    </div>
 </div>
 <div class="container-fluid mt-3 mb-3">
-	<div class="row">
-		<div class="col-sm-12 form-group">
-			<label for="save-text-area">Paste your save here</label>
-			<textarea class="form-control" id="save-text-area" rows="3" onpaste="loadSave()"></textarea>
-		</div>
-	</div>
+    <div class="row">
+        <div class="col-sm-12 form-group">
+            <label for="save-text-area">Paste your save here</label>
+            <textarea class="form-control" id="save-text-area" rows="3" onpaste="loadSave()"></textarea>
+        </div>
+    </div>
   <div class="row mt-3">
     <div class="col-sm" id="perks-col">
-		<div class="row">
-			<div class="col-sm-12">
-			<h2>Perks   <span>The greener, the better</span><span>Checked = unlocked</span></h2>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-resilience-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-resilience" for="input-resilience">Resilience </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-resilience" /></div>
-		</div>
-		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-greed-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-greed" for="input-greed">Greed </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="40" id="input-greed" /></div>
-		</div>
-		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-tenacity-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-tenacity" for="input-tenacity">Tenacity </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="40" id="input-tenacity" /></div>
-		</div>
-		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-criticality-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-criticality" for="input-criticality">Criticality </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-criticality" /></div>
-		</div>
-		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-equality-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-equality" for="input-equality">Equality </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-equality" /></div>
-		</div>
-		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-carpentry-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-carpentry" for="input-carpentry">Carpentry </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-carpentry" /></div>
-		</div>
-		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-artisanistry-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-artisanistry" for="input-artisanistry">Artisanistry </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-artisanistry" /></div>
-		</div>
-		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-packrat-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-packrat" for="input-packrat">Packrat </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-packrat" /></div>
-		</div>
-		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-motivation-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-motivation" for="input-motivation">Motivation </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-motivation" /></div>
-		</div>
-		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-power-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-power" for="input-power">Power </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-power" /></div>
-		</div>
-		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-toughness-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-toughness" for="input-toughness">Toughness </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-toughness" /></div>
-		</div>
-		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-looting-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-looting" for="input-looting">Looting </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-looting" /></div>
-		</div>
-		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-prismal-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-prismal" for="input-prismal">Prismal </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-prismal" /></div>
-		</div>
-		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-range-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-range" for="input-range">Range </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-range" /></div>
-		</div>
-		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-agility-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-agility" for="input-agility">Agility </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-agility" /></div>
-		</div>
-		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-bait-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-bait" for="input-bait">Bait </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-bait" /></div>
-		</div>
-		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-trumps-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-trumps" for="input-trumps">Trumps </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-trumps" /></div>
-		</div>
-		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-pheromones-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-pheromones" for="input-pheromones">Pheromones </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-pheromones" /></div>
-		</div>
-		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-hunger-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-hunger" for="input-hunger">Hunger </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-hunger" /></div>
-		</div>
-		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-frenzy-enabled" /></div>
-			<label class="col-sm-6 col-form-label" id="label-frenzy" for="input-frenzy">Frenzy </label>
-			<div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-frenzy" /></div>
-		</div>
-		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-observation-enabled" /></div>
-			<label class="col-sm-3 col-form-label" id="label-observation" for="input-observation">Observation </label>
-			<label class="col-sm-3 col-form-label" style="text-align: right;" id="label-observation-noopt" for="input-observation-noopt">lock level: </label>
-			<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-observation-noopt" /></div>
-			<div class="col-sm-4"><input class="form-control" value="0" type="number" min="0" max="100" id="input-observation" /></div>
-		</div>
-		<div class="row mt-2">
-			<div class="col-sm-1"></div>
-			<label class="col-sm-6 col-form-label">Total radon cost </label>
-			<div class="col-sm-5" id="total-radon-cost"></div>
-		</div>
-		<div class="row mt-2">
-			<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-use-total" onclick="switchTotalRadon()" /></div>
-			<label class="col-sm-11 col-form-label" id="label-use-total" for="input-use-total">Include Radon earned in current portal</label>
-		</div>
-		<div class="row mt-2">
-			<div class="col-sm-12">
-				<button class="btn btn-success mr-3" id="clear-autobuy-button" title="Remove all perks and buy optimal perks" disabled onclick="clearAndAutobuyPerks()">Clear and autobuy</button>
-				<button class="btn btn-info mr-3" id="autobuy-button" title="Buy optimal perks but keep current perks" disabled onclick="autobuyPerks()">Autobuy</button>
-				<button class="btn btn-primary" id="export-button" title="" disabled onclick="exportPerks()">Export perks</button>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-12"><input class="form-control" value="Import save to use autobuy and export" id="input-export" disabled /></div>
-		</div>
+        <div class="row">
+            <div class="col-sm-12">
+            <h2>Perks   <span>The greener, the better</span><span>Checked = unlocked</span></h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-resilience-enabled" /></div>
+            <label class="col-sm-6 col-form-label" id="label-resilience" for="input-resilience">Resilience </label>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-resilience" /></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-greed-enabled" /></div>
+            <label class="col-sm-6 col-form-label" id="label-greed" for="input-greed">Greed </label>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="40" id="input-greed" /></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-tenacity-enabled" /></div>
+            <label class="col-sm-6 col-form-label" id="label-tenacity" for="input-tenacity">Tenacity </label>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="40" id="input-tenacity" /></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-criticality-enabled" /></div>
+            <label class="col-sm-6 col-form-label" id="label-criticality" for="input-criticality">Criticality </label>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-criticality" /></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-equality-enabled" /></div>
+            <label class="col-sm-6 col-form-label" id="label-equality" for="input-equality">Equality </label>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-equality" /></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-carpentry-enabled" /></div>
+            <label class="col-sm-6 col-form-label" id="label-carpentry" for="input-carpentry">Carpentry </label>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-carpentry" /></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-artisanistry-enabled" /></div>
+            <label class="col-sm-6 col-form-label" id="label-artisanistry" for="input-artisanistry">Artisanistry </label>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-artisanistry" /></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-packrat-enabled" /></div>
+            <label class="col-sm-6 col-form-label" id="label-packrat" for="input-packrat">Packrat </label>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-packrat" /></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-motivation-enabled" /></div>
+            <label class="col-sm-6 col-form-label" id="label-motivation" for="input-motivation">Motivation </label>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-motivation" /></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-power-enabled" /></div>
+            <label class="col-sm-6 col-form-label" id="label-power" for="input-power">Power </label>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-power" /></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-toughness-enabled" /></div>
+            <label class="col-sm-6 col-form-label" id="label-toughness" for="input-toughness">Toughness </label>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-toughness" /></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-looting-enabled" /></div>
+            <label class="col-sm-6 col-form-label" id="label-looting" for="input-looting">Looting </label>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-looting" /></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-prismal-enabled" /></div>
+            <label class="col-sm-6 col-form-label" id="label-prismal" for="input-prismal">Prismal </label>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-prismal" /></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-range-enabled" /></div>
+            <label class="col-sm-6 col-form-label" id="label-range" for="input-range">Range </label>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-range" /></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-agility-enabled" /></div>
+            <label class="col-sm-6 col-form-label" id="label-agility" for="input-agility">Agility </label>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-agility" /></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-bait-enabled" /></div>
+            <label class="col-sm-6 col-form-label" id="label-bait" for="input-bait">Bait </label>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-bait" /></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-trumps-enabled" /></div>
+            <label class="col-sm-6 col-form-label" id="label-trumps" for="input-trumps">Trumps </label>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-trumps" /></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-pheromones-enabled" /></div>
+            <label class="col-sm-6 col-form-label" id="label-pheromones" for="input-pheromones">Pheromones </label>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-pheromones" /></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-hunger-enabled" /></div>
+            <label class="col-sm-6 col-form-label" id="label-hunger" for="input-hunger">Hunger </label>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-hunger" /></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-frenzy-enabled" /></div>
+            <label class="col-sm-6 col-form-label" id="label-frenzy" for="input-frenzy">Frenzy </label>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-frenzy" /></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-observation-enabled" /></div>
+            <label class="col-sm-3 col-form-label" id="label-observation" for="input-observation">Observation </label>
+            <label class="col-sm-3 col-form-label" style="text-align: right;" id="label-observation-noopt" for="input-observation-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-observation-noopt" /></div>
+            <div class="col-sm-4"><input class="form-control" value="0" type="number" min="0" max="100" id="input-observation" /></div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-sm-1"></div>
+            <label class="col-sm-6 col-form-label">Total radon cost </label>
+            <div class="col-sm-5" id="total-radon-cost"></div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-use-total" onclick="switchTotalRadon()" /></div>
+            <label class="col-sm-11 col-form-label" id="label-use-total" for="input-use-total">Include Radon earned in current portal</label>
+        </div>
+        <div class="row mt-2">
+            <div class="col-sm-12">
+                <button class="btn btn-success mr-3" id="clear-autobuy-button" title="Remove all perks and buy optimal perks" disabled onclick="clearAndAutobuyPerks()">Clear and autobuy</button>
+                <button class="btn btn-info mr-3" id="autobuy-button" title="Buy optimal perks but keep current perks" disabled onclick="autobuyPerks()">Autobuy</button>
+                <button class="btn btn-primary" id="export-button" title="" disabled onclick="exportPerks()">Export perks</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12"><input class="form-control" value="Import save to use autobuy and export" id="input-export" disabled /></div>
+        </div>
     </div>
     <div class="col-sm" id="aux-col">
-		<div class="row">
-			<div class="col-sm-12">
-			<h2>Misc inputs <span><b>Mouseover input boxes for more info</b></span></h2>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-lock-aux" /></div>
-			<label class="col-sm-11 col-form-label" id="label-lock-aux" for="input-lock-aux">Lock/unlock all misc inputs (prevents overwrite by your save) </label>
-		</div>
+        <div class="row">
+            <div class="col-sm-12">
+            <h2>Misc inputs <span><b>Mouseover input boxes for more info</b></span></h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-lock-aux" /></div>
+            <label class="col-sm-11 col-form-label" id="label-lock-aux" for="input-lock-aux">Lock/unlock all misc inputs (prevents overwrite by your save) </label>
+        </div>
     </div>
   </div>
 </div>
@@ -258,8 +258,8 @@ input[type=checkbox], input[type=radio] {
 const maxPrismalShield = 250;
 // prestige equipment scaling, used when equip levels are small
 const equipScalingPrestige = {
-	attack: Math.pow(Math.pow(1.19,13),1/Math.log(Math.pow(1.069,(57*0.85)))),
-	health: Math.pow(Math.pow(1.19,14),1/Math.log(Math.pow(1.069,(57*0.85)))),
+    attack: Math.pow(Math.pow(1.19,13),1/Math.log(Math.pow(1.069,(57*0.85)))),
+    health: Math.pow(Math.pow(1.19,14),1/Math.log(Math.pow(1.069,(57*0.85)))),
 }
 // quick and dirty housing cost scaling:
 //   This is the average scaling across all housing types in U2, which will be approximately correct if the user has Hubs.
@@ -287,229 +287,229 @@ var saveLoaded = false;
 // initialize perks object to default values
 function initPerks() {
     props = {
-		portalRadon: 0,	// total radon available to use on the current portal
-		earnedRadon: 0,	// total radon, including that earned this run
-		perksRadon: 0,  // total radon available for perks in this optimization run
-		radonSpent: 0,  // radon spent on perks so far
-		radonPerRun: 0, // radon per farming run (needed to value trinket gains)
-		radonPerTrinket: 0, // the Rn-equivalent value of a marginal trinket
-		trinketRadonPerRun: 0, // baseline total radon value of expected trinkets gained per run at current perks
-		baselineTrinketsNext: 0, // end of next run expected trinket count at current Observation
-		//shieldCC: 0, // TODO: strictly, this matters. sort of. if it's <100% it affects the value of criticality. also in Duel. but we can ignore this for a start.
-		shieldCD: 0,
-		shieldPrismal: 0,
-		smithyScaling: 50,
-		tributes: 0,
-		trinkets: 0,
-		housingCount: 0,
-		meteorologists: 0,
-		tenacityTime: 0, // minutes of tenacity to optimize for
-		coordLimited: 0, // 0-1 value of "how coord limited" we are
-		clearWeight: 1,
-		survivalWeight: 1,
-		radonWeight: 1,
-		scruffyLevel: 0,
-		weaponLevels: 1,
-		armorLevels: 1,
-		bestPerk: "", // 
-		// scaling^log(resource boost) = atk or hp boost
-		equipScaling: {
-			attack: equipScalingPrestige.attack,
-			health: equipScalingPrestige.health,
-		},
-		logEnemyScaling: (logEnemyAttackScaling + logEnemyHealthScaling),
-	};
-	perks = {
-		Agility: {
-			optimize: false,
-			locked: true,
-			level: 0,
-			priceBase: 4,
-			priceFact: 1.3,
-			max: 20,
-		},
-		Artisanistry: {
-			optimize: true,
-			locked: true,
-			level: 0,
-			priceBase: 15,
-			priceFact: 1.3,
-			effect: 1/0.95,
-			efficiency: 0,
-		},
-		Bait: {
-			optimize: false,
-			locked: true,
-			level: 0,
-			priceBase: 4,
-			priceFact: 1.3,
-		},
-		Carpentry: {
-			optimize: true,
-			locked: true,
-			level: 0,
-			priceBase: 25,
-			priceFact: 1.3,
-			effect: 1.1,
-			efficiency: 0,
-		},
-		Criticality: {
-			optimize: true,
-			locked: true,
-			level: 0,
-			priceBase: 100,
-			priceFact: 1.3,
-			effect: 0.1,
-			efficiency: 0,
-		},
-		Equality: {
-			optimize: true,
-			locked: true,
-			level: 0,
-			priceBase: 1,
-			priceFact: 1.5,
-			effect: 1/0.9,
-			efficiency: 0,
-		},
-		Frenzy: {
-			optimize: false, // TODO to figure out how frenzy works
-			locked: true,
-			level: 0,
-			priceBase: 1000000000000000,
-			priceFact: 1.3,
-			effect: 0,
-			efficiency: 0,
-		},
-		Greed: {
-			optimize: true,
-			locked: true,
-			level: 0,
-			priceBase: 10000000000,
-			priceFact: 1.3,
-			effect: 0, // based on tributes
-			max: 40,
-			efficiency: 0,
-		},
-		Hunger: {
-			optimize: false,
-			locked: true,
-			level: 0,
-			priceBase: 1000000,
-			priceFact: 1.3,
-			max: 30,
-		},
-		Looting: {
-			optimize: true,
-			locked: true,
-			level: 0,
-			priceBase: 1,
-			priceFact: 1.3,
-			effect: 0.05,
-			efficiency: 0,
-		},
-		Motivation: {
-			optimize: true,
-			locked: true,
-			level: 0,
-			priceBase: 2,
-			priceFact: 1.3,
-			effect: 0.05,
-			efficiency: 0,
-		},
-		Observation: {
-			optimize: true,
-			locked: true,
-			canDisable: true,
-			level: 0,
-			priceBase: 5000000000000000000,
-			priceFact: 2,
-			max: 50,
-			efficiency: 0,
-			efficiency2: 0, // we check for buying 2 obs levels as this may be super-extra-efficient for the extra guaranteed Rt drops
-		},
-		Packrat: {
-			optimize: true,
-			locked: true,
-			level: 0,
-			priceBase: 3,
-			priceFact: 1.3,
-			effect: 0.2,
-			efficiency: 0,
-		},
-		Pheromones: {
-			optimize: false, // TODO: SHOULD we optimize this? might need to in endgame
-			locked: true,
-			level: 0,
-			priceBase: 3,
-			priceFact: 1.3,
-			effect: 0.1,
-			efficiency: 0,
-		},
-		Power: {
-			optimize: true,
-			locked: true,
-			level: 0,
-			priceBase: 1,
-			priceFact: 1.3,
-			effect: 0.05,
-			efficiency: 0,
-		},
-		Prismal: {
-			optimize: true,
-			locked: true,
-			level: 0,
-			priceBase: 1,
-			priceFact: 1.3,
-			effect: 0.01,
-			max: 100,
-			efficiency: 0,
-		},
-		Range: {
-			optimize: false,
-			locked: true,
-			level: 0,
-			priceBase: 1,
-			priceFact: 1.3,
-			max: 10,
-		},
-		Resilience: {
-			optimize: true,
-			locked: true,
-			level: 0,
-			priceBase: 100,
-			priceFact: 1.3,
-			effect: 1.1,
-			efficiency: 0,
-		},
-		Tenacity: {
-			optimize: true,
-			locked: true,
-			level: 0,
-			priceBase: 50000000,
-			priceFact: 1.3,
-			effect: 0, // based on tenacityTime
-			max: 40,
-			efficiency: 0,
-		},
-		Toughness: {
-			optimize: true,
-			locked: true,
-			level: 0,
-			priceBase: 1,
-			priceFact: 1.3,
-			effect: 0.05,
-			efficiency: 0,
-		},
-		Trumps: {
-			optimize: false,
-			locked: true,
-			level: 0,
-			priceBase: 3,
-			priceFact: 1.3,
-		},
-	};
+        portalRadon: 0, // total radon available to use on the current portal
+        earnedRadon: 0, // total radon, including that earned this run
+        perksRadon: 0,  // total radon available for perks in this optimization run
+        radonSpent: 0,  // radon spent on perks so far
+        radonPerRun: 0, // radon per farming run (needed to value trinket gains)
+        radonPerTrinket: 0, // the Rn-equivalent value of a marginal trinket
+        trinketRadonPerRun: 0, // baseline total radon value of expected trinkets gained per run at current perks
+        baselineTrinketsNext: 0, // end of next run expected trinket count at current Observation
+        //shieldCC: 0, // TODO: strictly, this matters. sort of. if it's <100% it affects the value of criticality. also in Duel. but we can ignore this for a start.
+        shieldCD: 0,
+        shieldPrismal: 0,
+        smithyScaling: 50,
+        tributes: 0,
+        trinkets: 0,
+        housingCount: 0,
+        meteorologists: 0,
+        tenacityTime: 0, // minutes of tenacity to optimize for
+        coordLimited: 0, // 0-1 value of "how coord limited" we are
+        clearWeight: 1,
+        survivalWeight: 1,
+        radonWeight: 1,
+        scruffyLevel: 0,
+        weaponLevels: 1,
+        armorLevels: 1,
+        bestPerk: "", // 
+        // scaling^log(resource boost) = atk or hp boost
+        equipScaling: {
+            attack: equipScalingPrestige.attack,
+            health: equipScalingPrestige.health,
+        },
+        logEnemyScaling: (logEnemyAttackScaling + logEnemyHealthScaling),
+    };
+    perks = {
+        Agility: {
+            optimize: false,
+            locked: true,
+            level: 0,
+            priceBase: 4,
+            priceFact: 1.3,
+            max: 20,
+        },
+        Artisanistry: {
+            optimize: true,
+            locked: true,
+            level: 0,
+            priceBase: 15,
+            priceFact: 1.3,
+            effect: 1/0.95,
+            efficiency: 0,
+        },
+        Bait: {
+            optimize: false,
+            locked: true,
+            level: 0,
+            priceBase: 4,
+            priceFact: 1.3,
+        },
+        Carpentry: {
+            optimize: true,
+            locked: true,
+            level: 0,
+            priceBase: 25,
+            priceFact: 1.3,
+            effect: 1.1,
+            efficiency: 0,
+        },
+        Criticality: {
+            optimize: true,
+            locked: true,
+            level: 0,
+            priceBase: 100,
+            priceFact: 1.3,
+            effect: 0.1,
+            efficiency: 0,
+        },
+        Equality: {
+            optimize: true,
+            locked: true,
+            level: 0,
+            priceBase: 1,
+            priceFact: 1.5,
+            effect: 1/0.9,
+            efficiency: 0,
+        },
+        Frenzy: {
+            optimize: false, // TODO to figure out how frenzy works
+            locked: true,
+            level: 0,
+            priceBase: 1000000000000000,
+            priceFact: 1.3,
+            effect: 0,
+            efficiency: 0,
+        },
+        Greed: {
+            optimize: true,
+            locked: true,
+            level: 0,
+            priceBase: 10000000000,
+            priceFact: 1.3,
+            effect: 0, // based on tributes
+            max: 40,
+            efficiency: 0,
+        },
+        Hunger: {
+            optimize: false,
+            locked: true,
+            level: 0,
+            priceBase: 1000000,
+            priceFact: 1.3,
+            max: 30,
+        },
+        Looting: {
+            optimize: true,
+            locked: true,
+            level: 0,
+            priceBase: 1,
+            priceFact: 1.3,
+            effect: 0.05,
+            efficiency: 0,
+        },
+        Motivation: {
+            optimize: true,
+            locked: true,
+            level: 0,
+            priceBase: 2,
+            priceFact: 1.3,
+            effect: 0.05,
+            efficiency: 0,
+        },
+        Observation: {
+            optimize: true,
+            locked: true,
+            canDisable: true,
+            level: 0,
+            priceBase: 5000000000000000000,
+            priceFact: 2,
+            max: 50,
+            efficiency: 0,
+            efficiency2: 0, // we check for buying 2 obs levels as this may be super-extra-efficient for the extra guaranteed Rt drops
+        },
+        Packrat: {
+            optimize: true,
+            locked: true,
+            level: 0,
+            priceBase: 3,
+            priceFact: 1.3,
+            effect: 0.2,
+            efficiency: 0,
+        },
+        Pheromones: {
+            optimize: false, // TODO: SHOULD we optimize this? might need to in endgame
+            locked: true,
+            level: 0,
+            priceBase: 3,
+            priceFact: 1.3,
+            effect: 0.1,
+            efficiency: 0,
+        },
+        Power: {
+            optimize: true,
+            locked: true,
+            level: 0,
+            priceBase: 1,
+            priceFact: 1.3,
+            effect: 0.05,
+            efficiency: 0,
+        },
+        Prismal: {
+            optimize: true,
+            locked: true,
+            level: 0,
+            priceBase: 1,
+            priceFact: 1.3,
+            effect: 0.01,
+            max: 100,
+            efficiency: 0,
+        },
+        Range: {
+            optimize: false,
+            locked: true,
+            level: 0,
+            priceBase: 1,
+            priceFact: 1.3,
+            max: 10,
+        },
+        Resilience: {
+            optimize: true,
+            locked: true,
+            level: 0,
+            priceBase: 100,
+            priceFact: 1.3,
+            effect: 1.1,
+            efficiency: 0,
+        },
+        Tenacity: {
+            optimize: true,
+            locked: true,
+            level: 0,
+            priceBase: 50000000,
+            priceFact: 1.3,
+            effect: 0, // based on tenacityTime
+            max: 40,
+            efficiency: 0,
+        },
+        Toughness: {
+            optimize: true,
+            locked: true,
+            level: 0,
+            priceBase: 1,
+            priceFact: 1.3,
+            effect: 0.05,
+            efficiency: 0,
+        },
+        Trumps: {
+            optimize: false,
+            locked: true,
+            level: 0,
+            priceBase: 3,
+            priceFact: 1.3,
+        },
+    };
 }
-		
+        
 // start with a populated perks object that can be accessed by input field updates before loading a save
 initPerks();
 
@@ -517,157 +517,157 @@ var LZString=function(){function o(o,r){if(!t[o]){t[o]={};for(var n=0;n<o.length
 
 // list of aux inputs. each will generate a row with a checkbox to lock it.
 const auxInputList = [
-	{	keyName: "targetZone",
-		divId: 'target-zone',
-		label: "Target Zone",
-		spacer: true,
-		title: "Target zone to optimize for clearing",
-		type: "int",
-		value: 0,
-		min: null,
-		max: null, },
-	{	keyName: "clearWeight",
-		divId: 'clear-weight',
-		spacer: true,
-		label: "Attack & Health weight",
-		title: "If you are farming and it's trivial to complete your radon challenge, set this to 0! It will still be valued for the effect of pushing power on radon gains (from Scruffy level 3, for example). This is the weight for how much you value attack * health, which determines clear speed at less than max equality. If you are used to Attack Weight and Health Weight, this is equivalent to Attack weight. This weight is not used for Equality at all.",
-		type: "float",
-		value: 0,
-		min: 0,
-		max: null, },
-	{	keyName: "survivalWeight",
-		divId: 'survival-weight',
-		label: "Additional Health/Equality weight",
-		title: "Weight placed on equality (and additional weight placed on health), for maximum survivability against high enemy attack at max equality. This helps determine how far you can push (perhaps very slowly) before you get stuck on fast enemies that can one-shot you every hit. This should be set to a small fraction (like 1/100 or less) of your Atk/HP weight unless you're doing a hard push. If you're used to separate attack & health weights, set this to your old Health Weight minus Attack Weight.",
-		type: "float",
-		value: 0.001,
-		min: null, // secretly allow negative weights here, in case someone is really gung-ho on increasing attack weight above health weight for probably-wrong reasons (or some future change in mechanics)
-		max: null, },
-	{	keyName: "radonWeight",
-		divId: 'radon-weight',
-		label: "Radon weight",
-		title: "Weight for how much you value growth from radon (and trinkets). If you are purely farming and can easily complete your radon challenge, this is the only weight you need, other than a tiny bit of survival weight (like 0.0001) to get some equality.",
-		type: "float",
-		value: 1,
-		min: 0,
-		max: null, },
-	{   keyName: "radonPerRun",
-		divId: 'radon-perrun',
-		label: "Radon per Run (if Rn weight > 0)",
-		title: "Typical Radon gains in a farming run. Needed for Observation (until your trinkets are capped). Can be extracted from your save if you paste a save from the end of a farming run. Doesn't need to be exact but a pretty good estimate is recommended. Only used when Rn weight > 0.",
-		type: "float",
-		value: 0,
-		min: 0,
-		max: null, },
-	{	keyName: "weaponLevels",
-		divId: 'weapon-levels',
-		spacer: true,
-		label: "Weapon Levels",
-		title: "Dagger levels purchased at target zone",
-		type: "int",
-		value: 1,
-		min: 1,
-		max: null, },
-	{	keyName: "armorLevels",
-		divId: 'armor-levels',
-		label: "Armor Levels",
-		title: "Boots levels purchased at target zone",
-		type: "int",
-		value: 1,
-		min: 1,
-		max: null, },
-	{	keyName: "coordLimited",
-		divId: 'coord-limited',
-		spacer: true,
-		label: "Coord limited? (0-1 scale)",
-		title: "Enter '0' if you can easily buy all coords with your population. Enter '1' if you definitely can't buy all coords. Enter something in between if you only need a bit more population to buy all coords. You can also increase this value (even above 1) if you just want to weight population gain more highly for some reason.",
-		type: "float",
-		value: 0,
-		min: 0,
-		max: null, },
-	{	keyName: "tenacityTime",
-		divId: 'tenacity-time',
-		label: "Minutes of tenacity to optimize",
-		title: "How many minutes of tenacity time would you like to optimize for? This is only meaningful if you haven't maxed Tenacity yet. A value of 0 still places significant weight on Tenacity.",
-		type: "int",
-		value: 0,
-		min: 0,
-		max: 120, },
-	{	keyName: "tributes",
-		divId: 'tribute-count',
-		label: "Tributes purchased",
-		spacer: true,
-		title: "Number of purchased tributes to consider for Greed",
-		type: "int",
-		value: 0,
-		min: 0,
-		max: null, },
-	{	keyName: "meteorologists",
-		divId: 'mets-count',
-		label: "Meteorologists",
-		title: "Number of meteorologists to optimize for. Affects the value of food gains.",
-		type: "int",
-		value: 0,
-		min: 0,
-		max: null, },
-	{	keyName: "antennae",
-		divId: 'antenna-count',
-		label: "Antennas",
-		title: "Antennas purchased. Affects how Meteorologist gains from more food are valued.",
-		type: "int",
-		value: 0,
-		min: 0,
-		max: null, },
-	{	keyName: "housingCount",
-		divId: 'housing-count',
-		label: "Count of best housing type",
-		title: "How many of your best housing type to you get in your runs? Use Hub count if you have hubs. Affects the value of more resources for increasing population.",
-		type: "int",
-		value: 0,
-		min: 0,
-		max: null, },
-	{	keyName: "shieldCD",
-		divId: 'crit-damage',
-		label: "Heirloom Crit Damage",
-		spacer: true,
-		title: "Crit damage stat on heirloom shield, in percent (do not divide by 100)",
-		type: "float",
-		value: 0,
-		min: 0,
-		max: null, },
-	{	keyName: "shieldPrismal",
-		divId: 'prismal-shield',
-		label: "Hierloom Prismatic Shield",
-		title: "Prismatic Shield stat on heirloom shield, in percent (do not divide by 100)",
-		type: "float",
-		value: 0,
-		min: 0,
-		max: 250, },
-	{	keyName: "perksRadon",
-		divId: 'perks-radon',
-		label: "Radon for Perks",
-		spacer: true,
-		title: "Total radon you have to spend on perks (with or without current portal included)",
-		type: "float",
-		value: 0,
-		min: 0,
-		max: null, },
-	{	keyName: "scruffyLevel",
-		divId: 'scruffy-level',
-		label: "Scruffy Level",
-		title: "Scruffy Level: Affects perks whose value changes due to Scruffy abilities, like Prismal.",
-		type: "int",
-		value: 0,
-		min: 0,
-		max: 20, },
-	{	keyName: "trinkets",
-		divId: 'rune-trinkets',
-		label: "Runetrinkets",
-		title: "Number of Runetrinkets you have collected",
-		type: "int",
-		value: 0,
-		min: 0,
-		max: null, },
+    {   keyName: "targetZone",
+        divId: 'target-zone',
+        label: "Target Zone",
+        spacer: true,
+        title: "Target zone to optimize for clearing",
+        type: "int",
+        value: 0,
+        min: null,
+        max: null, },
+    {   keyName: "clearWeight",
+        divId: 'clear-weight',
+        spacer: true,
+        label: "Attack & Health weight",
+        title: "If you are farming and it's trivial to complete your radon challenge, set this to 0! It will still be valued for the effect of pushing power on radon gains (from Scruffy level 3, for example). This is the weight for how much you value attack * health, which determines clear speed at less than max equality. If you are used to Attack Weight and Health Weight, this is equivalent to Attack weight. This weight is not used for Equality at all.",
+        type: "float",
+        value: 0,
+        min: 0,
+        max: null, },
+    {   keyName: "survivalWeight",
+        divId: 'survival-weight',
+        label: "Additional Health/Equality weight",
+        title: "Weight placed on equality (and additional weight placed on health), for maximum survivability against high enemy attack at max equality. This helps determine how far you can push (perhaps very slowly) before you get stuck on fast enemies that can one-shot you every hit. This should be set to a small fraction (like 1/100 or less) of your Atk/HP weight unless you're doing a hard push. If you're used to separate attack & health weights, set this to your old Health Weight minus Attack Weight.",
+        type: "float",
+        value: 0.001,
+        min: null, // secretly allow negative weights here, in case someone is really gung-ho on increasing attack weight above health weight for probably-wrong reasons (or some future change in mechanics)
+        max: null, },
+    {   keyName: "radonWeight",
+        divId: 'radon-weight',
+        label: "Radon weight",
+        title: "Weight for how much you value growth from radon (and trinkets). If you are purely farming and can easily complete your radon challenge, this is the only weight you need, other than a tiny bit of survival weight (like 0.0001) to get some equality.",
+        type: "float",
+        value: 1,
+        min: 0,
+        max: null, },
+    {   keyName: "radonPerRun",
+        divId: 'radon-perrun',
+        label: "Radon per Run (if Rn weight > 0)",
+        title: "Typical Radon gains in a farming run. Needed for Observation (until your trinkets are capped). Can be extracted from your save if you paste a save from the end of a farming run. Doesn't need to be exact but a pretty good estimate is recommended. Only used when Rn weight > 0.",
+        type: "float",
+        value: 0,
+        min: 0,
+        max: null, },
+    {   keyName: "weaponLevels",
+        divId: 'weapon-levels',
+        spacer: true,
+        label: "Weapon Levels",
+        title: "Dagger levels purchased at target zone",
+        type: "int",
+        value: 1,
+        min: 1,
+        max: null, },
+    {   keyName: "armorLevels",
+        divId: 'armor-levels',
+        label: "Armor Levels",
+        title: "Boots levels purchased at target zone",
+        type: "int",
+        value: 1,
+        min: 1,
+        max: null, },
+    {   keyName: "coordLimited",
+        divId: 'coord-limited',
+        spacer: true,
+        label: "Coord limited? (0-1 scale)",
+        title: "Enter '0' if you can easily buy all coords with your population. Enter '1' if you definitely can't buy all coords. Enter something in between if you only need a bit more population to buy all coords. You can also increase this value (even above 1) if you just want to weight population gain more highly for some reason.",
+        type: "float",
+        value: 0,
+        min: 0,
+        max: null, },
+    {   keyName: "tenacityTime",
+        divId: 'tenacity-time',
+        label: "Minutes of tenacity to optimize",
+        title: "How many minutes of tenacity time would you like to optimize for? This is only meaningful if you haven't maxed Tenacity yet. A value of 0 still places significant weight on Tenacity.",
+        type: "int",
+        value: 0,
+        min: 0,
+        max: 120, },
+    {   keyName: "tributes",
+        divId: 'tribute-count',
+        label: "Tributes purchased",
+        spacer: true,
+        title: "Number of purchased tributes to consider for Greed",
+        type: "int",
+        value: 0,
+        min: 0,
+        max: null, },
+    {   keyName: "meteorologists",
+        divId: 'mets-count',
+        label: "Meteorologists",
+        title: "Number of meteorologists to optimize for. Affects the value of food gains.",
+        type: "int",
+        value: 0,
+        min: 0,
+        max: null, },
+    {   keyName: "antennae",
+        divId: 'antenna-count',
+        label: "Antennas",
+        title: "Antennas purchased. Affects how Meteorologist gains from more food are valued.",
+        type: "int",
+        value: 0,
+        min: 0,
+        max: null, },
+    {   keyName: "housingCount",
+        divId: 'housing-count',
+        label: "Count of best housing type",
+        title: "How many of your best housing type to you get in your runs? Use Hub count if you have hubs. Affects the value of more resources for increasing population.",
+        type: "int",
+        value: 0,
+        min: 0,
+        max: null, },
+    {   keyName: "shieldCD",
+        divId: 'crit-damage',
+        label: "Heirloom Crit Damage",
+        spacer: true,
+        title: "Crit damage stat on heirloom shield, in percent (do not divide by 100)",
+        type: "float",
+        value: 0,
+        min: 0,
+        max: null, },
+    {   keyName: "shieldPrismal",
+        divId: 'prismal-shield',
+        label: "Hierloom Prismatic Shield",
+        title: "Prismatic Shield stat on heirloom shield, in percent (do not divide by 100)",
+        type: "float",
+        value: 0,
+        min: 0,
+        max: 250, },
+    {   keyName: "perksRadon",
+        divId: 'perks-radon',
+        label: "Radon for Perks",
+        spacer: true,
+        title: "Total radon you have to spend on perks (with or without current portal included)",
+        type: "float",
+        value: 0,
+        min: 0,
+        max: null, },
+    {   keyName: "scruffyLevel",
+        divId: 'scruffy-level',
+        label: "Scruffy Level",
+        title: "Scruffy Level: Affects perks whose value changes due to Scruffy abilities, like Prismal.",
+        type: "int",
+        value: 0,
+        min: 0,
+        max: 20, },
+    {   keyName: "trinkets",
+        divId: 'rune-trinkets',
+        label: "Runetrinkets",
+        title: "Number of Runetrinkets you have collected",
+        type: "int",
+        value: 0,
+        min: 0,
+        max: null, },
 ];
 
 // the key is a value name from the props object used to hold various optimization properties
@@ -678,305 +678,305 @@ const auxColumnElement = document.getElementById('aux-col');
 
 // add aux input rows to the DOM
 for (var i=0; i<auxInputList.length; i++) {
-	var iObj = auxInputList[i];
-	var key = iObj.keyName;
-	var baseDivName = iObj.divId;
-	var inputDivName = 'input-' + baseDivName;
-	var checkboxDivName = 'input-' + baseDivName + '-enabled';
-	var labelDivName = 'label-' + baseDivName;
-	
-	var tmpRow = document.createElement('div');
-	tmpRow.setAttribute('class','row' + (iObj.spacer ? ' mt-2' : ''));
-	var minMaxSrc = (iObj.min === null ? "" : ' min="' + iObj.min + '" ') + (iObj.max === null ? "" : ' max="' + iObj.max + '" ');
-	tmpRow.innerHTML = '<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="' + checkboxDivName + 
-			'" /></div><label class="col-sm-6 col-form-label" id="' + labelDivName + '" for="' + inputDivName + '">' + iObj.label +
-			' </label><div class="col-sm-5"><input class="form-control" value="' + iObj.value + '" title="' + iObj.title + 
-			'" type="number" ' + minMaxSrc + 'id="' + inputDivName + '" /></div>';
-	auxColumnElement.insertBefore(tmpRow,null); // insert at end of the aux column
-	
-	// insert into auxInputs object for easy reference later
-	auxInputs[key] = {
-		input: document.getElementById(inputDivName),
-		checkbox: document.getElementById(checkboxDivName),
-	};
+    var iObj = auxInputList[i];
+    var key = iObj.keyName;
+    var baseDivName = iObj.divId;
+    var inputDivName = 'input-' + baseDivName;
+    var checkboxDivName = 'input-' + baseDivName + '-enabled';
+    var labelDivName = 'label-' + baseDivName;
+    
+    var tmpRow = document.createElement('div');
+    tmpRow.setAttribute('class','row' + (iObj.spacer ? ' mt-2' : ''));
+    var minMaxSrc = (iObj.min === null ? "" : ' min="' + iObj.min + '" ') + (iObj.max === null ? "" : ' max="' + iObj.max + '" ');
+    tmpRow.innerHTML = '<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="' + checkboxDivName + 
+            '" /></div><label class="col-sm-6 col-form-label" id="' + labelDivName + '" for="' + inputDivName + '">' + iObj.label +
+            ' </label><div class="col-sm-5"><input class="form-control" value="' + iObj.value + '" title="' + iObj.title + 
+            '" type="number" ' + minMaxSrc + 'id="' + inputDivName + '" /></div>';
+    auxColumnElement.insertBefore(tmpRow,null); // insert at end of the aux column
+    
+    // insert into auxInputs object for easy reference later
+    auxInputs[key] = {
+        input: document.getElementById(inputDivName),
+        checkbox: document.getElementById(checkboxDivName),
+    };
 }
 
 var colorCheckboxRows = function() {
-	var inputElements = document.getElementById('perks-col').getElementsByTagName("INPUT");
-	for (var i = inputElements.length - 1; i >=0; i--) {
-		var input = inputElements[i];
-		
-		if (typeof(input.getAttribute('type')) != "undefined" && input.getAttribute('type') == "checkbox") {
-			if (   input.getAttribute('id') == 'input-use-total'
-			    || input.getAttribute('id') == 'input-lock-aux') 
-				continue;
-			
-			var row = input.parentElement.parentElement;
-			if (input.checked) {
-			  row.setAttribute('class', row.getAttribute('class').replace('grey', ''));
-			} else {
-			  row.setAttribute('class', row.getAttribute('class').replace('grey', '') + ' grey');
-			}
-		}
-	}
+    var inputElements = document.getElementById('perks-col').getElementsByTagName("INPUT");
+    for (var i = inputElements.length - 1; i >=0; i--) {
+        var input = inputElements[i];
+        
+        if (typeof(input.getAttribute('type')) != "undefined" && input.getAttribute('type') == "checkbox") {
+            if (   input.getAttribute('id') == 'input-use-total'
+                || input.getAttribute('id') == 'input-lock-aux') 
+                continue;
+            
+            var row = input.parentElement.parentElement;
+            if (input.checked) {
+              row.setAttribute('class', row.getAttribute('class').replace('grey', ''));
+            } else {
+              row.setAttribute('class', row.getAttribute('class').replace('grey', '') + ' grey');
+            }
+        }
+    }
 }
 
 // set aux input only if not locked
 function setAuxInput(key, value) {
-	if (!auxInputs[key].checkbox.checked) auxInputs[key].input.value = value;
+    if (!auxInputs[key].checkbox.checked) auxInputs[key].input.value = value;
 }
 
 var game = null;
 var loadSave = function() {
-	
-	setTimeout(function() {
+    
+    setTimeout(function() {
 
-		var saveTextArea = document.getElementById('save-text-area');
-		game = null;
-		
-		try {
-			tmp = JSON.parse(LZString.decompressFromBase64(saveTextArea.value));
-			game = tmp;
-		} catch {}
-		
-		if (game == null) {
-			saveTextArea.value = "That wasn't a valid save. Try again.";
-			return;
-		}
-		
-		if (typeof(game.portal) !== "object") {
-			saveTextArea.value = "That wasn't a save string (possibly a perk string?). Try again."
-			return;
-		}
-	
-		var portal = game.portal;
-		
-		// set perk object to default values
-		initPerks();
-		
-		// read save into input perk fields
-		// enable perks (in input fields and perks object) based on locked status from save
-		// DO NOT update perk object levels yet
-		for (var [key, value] of Object.entries(perks)) {
-			if (typeof(value) !== "object" || !value.hasOwnProperty("optimize")) continue; // iterating over the perks, ignoring aux values
-			var portalPerk = portal[key];
-			var calcPerk = perks[key];
-			var level = portalPerk.radLevel;
-			inputs[key.toLowerCase()].value = level;
-			calcPerk.locked = portalPerk.radLocked;
-			inputs[key.toLowerCase() + "-enabled"].checked = !portalPerk.radLocked;
-		}
-		
-		// set aux inputs from game variables, unless any given field is locked (handled by setAuxInput function)
-		
-		// target zone = current zone
-		setAuxInput("targetZone",game.global.world);
-		
-		// weapon/armor levels taken from dagger/boots (most likely to be leveled highest)
-		setAuxInput("weaponLevels",game.equipment.Dagger.level || 1);
-		setAuxInput("armorLevels",game.equipment.Boots.level || 1);
-		
-		// get current purchased tributes, mets, etc
-		setAuxInput("tributes",game.buildings.Tribute.owned || 0);
-		setAuxInput("meteorologists",game.jobs.Meteorologist.owned || 0);
-		setAuxInput("antennae",game.buildings.Antenna.owned || 0);
-		
-		// get count of best housing building (don't bother optimizing lower than gateways, the 2nd-order adjustments won't matter enough to bother)
-		var hubs = game.buildings.Hub.owned || 0;
-		var cols = game.buildings.Collector.owned || 0;
-		var gats = game.buildings.Gateway.owned || 0;
-		var housings = 0;
-		if (hubs > 0) housings = hubs;
-		else if (cols > 0) housings = cols;
-		else if (gats > 0) housings = gats;
-		setAuxInput("housingCount",housings);
-		
-		var shield = null;
-		if (game.global.universe == 2)
-			shield = game.global.ShieldEquipped;
-		if (game.global.universe == 1 && game.global.lastHeirlooms.u2 && game.global.lastHeirlooms.u2.Shield) {
-			shield = game.global.heirloomsCarried.find(function (s) { return s.id == game.global.lastHeirlooms.u2.Shield; });
-		}
-		if (shield) {
-			var critDamageMod = shield.mods.find(function (el) { return el[0] == "critDamage"; });
-			var prismalMod = shield.mods.find(function (el) { return el[0] == "prismatic"; });
-			
-			if (critDamageMod)  { setAuxInput("shieldCD",Math.round(critDamageMod[1] / 10)); }  else { setAuxInput("shieldCD",0); }
-			if (prismalMod)     { setAuxInput("shieldPrismal",Math.round(prismalMod[1])); }     else { setAuxInput("shieldPrismal",0); }
-		}
+        var saveTextArea = document.getElementById('save-text-area');
+        game = null;
+        
+        try {
+            tmp = JSON.parse(LZString.decompressFromBase64(saveTextArea.value));
+            game = tmp;
+        } catch {}
+        
+        if (game == null) {
+            saveTextArea.value = "That wasn't a valid save. Try again.";
+            return;
+        }
+        
+        if (typeof(game.portal) !== "object") {
+            saveTextArea.value = "That wasn't a save string (possibly a perk string?). Try again."
+            return;
+        }
+    
+        var portal = game.portal;
+        
+        // set perk object to default values
+        initPerks();
+        
+        // read save into input perk fields
+        // enable perks (in input fields and perks object) based on locked status from save
+        // DO NOT update perk object levels yet
+        for (var [key, value] of Object.entries(perks)) {
+            if (typeof(value) !== "object" || !value.hasOwnProperty("optimize")) continue; // iterating over the perks, ignoring aux values
+            var portalPerk = portal[key];
+            var calcPerk = perks[key];
+            var level = portalPerk.radLevel;
+            inputs[key.toLowerCase()].value = level;
+            calcPerk.locked = portalPerk.radLocked;
+            inputs[key.toLowerCase() + "-enabled"].checked = !portalPerk.radLocked;
+        }
+        
+        // set aux inputs from game variables, unless any given field is locked (handled by setAuxInput function)
+        
+        // target zone = current zone
+        setAuxInput("targetZone",game.global.world);
+        
+        // weapon/armor levels taken from dagger/boots (most likely to be leveled highest)
+        setAuxInput("weaponLevels",game.equipment.Dagger.level || 1);
+        setAuxInput("armorLevels",game.equipment.Boots.level || 1);
+        
+        // get current purchased tributes, mets, etc
+        setAuxInput("tributes",game.buildings.Tribute.owned || 0);
+        setAuxInput("meteorologists",game.jobs.Meteorologist.owned || 0);
+        setAuxInput("antennae",game.buildings.Antenna.owned || 0);
+        
+        // get count of best housing building (don't bother optimizing lower than gateways, the 2nd-order adjustments won't matter enough to bother)
+        var hubs = game.buildings.Hub.owned || 0;
+        var cols = game.buildings.Collector.owned || 0;
+        var gats = game.buildings.Gateway.owned || 0;
+        var housings = 0;
+        if (hubs > 0) housings = hubs;
+        else if (cols > 0) housings = cols;
+        else if (gats > 0) housings = gats;
+        setAuxInput("housingCount",housings);
+        
+        var shield = null;
+        if (game.global.universe == 2)
+            shield = game.global.ShieldEquipped;
+        if (game.global.universe == 1 && game.global.lastHeirlooms.u2 && game.global.lastHeirlooms.u2.Shield) {
+            shield = game.global.heirloomsCarried.find(function (s) { return s.id == game.global.lastHeirlooms.u2.Shield; });
+        }
+        if (shield) {
+            var critDamageMod = shield.mods.find(function (el) { return el[0] == "critDamage"; });
+            var prismalMod = shield.mods.find(function (el) { return el[0] == "prismatic"; });
+            
+            if (critDamageMod)  { setAuxInput("shieldCD",Math.round(critDamageMod[1] / 10)); }  else { setAuxInput("shieldCD",0); }
+            if (prismalMod)     { setAuxInput("shieldPrismal",Math.round(prismalMod[1])); }     else { setAuxInput("shieldPrismal",0); }
+        }
 
-		// calculate Scruffy level (adapted from Fluffy.getLevel() in the game source code)
-		setAuxInput("scruffyLevel",Math.floor(Math.log(((game.global.fluffyExp2 / 1000) * 3) + 1) / Math.log(4)));
-		
-		// SHINIES
-		setAuxInput("trinkets",game.portal.Observation.trinkets);
-		
-		setAuxInput("radonPerRun",game.resources.radon.owned);
-		
-		saveLoaded = true;
-		
-		// read and process all input fields
-		readInputs();    
-		
-		colorCheckboxRows();
+        // calculate Scruffy level (adapted from Fluffy.getLevel() in the game source code)
+        setAuxInput("scruffyLevel",Math.floor(Math.log(((game.global.fluffyExp2 / 1000) * 3) + 1) / Math.log(4)));
+        
+        // SHINIES
+        setAuxInput("trinkets",game.portal.Observation.trinkets);
+        
+        setAuxInput("radonPerRun",game.resources.radon.owned);
+        
+        saveLoaded = true;
+        
+        // read and process all input fields
+        readInputs();    
+        
+        colorCheckboxRows();
 
-		props.portalRadon = game.global.totalRadonEarned - game.resources.radon.owned;
-		props.earnedRadon = game.global.totalRadonEarned;
-		switchTotalRadon();
-			
-	}, 1); // save-load timeout = 1
+        props.portalRadon = game.global.totalRadonEarned - game.resources.radon.owned;
+        props.earnedRadon = game.global.totalRadonEarned;
+        switchTotalRadon();
+            
+    }, 1); // save-load timeout = 1
 }
 
 function getPerkCost(whichPerk, numLevels, fromZero=false) {
-	if (numLevels === 0) return 0;
-	var perk = perks[whichPerk];
-	if (!perk.hasOwnProperty("optimize")) console.log("ERROR getting perk cost: " + whichPerk + " is not a known perk.");
-	var level = fromZero ? 0 : perk.level;
-	// if the perk can't be leveled, return infinite cost to naturally avoid buying the perk
-	if (perk.locked || perk.hasOwnProperty("max") && (level + numLevels > perk.max)) return Infinity;
-	var cost = 0;
-	for (var i=0; i<numLevels; i++) {
-		cost += Math.ceil(level/2 + perk.priceBase * Math.pow(perk.priceFact,level));
-		level++;
-	}
-	return cost;
+    if (numLevels === 0) return 0;
+    var perk = perks[whichPerk];
+    if (!perk.hasOwnProperty("optimize")) console.log("ERROR getting perk cost: " + whichPerk + " is not a known perk.");
+    var level = fromZero ? 0 : perk.level;
+    // if the perk can't be leveled, return infinite cost to naturally avoid buying the perk
+    if (perk.locked || perk.hasOwnProperty("max") && (level + numLevels > perk.max)) return Infinity;
+    var cost = 0;
+    for (var i=0; i<numLevels; i++) {
+        cost += Math.ceil(level/2 + perk.priceBase * Math.pow(perk.priceFact,level));
+        level++;
+    }
+    return cost;
 }
 
 function couldBuyPerk(whichPerk,actuallyBuy=false,numLevels=1) {
-	var perk = perks[whichPerk];
-	if (perk.hasOwnProperty("max")) {
-		if (perk.level > perk.max) console.log("ERROR: perk " + whichPerk + " exceeded max level!");
-		if (perk.level + numLevels > perk.max) return false;
-	}
-	var cost = getPerkCost(whichPerk, numLevels);
-	if (cost + props.radonSpent > props.perksRadon) return false;
-	if (actuallyBuy) {
-		props.radonSpent += cost;
-		perk.level += numLevels;
-	}
-	return true;
+    var perk = perks[whichPerk];
+    if (perk.hasOwnProperty("max")) {
+        if (perk.level > perk.max) console.log("ERROR: perk " + whichPerk + " exceeded max level!");
+        if (perk.level + numLevels > perk.max) return false;
+    }
+    var cost = getPerkCost(whichPerk, numLevels);
+    if (cost + props.radonSpent > props.perksRadon) return false;
+    if (actuallyBuy) {
+        props.radonSpent += cost;
+        perk.level += numLevels;
+    }
+    return true;
 }
 
 function buyPerk(whichPerk,numLevels=1) {
-	return couldBuyPerk(whichPerk,true,numLevels);
+    return couldBuyPerk(whichPerk,true,numLevels);
 }
 
 function getGreedEffect(tribs) {
-	if (tribs > 1250) tribs = 1250;
-	tribs -= 600;
-	var mod = 1.025;
-	if (tribs > 0) {
-		mod += (0.00015 * tribs); //+0.015% per tribute above 600
-		mod += (Math.floor(tribs / 25) * 0.0035); //+0.35% per 25 tributes above 600
-	}
-	return mod;
+    if (tribs > 1250) tribs = 1250;
+    tribs -= 600;
+    var mod = 1.025;
+    if (tribs > 0) {
+        mod += (0.00015 * tribs); //+0.015% per tribute above 600
+        mod += (Math.floor(tribs / 25) * 0.0035); //+0.35% per 25 tributes above 600
+    }
+    return mod;
 }
 
 // get the first-order feedback from Greed of a given boost to resources via more tributes
 function getGreedResourceFeedback(resBoost,tribs) {
-	if (tribs >= 1250) return [1,tribs];
-	var tribsGained = Math.log(resBoost)/Math.log(1.05);
-	if (tribs + tribsGained < 600) return [1,tribs];
-	if (tribs + tribsGained > 1250) tribsGained = 1250 - tribs;
-	if (tribs < 600) tribsGained = tribs + tribsGanied - 600;
-	// don't go by specific breakpoints which we'd be foolish to tie to a specific resource gain, just smooth the every-25 bonus out evenly per tribute
-	var baseGreed = getGreedEffect(tribs);
-	var greedGain = (baseGreed + 0.00029*tribsGained) / baseGreed;
-	return [Math.pow(greedGain,perks.Greed.level),tribs+tribsGained];
+    if (tribs >= 1250) return [1,tribs];
+    var tribsGained = Math.log(resBoost)/Math.log(1.05);
+    if (tribs + tribsGained < 600) return [1,tribs];
+    if (tribs + tribsGained > 1250) tribsGained = 1250 - tribs;
+    if (tribs < 600) tribsGained = tribs + tribsGanied - 600;
+    // don't go by specific breakpoints which we'd be foolish to tie to a specific resource gain, just smooth the every-25 bonus out evenly per tribute
+    var baseGreed = getGreedEffect(tribs);
+    var greedGain = (baseGreed + 0.00029*tribsGained) / baseGreed;
+    return [Math.pow(greedGain,perks.Greed.level),tribs+tribsGained];
 }
 
 function getTenacityEffect(time) {
-	if (time <= 60){
-		time *= (10 / 6)
-	}
-	else {
-		time -= 60;
-		time *= (2 / 6);
-		time += 100;
-	}
-	return (1.1 + (Math.floor(time / 4) * 0.01));
+    if (time <= 60){
+        time *= (10 / 6)
+    }
+    else {
+        time -= 60;
+        time *= (2 / 6);
+        time += 100;
+    }
+    return (1.1 + (Math.floor(time / 4) * 0.01));
 }
 
 function legalizeInput(val,backup) {
-	if (val == null) return backup;
-	return val;
+    if (val == null) return backup;
+    return val;
 }
 
 function readInputs() {
-	// get perk levels and locked/unlocked status, and calculate total Rn cost
-	for (var [perkName, perkObj] of Object.entries(perks)) {
-		if (typeof(perkObj) !== "object" || !perkObj.hasOwnProperty("optimize")) continue; // iterating over the perks, ignoring aux values
-		perkObj.locked = !inputs[perkName.toLowerCase() + "-enabled"].checked;
-		perkObj.level = parseInt(inputs[perkName.toLowerCase()].value) || 0;
-		if (perkObj.hasOwnProperty("max") && perkObj.level > perkObj.max) {
-			perkObj.level = perkObj.max;
-			inputs[perkName.toLowerCase()].value = perkObj.max;
-		}
-	}
-	props.radonSpent = getTotalPerksCost();
-	
-	perks.Observation.optimize = !inputs['observation-noopt'].checked;
+    // get perk levels and locked/unlocked status, and calculate total Rn cost
+    for (var [perkName, perkObj] of Object.entries(perks)) {
+        if (typeof(perkObj) !== "object" || !perkObj.hasOwnProperty("optimize")) continue; // iterating over the perks, ignoring aux values
+        perkObj.locked = !inputs[perkName.toLowerCase() + "-enabled"].checked;
+        perkObj.level = parseInt(inputs[perkName.toLowerCase()].value) || 0;
+        if (perkObj.hasOwnProperty("max") && perkObj.level > perkObj.max) {
+            perkObj.level = perkObj.max;
+            inputs[perkName.toLowerCase()].value = perkObj.max;
+        }
+    }
+    props.radonSpent = getTotalPerksCost();
+    
+    perks.Observation.optimize = !inputs['observation-noopt'].checked;
 
-	// shove all aux input fields into the props structure
-	for (var i=0; i<auxInputList.length; i++) {
-		var iObj = auxInputList[i];
-		var key = iObj.keyName;
-		var def = iObj.value;
-		var type = iObj.type;
-		var min = iObj.min;
-		var max = iObj.max;
-		var val = 0;
-		if (type === 'int') {
-			val = parseInt(auxInputs[key].input.value);
-		} else if (type === 'float') {
-			val = parseFloat(auxInputs[key].input.value);
-		} else {
-			console.log("ERROR: found an aux field without int or float type - please fix!");
-		}
-		if (min !== null && val < min) {
-			val = min;
-			auxInputs[key].input.value = min;
-		}
-		if (max !== null && val > max) {
-			val = max;
-			auxInputs[key].input.value = max;
-		}
-		props[key] = legalizeInput(val,def);
-	}
-	
-	// final enemy HP/ATK scaling including the sqrt(zone) component:
-	//   (note we don't divide by 2, because we're adding the two log sqrt components together)
-	props.logEnemyScaling = logEnemyHealthScaling + logEnemyAttackScaling + Math.log(1 + 1/props.targetZone);
-	
-	// calculate equipment resource scaling for atk/hp based on weaponl/armor levels
-	var wLevScaling = Math.pow((props.weaponLevels+1)/(props.weaponLevels),1/Math.log(1.2));
-	props.equipScaling.attack = Math.min(wLevScaling,equipScalingPrestige.attack);
-	var aLevScaling = Math.pow((props.armorLevels+1)/(props.armorLevels),1/Math.log(1.2));
-	props.equipScaling.health = Math.min(aLevScaling,equipScalingPrestige.health);
-	
-	// calculate greed effect from tribute count
-	perks.Greed.effect = getGreedEffect(props.tributes);
-	
-	// use tenacity time to calculate tenacity effect
-	perks.Tenacity.effect = getTenacityEffect(props.tenacityTime);
-	
-	// triple-checking that coordlimited is not less than 0
-	if (props.coordLimited < 0) props.coordLimited = 0;
-	// let the user set coordLimited > 1 if they like to give extra population weight, despite saying they can't ;p
-	//if (props.coordLimited > 1) props.coordLimited = 1;
-	
-	// S15 is a reduction in smithy cost scaling
-	if (props.scruffyLevel >= 14) props.smithyScaling = 40;
-	else props.smithyScaling = 50;
+    // shove all aux input fields into the props structure
+    for (var i=0; i<auxInputList.length; i++) {
+        var iObj = auxInputList[i];
+        var key = iObj.keyName;
+        var def = iObj.value;
+        var type = iObj.type;
+        var min = iObj.min;
+        var max = iObj.max;
+        var val = 0;
+        if (type === 'int') {
+            val = parseInt(auxInputs[key].input.value);
+        } else if (type === 'float') {
+            val = parseFloat(auxInputs[key].input.value);
+        } else {
+            console.log("ERROR: found an aux field without int or float type - please fix!");
+        }
+        if (min !== null && val < min) {
+            val = min;
+            auxInputs[key].input.value = min;
+        }
+        if (max !== null && val > max) {
+            val = max;
+            auxInputs[key].input.value = max;
+        }
+        props[key] = legalizeInput(val,def);
+    }
+    
+    // final enemy HP/ATK scaling including the sqrt(zone) component:
+    //   (note we don't divide by 2, because we're adding the two log sqrt components together)
+    props.logEnemyScaling = logEnemyHealthScaling + logEnemyAttackScaling + Math.log(1 + 1/props.targetZone);
+    
+    // calculate equipment resource scaling for atk/hp based on weaponl/armor levels
+    var wLevScaling = Math.pow((props.weaponLevels+1)/(props.weaponLevels),1/Math.log(1.2));
+    props.equipScaling.attack = Math.min(wLevScaling,equipScalingPrestige.attack);
+    var aLevScaling = Math.pow((props.armorLevels+1)/(props.armorLevels),1/Math.log(1.2));
+    props.equipScaling.health = Math.min(aLevScaling,equipScalingPrestige.health);
+    
+    // calculate greed effect from tribute count
+    perks.Greed.effect = getGreedEffect(props.tributes);
+    
+    // use tenacity time to calculate tenacity effect
+    perks.Tenacity.effect = getTenacityEffect(props.tenacityTime);
+    
+    // triple-checking that coordlimited is not less than 0
+    if (props.coordLimited < 0) props.coordLimited = 0;
+    // let the user set coordLimited > 1 if they like to give extra population weight, despite saying they can't ;p
+    //if (props.coordLimited > 1) props.coordLimited = 1;
+    
+    // S15 is a reduction in smithy cost scaling
+    if (props.scruffyLevel >= 14) props.smithyScaling = 40;
+    else props.smithyScaling = 50;
 }
 
 function getTotalPerksCost() {
-	var cost = 0;
-	for (var [perkName, perkObj] of Object.entries(perks)) {
-		if (typeof(perkObj) !== "object" || !perkObj.hasOwnProperty("optimize")) continue; // iterating over the perks, ignoring aux values
-		cost += getPerkCost(perkName,perkObj.level,true);
-	}
-	return cost;
+    var cost = 0;
+    for (var [perkName, perkObj] of Object.entries(perks)) {
+        if (typeof(perkObj) !== "object" || !perkObj.hasOwnProperty("optimize")) continue; // iterating over the perks, ignoring aux values
+        cost += getPerkCost(perkName,perkObj.level,true);
+    }
+    return cost;
 }
 
 // Calculate the absolute Rn-equivalent value of gaining trinkets (RIP to relativism :<<<)
@@ -988,67 +988,67 @@ function getTotalPerksCost() {
 //    2. The additional Rn value of a marginal trinket above those gained at baseline perks.
 //    3. The baseline number of trinkets we expect to have at the end of the next run at current Obs.
 // INPUTS:
-//	  gain factor at current level and cost for each of the basic powerlevel gain perks (Mot/Pow/Tough)
+//    gain factor at current level and cost for each of the basic powerlevel gain perks (Mot/Pow/Tough)
 // NOTE that this weight does NOT capture the direct powerlevel gain value of more trinkets, which is captured elsewhere,
 //   including feedback mechanisms via more resources and further pushing that aren't appropriate to use for "Radon-like"
 //   growth weight. This is only capturing the long term growth value of additional trinket drops.
-function getTrinketValues(	motivGain,motivCost,
-							powGain,powCost,
-							toughGain,toughCost,
-						 ) {
-	// trinket gain from pushing power will be 0 when Obs level is 0, so go ahead and calculate
-	//   the value of trinket growth based on 1 Obs level to help evaluate the value of the first Obs
-	//   level itself.
-	var obsLevel = Math.max(1,perks.Observation.level);
-	
-	// Get the expected Rt at the end of the next run with the current Obs level.
-	var shinies = 0;
-	var shinies = props.trinkets + shinyCollect(perks.Observation.level,props.targetZone);
-	if (props.trinkets == 0) {
-		shinies += 10; // first Obs level gives 10 trinkets
-	}
-	shinies = Math.min(shinies, obsLevel * 1000);
-	
-	var cappedBaseTrinkets = Math.min(props.trinkets, obsLevel * 1000);
-	
-	// marginal shine gain per run (for baseline perks)
-	var marginalShinePerRun = (100 + shinies * obsLevel) / (100 + cappedBaseTrinkets * obsLevel);
-	// marginal shine gain of one additional trinket
-	var marginalShinePerTrinket = 1 + obsLevel/(100 + shinies * obsLevel);
-	
-	var res = [];
-	for (var marginalShine of [marginalShinePerRun,marginalShinePerTrinket]) {	
-		// For each of Mot/Pow/Tough, presuming those levels are efficient, calculate the Rn cost of getting 
-		//   the equivalent boost the marginal shine.
-		// NOTE: We don't account for diminishing returns of Mot/Pow/Tough here, since the return curve is locally
-		//   very flat in the small marginalShine ranges we're likely to see with nearly optimized perks, so it should be 
-		//   vastly dominated by the exponential cost scaling of these perks.
-		// Total cost of N levels for a compounding price factor of F and next level cost of C:
-		//   C/(F-1) * (F^N - 1)
-		// Converting from gain factor G to number of levels needed N using a 1-level gain of H is approximately:
-		//   N = (G-1)/(H-1), given that G is close to 1 and the gain curve for these perks is quite flat for small gains.
-		var motF = perks.Motivation.priceFact;
-		var motN = (marginalShine-1)/(motivGain-1);
-		var motShineCost = motivCost/(motF-1) * (Math.pow(motF,motN) - 1);
-		var powF = perks.Power.priceFact;
-		var powN = (marginalShine-1)/(powGain-1);
-		var powShineCost = powCost/(powF-1) * (Math.pow(powF,powN) - 1);
-		var touF = perks.Toughness.priceFact;
-		var touN = (marginalShine-1)/(toughGain-1);
-		var touShineCost = toughCost/(touF-1) * (Math.pow(touF,touN) - 1);
-		// sum up all the costs of the powerlevel perks
-		var totShineCost = motShineCost + powShineCost + touShineCost;
-		res.push(totShineCost);
-	}
-	res.push(shinies); // also return the expected trinket count next run at baseline Obs
-	
-	// zero out per-run stats if at 0 Obs (these were used to help calculate the per-trinket gain for valuing the 1st level of Obs)
-	if (perks.Observation.level == 0) {
-		res[0] = 0;
-		res[2] = 0;
-	}
-	
-	return res;
+function getTrinketValues(  motivGain,motivCost,
+                            powGain,powCost,
+                            toughGain,toughCost,
+                         ) {
+    // trinket gain from pushing power will be 0 when Obs level is 0, so go ahead and calculate
+    //   the value of trinket growth based on 1 Obs level to help evaluate the value of the first Obs
+    //   level itself.
+    var obsLevel = Math.max(1,perks.Observation.level);
+    
+    // Get the expected Rt at the end of the next run with the current Obs level.
+    var shinies = 0;
+    var shinies = props.trinkets + shinyCollect(perks.Observation.level,props.targetZone);
+    if (props.trinkets == 0) {
+        shinies += 10; // first Obs level gives 10 trinkets
+    }
+    shinies = Math.min(shinies, obsLevel * 1000);
+    
+    var cappedBaseTrinkets = Math.min(props.trinkets, obsLevel * 1000);
+    
+    // marginal shine gain per run (for baseline perks)
+    var marginalShinePerRun = (100 + shinies * obsLevel) / (100 + cappedBaseTrinkets * obsLevel);
+    // marginal shine gain of one additional trinket
+    var marginalShinePerTrinket = 1 + obsLevel/(100 + shinies * obsLevel);
+    
+    var res = [];
+    for (var marginalShine of [marginalShinePerRun,marginalShinePerTrinket]) {  
+        // For each of Mot/Pow/Tough, presuming those levels are efficient, calculate the Rn cost of getting 
+        //   the equivalent boost the marginal shine.
+        // NOTE: We don't account for diminishing returns of Mot/Pow/Tough here, since the return curve is locally
+        //   very flat in the small marginalShine ranges we're likely to see with nearly optimized perks, so it should be 
+        //   vastly dominated by the exponential cost scaling of these perks.
+        // Total cost of N levels for a compounding price factor of F and next level cost of C:
+        //   C/(F-1) * (F^N - 1)
+        // Converting from gain factor G to number of levels needed N using a 1-level gain of H is approximately:
+        //   N = (G-1)/(H-1), given that G is close to 1 and the gain curve for these perks is quite flat for small gains.
+        var motF = perks.Motivation.priceFact;
+        var motN = (marginalShine-1)/(motivGain-1);
+        var motShineCost = motivCost/(motF-1) * (Math.pow(motF,motN) - 1);
+        var powF = perks.Power.priceFact;
+        var powN = (marginalShine-1)/(powGain-1);
+        var powShineCost = powCost/(powF-1) * (Math.pow(powF,powN) - 1);
+        var touF = perks.Toughness.priceFact;
+        var touN = (marginalShine-1)/(toughGain-1);
+        var touShineCost = toughCost/(touF-1) * (Math.pow(touF,touN) - 1);
+        // sum up all the costs of the powerlevel perks
+        var totShineCost = motShineCost + powShineCost + touShineCost;
+        res.push(totShineCost);
+    }
+    res.push(shinies); // also return the expected trinket count next run at baseline Obs
+    
+    // zero out per-run stats if at 0 Obs (these were used to help calculate the per-trinket gain for valuing the 1st level of Obs)
+    if (perks.Observation.level == 0) {
+        res[0] = 0;
+        res[2] = 0;
+    }
+    
+    return res;
 }
 
 // Observation has a direct gain component (powering up each trinket), and a growth component (due to marginal trinket
@@ -1058,39 +1058,39 @@ function getTrinketValues(	motivGain,motivCost,
 //   +2 is useful because free trinkets at even levels are a major growth driver, so +2 levels may actually end up being
 //   more cost efficient than +1 level at times.
 function getObservationGains(levels) {
-	var obsLevel = perks.Observation.level; // this gets referred to a lot, shortening the reference
-	
-	// Get expected trinket count at end of next run with the old Obs level
-	var shinies = props.trinkets + shinyCollect(obsLevel,props.targetZone);
-	shinies = Math.min(shinies, obsLevel * 1000);
-	
-	//console.log("obs shinies: " + shinies);
-	
-	// Get expected trinket count at end of next run with the new Obs level
-	var shiniesNext = props.trinkets + shinyCollect(obsLevel+levels,props.targetZone);
-	if (obsLevel == 0) shiniesNext += 10; // 10 free trinkets for first Obs level
-	shiniesNext = Math.min(shiniesNext, (obsLevel+levels)*1000);
-	
-	//console.log("obs shiniesNext: " + shiniesNext);
-	
-	// Calculate the direct gain in powerlevel at end of next run. Note this is the total powerlevel gain
-	//   INCLUDING power immediately gained due to marginal trinket drops. This is because the Rn-like value
-	//   of trinkets is valued as if those trinkets had no effect until the subsequent run (as true Rn
-	//   gains on the next run would not have an effect within the same run).
-	var directGain = (100 + shiniesNext * (obsLevel+levels))/(100 + shinies * obsLevel);
-	
-	//console.log("obs direct gain: " + directGain);
-	
-	// TODO: FIXME: we don't want to value marginal trinket droprate above our current cap
-	
-	// Calculate the marginal gain in trinket power next run specifically due to the increased drop rate.
-	//   Note the baseline includes the increased per-trinket value. We want to isolate the trinket growth gain from the
-	//   direct powerlevel gain.
-	var moreTrinkets = shiniesNext - shinies;
-	
-	//console.log("obs moreTrinkets: " + moreTrinkets);
-	
-	return [directGain,moreTrinkets];
+    var obsLevel = perks.Observation.level; // this gets referred to a lot, shortening the reference
+    
+    // Get expected trinket count at end of next run with the old Obs level
+    var shinies = props.trinkets + shinyCollect(obsLevel,props.targetZone);
+    shinies = Math.min(shinies, obsLevel * 1000);
+    
+    //console.log("obs shinies: " + shinies);
+    
+    // Get expected trinket count at end of next run with the new Obs level
+    var shiniesNext = props.trinkets + shinyCollect(obsLevel+levels,props.targetZone);
+    if (obsLevel == 0) shiniesNext += 10; // 10 free trinkets for first Obs level
+    shiniesNext = Math.min(shiniesNext, (obsLevel+levels)*1000);
+    
+    //console.log("obs shiniesNext: " + shiniesNext);
+    
+    // Calculate the direct gain in powerlevel at end of next run. Note this is the total powerlevel gain
+    //   INCLUDING power immediately gained due to marginal trinket drops. This is because the Rn-like value
+    //   of trinkets is valued as if those trinkets had no effect until the subsequent run (as true Rn
+    //   gains on the next run would not have an effect within the same run).
+    var directGain = (100 + shiniesNext * (obsLevel+levels))/(100 + shinies * obsLevel);
+    
+    //console.log("obs direct gain: " + directGain);
+    
+    // TODO: FIXME: we don't want to value marginal trinket droprate above our current cap
+    
+    // Calculate the marginal gain in trinket power next run specifically due to the increased drop rate.
+    //   Note the baseline includes the increased per-trinket value. We want to isolate the trinket growth gain from the
+    //   direct powerlevel gain.
+    var moreTrinkets = shiniesNext - shinies;
+    
+    //console.log("obs moreTrinkets: " + moreTrinkets);
+    
+    return [directGain,moreTrinkets];
 }
 
 
@@ -1111,540 +1111,540 @@ function getObservationGains(levels) {
 //   important mechanic other than equipment, there would need to be a separate gear discount input.
 // NOTE: metal/food are MUTLIPLICATIVE gain over and above the unified F/M/L gain.
 function iterateValueFeedback(valueArray) {
-	var [Va,Vh,Vm,Vf,Vres,Vrad,Vp,Ve,
-		 tribs,housing,mets,
-		 trinketRate,trinkets,obsLevel,
-		 Vpushed=1,VmDone=1,VfDone=1,VresDone=1,VpDone=1] = valueArray;
-	
-	
-	// when tribute count is < 1250, resource->resource/radon feedback is strong via Greed
-	if (tribs < 1250) {
-		var [greedback,tribs] = getGreedResourceFeedback(Vf*Vres/(VfDone*VresDone),tribs);
-		Vres *= greedback;
-		Vrad *= greedback;
-	}
-	
-	// more resources buy more housing, which feeds back to more resources and population
-	var housingGain = 1 + Math.log(Vres/VresDone)/logHousingScaling/housing;
-	Vres *= housingGain;
-	Vp *= housingGain;
-	housing += housingGain;
-	
-	// use equip scaling to convert resource value to atk/hp value
-	var VmAdjusted = Vm*Vres/(VmDone*VresDone);
-	Va *= Math.pow(props.equipScaling.attack,Math.log(VmAdjusted));
-	Vh *= Math.pow(props.equipScaling.health,Math.log(VmAdjusted));
-	
-	// account for smithies: 1.25x atk/hp per 50x resources
-	var smithyGain = Math.pow(1.25,Math.log(Vres/VresDone)/Math.log(props.smithyScaling));
-	Va *= smithyGain;
-	Vh *= smithyGain;
-	
-	// if coord limited, account for population gain to coords
-	var coordGain = Math.pow(1.25,Math.log(Vp/VpDone)/Math.log(1.25) * props.coordLimited);
-	Va *= coordGain;
-	Vh *= coordGain;	
-		
-	// more food buys more Mets, which have various effects depending on antennas
-	var moreMets = Math.log(Vf*Vres/(VfDone*VresDone))/Math.log(5);
-	var metEff = 0.01 + 0.0005 * props.antennae;
-	var metRes = 0.5 + 0.25*(props.antennae >= 20 ? (Math.floor(props.antennae/5) - 3) : 0);
-	var metProd = mets * metEff;
-	var metProdNext = (mets + moreMets) * metEff;
-	var metRadGain = (1 + metProdNext)/(1 + metProd);
-	var metFoodGain = props.antennae >= 5 ? (1 + metProdNext*metRes)/(1 + metProd*metRes) : 1;
-	var metHPGain = props.antennae >= 10 ? (1 + metProdNext*metRes)/(1 + metProd*metRes) : 1;
-	var metMineGain = props.antennae >= 15 ? (1 + metProdNext*metRes)/(1 + metProd*metRes) : 1;
-	Vrad *= metRadGain;
-	Vf *= metFoodGain;
-	Vh *= metHPGain;
-	Vm *= metMineGain;
-	mets += moreMets;
+    var [Va,Vh,Vm,Vf,Vres,Vrad,Vp,Ve,
+         tribs,housing,mets,
+         trinketRate,trinkets,obsLevel,
+         Vpushed=1,VmDone=1,VfDone=1,VresDone=1,VpDone=1] = valueArray;
+    
+    
+    // when tribute count is < 1250, resource->resource/radon feedback is strong via Greed
+    if (tribs < 1250) {
+        var [greedback,tribs] = getGreedResourceFeedback(Vf*Vres/(VfDone*VresDone),tribs);
+        Vres *= greedback;
+        Vrad *= greedback;
+    }
+    
+    // more resources buy more housing, which feeds back to more resources and population
+    var housingGain = 1 + Math.log(Vres/VresDone)/logHousingScaling/housing;
+    Vres *= housingGain;
+    Vp *= housingGain;
+    housing += housingGain;
+    
+    // use equip scaling to convert resource value to atk/hp value
+    var VmAdjusted = Vm*Vres/(VmDone*VresDone);
+    Va *= Math.pow(props.equipScaling.attack,Math.log(VmAdjusted));
+    Vh *= Math.pow(props.equipScaling.health,Math.log(VmAdjusted));
+    
+    // account for smithies: 1.25x atk/hp per 50x resources
+    var smithyGain = Math.pow(1.25,Math.log(Vres/VresDone)/Math.log(props.smithyScaling));
+    Va *= smithyGain;
+    Vh *= smithyGain;
+    
+    // if coord limited, account for population gain to coords
+    var coordGain = Math.pow(1.25,Math.log(Vp/VpDone)/Math.log(1.25) * props.coordLimited);
+    Va *= coordGain;
+    Vh *= coordGain;    
+        
+    // more food buys more Mets, which have various effects depending on antennas
+    var moreMets = Math.log(Vf*Vres/(VfDone*VresDone))/Math.log(5);
+    var metEff = 0.01 + 0.0005 * props.antennae;
+    var metRes = 0.5 + 0.25*(props.antennae >= 20 ? (Math.floor(props.antennae/5) - 3) : 0);
+    var metProd = mets * metEff;
+    var metProdNext = (mets + moreMets) * metEff;
+    var metRadGain = (1 + metProdNext)/(1 + metProd);
+    var metFoodGain = props.antennae >= 5 ? (1 + metProdNext*metRes)/(1 + metProd*metRes) : 1;
+    var metHPGain = props.antennae >= 10 ? (1 + metProdNext*metRes)/(1 + metProd*metRes) : 1;
+    var metMineGain = props.antennae >= 15 ? (1 + metProdNext*metRes)/(1 + metProd*metRes) : 1;
+    Vrad *= metRadGain;
+    Vf *= metFoodGain;
+    Vh *= metHPGain;
+    Vm *= metMineGain;
+    mets += moreMets;
 
-	// Feedback from pushing power
-	var pushPower = Va * Vh / Vpushed;
-	var pushZones = Math.log(pushPower) / props.logEnemyScaling;
-	// speedbooks give 25% resources per zone
-	Vres *= Math.pow(1.25,pushZones);
-	// Scruffy level 3 gives compounding 3% Rn per additional zone
-	if (props.scruffyLevel >= 3) Vrad *= Math.pow(1.03,pushZones);
-	// VS1 gives additive 0.25% VM Rn per additional zone
-	// TODO: vmRadFrac is a hacky constant for now, should probably be a user input after we clean up the volume of user inputs
-	//  (learn how to fold them into an element that can be clicked to expand/collapse?)
-	Vrad *= 1 + vmRadFrac * ((props.targetZone + pushZones)/props.targetZone - 1);
-	// trinket gain: use a fixed drop rate based on target zone, which should be fine assuming the user has entered
-	//   a sensible value and we're only optimizing at the margins of a fractional zone (or maybe 1-2 zones)
-	moreTrinkets = pushZones * trinketRate;
-	var trinketMax = 1000 * obsLevel;
-	if (moreTrinkets + trinkets > trinketMax) moreTrinkets = trinketMax - trinkets;
-	if (moreTrinkets < 0) throw("Unexpectedly tried to value more trinkets than our trinket max!: " + trinkets);
-	trinketGain = 1 + moreTrinkets * obsLevel / (100 + trinkets * obsLevel);
-	Va *= trinketGain;
-	Vh *= trinketGain;
-	Vres *= trinketGain;
-	trinkets += moreTrinkets;
-	
-	// copy the values back into the same array reference rather than creating a new array
-	// WARNING: If any of these positions change, we also must update getLogWeightedValue appropriately
-	valueArray[0] = Va;
-	valueArray[1] = Vh;
-	valueArray[2] = Vm;
-	valueArray[3] = Vf;
-	valueArray[4] = Vres;
-	valueArray[5] = Vrad;
-	valueArray[6] = Vp;
-	valueArray[7] = Ve;
-	valueArray[8] = tribs;
-	valueArray[9] = housing;
-	valueArray[10] = mets;
-	//valueArray[11] = trinketRate;
-	valueArray[12] = trinkets;
-	//valueArray[13] = obsLevel;
-	valueArray[14] = Va * Vh;
-	valueArray[15] = Vm;
-	valueArray[16] = Vf;
-	valueArray[17] = Vres;
-	valueArray[18] = Vp;
+    // Feedback from pushing power
+    var pushPower = Va * Vh / Vpushed;
+    var pushZones = Math.log(pushPower) / props.logEnemyScaling;
+    // speedbooks give 25% resources per zone
+    Vres *= Math.pow(1.25,pushZones);
+    // Scruffy level 3 gives compounding 3% Rn per additional zone
+    if (props.scruffyLevel >= 3) Vrad *= Math.pow(1.03,pushZones);
+    // VS1 gives additive 0.25% VM Rn per additional zone
+    // TODO: vmRadFrac is a hacky constant for now, should probably be a user input after we clean up the volume of user inputs
+    //  (learn how to fold them into an element that can be clicked to expand/collapse?)
+    Vrad *= 1 + vmRadFrac * ((props.targetZone + pushZones)/props.targetZone - 1);
+    // trinket gain: use a fixed drop rate based on target zone, which should be fine assuming the user has entered
+    //   a sensible value and we're only optimizing at the margins of a fractional zone (or maybe 1-2 zones)
+    moreTrinkets = pushZones * trinketRate;
+    var trinketMax = 1000 * obsLevel;
+    if (moreTrinkets + trinkets > trinketMax) moreTrinkets = trinketMax - trinkets;
+    if (moreTrinkets < 0) throw("Unexpectedly tried to value more trinkets than our trinket max!: " + trinkets);
+    trinketGain = 1 + moreTrinkets * obsLevel / (100 + trinkets * obsLevel);
+    Va *= trinketGain;
+    Vh *= trinketGain;
+    Vres *= trinketGain;
+    trinkets += moreTrinkets;
+    
+    // copy the values back into the same array reference rather than creating a new array
+    // WARNING: If any of these positions change, we also must update getLogWeightedValue appropriately
+    valueArray[0] = Va;
+    valueArray[1] = Vh;
+    valueArray[2] = Vm;
+    valueArray[3] = Vf;
+    valueArray[4] = Vres;
+    valueArray[5] = Vrad;
+    valueArray[6] = Vp;
+    valueArray[7] = Ve;
+    valueArray[8] = tribs;
+    valueArray[9] = housing;
+    valueArray[10] = mets;
+    //valueArray[11] = trinketRate;
+    valueArray[12] = trinkets;
+    //valueArray[13] = obsLevel;
+    valueArray[14] = Va * Vh;
+    valueArray[15] = Vm;
+    valueArray[16] = Vf;
+    valueArray[17] = Vres;
+    valueArray[18] = Vp;
 }
 
 const iterateValueLoops = 3;
 // Inputs: gain values for atk, hp, equip discount (or metal), radon, equality, pop
 //         moreTrinkets: increased count of trinkets on next run from Obs droprate increase
 function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve=1,Vp=1,moreTrinkets=0,extraObs=0) {
-	
-	var Wa = props.clearWeight; // attack weight
-	var Wh = props.clearWeight + props.survivalWeight; // health weight
-	var We = props.survivalWeight; // equality weight
-	var Wr = props.radonWeight; // radon weight
+    
+    var Wa = props.clearWeight; // attack weight
+    var Wh = props.clearWeight + props.survivalWeight; // health weight
+    var We = props.survivalWeight; // equality weight
+    var Wr = props.radonWeight; // radon weight
 
-	// from iterateValueFeedback:
-	//   [Va,Vh,Vm,Vf,Vres,Vrad,Vp,Ve,
-	//	  tribs,housing,mets,
-	//	  trinketRate,trinkets,
-	//	  Vpushed=1,VmDone=1,VfDone=1,VresDone=1,VpDone=1] = valueArray;
+    // from iterateValueFeedback:
+    //   [Va,Vh,Vm,Vf,Vres,Vrad,Vp,Ve,
+    //    tribs,housing,mets,
+    //    trinketRate,trinkets,
+    //    Vpushed=1,VmDone=1,VfDone=1,VresDone=1,VpDone=1] = valueArray;
 
-	// add Obs levels if we're evaluating Observation
-	var obsLevel = perks.Observation.level + extraObs;
-	
-	var valueArray = [	Va,Vh,Vgear,1,Vres,Vrad,Vp,Ve,
-						props.tributes,props.housingCount,props.meteorologists,
-						obsDropRate(obsLevel,props.targetZone)/100,props.baselineTrinketsNext,obsLevel,
-						1,1,1,1,1,
-					 ];
-	
-	for (var i=0; i<iterateValueLoops; i++) iterateValueFeedback(valueArray);
-	
-	Va = valueArray[0];
-	Vh = valueArray[1];
-	Vrad = valueArray[5];
-	Ve = valueArray[7];
-	Vtrink = valueArray[12];
-	
-	moreTrinkets += Vtrink - props.baselineTrinketsNext;
-	
-	// calculate unified Rn-like growth gain:
-	var Vgrowth = (Vrad * props.radonPerRun + props.trinketRadonPerRun 
-					+ props.radonPerTrinket * moreTrinkets
-				    ) / (props.radonPerRun + props.trinketRadonPerRun);
-	
-	// A perk's total weighted value is:
-	//   Va^Wa * Vh^Wh * Ve^We * Vrad^Wr.
-	// For cost-efficiency between perks with wildly different costs & effects we use the log of this value, which simplifies to:
-	//   Wa*log(A) + Wh*log(H) + We*log(E) + Wr*log(R)
-	
-	return Wa*Math.log(Va) + Wh*Math.log(Vh) + We*Math.log(Ve) + Wr*Math.log(Vgrowth);
+    // add Obs levels if we're evaluating Observation
+    var obsLevel = perks.Observation.level + extraObs;
+    
+    var valueArray = [  Va,Vh,Vgear,1,Vres,Vrad,Vp,Ve,
+                        props.tributes,props.housingCount,props.meteorologists,
+                        obsDropRate(obsLevel,props.targetZone)/100,props.baselineTrinketsNext,obsLevel,
+                        1,1,1,1,1,
+                     ];
+    
+    for (var i=0; i<iterateValueLoops; i++) iterateValueFeedback(valueArray);
+    
+    Va = valueArray[0];
+    Vh = valueArray[1];
+    Vrad = valueArray[5];
+    Ve = valueArray[7];
+    Vtrink = valueArray[12];
+    
+    moreTrinkets += Vtrink - props.baselineTrinketsNext;
+    
+    // calculate unified Rn-like growth gain:
+    var Vgrowth = (Vrad * props.radonPerRun + props.trinketRadonPerRun 
+                    + props.radonPerTrinket * moreTrinkets
+                    ) / (props.radonPerRun + props.trinketRadonPerRun);
+    
+    // A perk's total weighted value is:
+    //   Va^Wa * Vh^Wh * Ve^We * Vrad^Wr.
+    // For cost-efficiency between perks with wildly different costs & effects we use the log of this value, which simplifies to:
+    //   Wa*log(A) + Wh*log(H) + We*log(E) + Wr*log(R)
+    
+    return Wa*Math.log(Va) + Wh*Math.log(Vh) + We*Math.log(Ve) + Wr*Math.log(Vgrowth);
 }
 
 function obsDropRate(level,zone) {
-	if (zone < 101) return 0;
-	if (zone > 200) zone = 200;
-	return ((1 + ((level - 1) / 2)) * Math.pow(1.03, (zone - 100)));
+    if (zone < 101) return 0;
+    if (zone > 200) zone = 200;
+    return ((1 + ((level - 1) / 2)) * Math.pow(1.03, (zone - 100)));
 }
 
 // how many trinkets do we expect to get by clearing the target zone?
 function shinyCollectLoop(level,zone) {
-	var shinies = 0;
-	// the game checks for the drop after advancing the zone counter, so go to zone+1.
-	for (var i=101; i<=zone+1; i++) {
-		shinies += obsDropRate(level,i) / 100;
-		if (i % 25 == 0) {
-			var free = Math.floor(level/2);
-			if (free > 0) shinies += free;
-		}
-	}
-	return shinies;
+    var shinies = 0;
+    // the game checks for the drop after advancing the zone counter, so go to zone+1.
+    for (var i=101; i<=zone+1; i++) {
+        shinies += obsDropRate(level,i) / 100;
+        if (i % 25 == 0) {
+            var free = Math.floor(level/2);
+            if (free > 0) shinies += free;
+        }
+    }
+    return shinies;
 }
 
 function shinyCollect(level,zone) {
-	var shinies = 0;
-	if (zone < 100) return 0;
-	var excess = 0;
-	if (zone > 199) {
-		excess = zone - 199;
-		scalingZones = 100;
-	} else {
-		scalingZones = zone+1-100;
-	}
-	var scalingShinies = (1 + (level - 1)/2) * ((Math.pow(1.03,scalingZones+1) - 1)/0.03 - 1) / 100;
-	var excessShinies = (1 + (level - 1)/2) * Math.pow(1.03,100) / 100 * excess;
-	var freeShinies = Math.floor((zone+1-100)/25) * Math.floor(level/2);
-	return scalingShinies + excessShinies + freeShinies;
+    var shinies = 0;
+    if (zone < 100) return 0;
+    var excess = 0;
+    if (zone > 199) {
+        excess = zone - 199;
+        scalingZones = 100;
+    } else {
+        scalingZones = zone+1-100;
+    }
+    var scalingShinies = (1 + (level - 1)/2) * ((Math.pow(1.03,scalingZones+1) - 1)/0.03 - 1) / 100;
+    var excessShinies = (1 + (level - 1)/2) * Math.pow(1.03,100) / 100 * excess;
+    var freeShinies = Math.floor((zone+1-100)/25) * Math.floor(level/2);
+    return scalingShinies + excessShinies + freeShinies;
 }
 
 var clearClasses = function() {
-	var elements = document.getElementsByClassName('row');
-	for (var i = elements.length - 1; i >= 0; i--) {
-		var element = elements[i];
-		element.setAttribute("style", "");
-	}
+    var elements = document.getElementsByClassName('row');
+    for (var i = elements.length - 1; i >= 0; i--) {
+        var element = elements[i];
+        element.setAttribute("style", "");
+    }
 }
 
 // color perk rows by efficiency, and flag the most efficient perk
 function efficiencyColorAndFlag() {
-	var eList = [];
-	var pList = [];
-	var bestEff = 0;
-	var bestAffordableEff = 0;
-	props.bestPerk = ""; // don't flag a perk if we don't find an affordable one!
-	for (var [perkName, perkObj] of Object.entries(perks)) {
-		if (   typeof(perkObj) !== "object" 
-		    || !perkObj.hasOwnProperty("optimize")
-			|| !perkObj.optimize ) continue; // iterating over the perks, ignoring aux values
-		eList.push(perkObj.efficiency);
-		pList.push(perkName);
-		if (perkObj.efficiency > bestEff) {
-			bestEff = perkObj.efficiency;
-		}
-		if (couldBuyPerk(perkName,false) && perkObj.efficiency > bestAffordableEff) {
-			bestAffordableEff = perkObj.efficiency;
-			props.bestPerk = perkName;
-		}
-		if (perkObj.hasOwnProperty("efficiency2")) {
-			if (perkObj.efficiency2 > bestEff) {
-				bestEff = perkObj.efficiency2;
-			}
-			if (couldBuyPerk(perkName,false,2) && perkObj.efficiency2 > bestAffordableEff) {
-				bestAffordableEff = perkObj.efficiency2;
-				props.bestPerk = perkName;
-			}
-		}
-	}
-	for (var i=0; i < eList.length; i++) {
-		var opacity = Math.max(eList[i]/bestEff,0.15);
-		var id = "label-" + pList[i].toLowerCase();
-		var element = document.getElementById(id).parentElement;
-		if (element.getAttribute('class').indexOf('grey') == -1) {
-			if (eList[i] == 0) {
-				element.setAttribute("style", "background: #666;");
-			} else {
-				element.setAttribute("style", "background: rgba(11, 200, 35, " + opacity + ");");
-			}
-		}
-	}
+    var eList = [];
+    var pList = [];
+    var bestEff = 0;
+    var bestAffordableEff = 0;
+    props.bestPerk = ""; // don't flag a perk if we don't find an affordable one!
+    for (var [perkName, perkObj] of Object.entries(perks)) {
+        if (   typeof(perkObj) !== "object" 
+            || !perkObj.hasOwnProperty("optimize")
+            || !perkObj.optimize ) continue; // iterating over the perks, ignoring aux values
+        eList.push(perkObj.efficiency);
+        pList.push(perkName);
+        if (perkObj.efficiency > bestEff) {
+            bestEff = perkObj.efficiency;
+        }
+        if (couldBuyPerk(perkName,false) && perkObj.efficiency > bestAffordableEff) {
+            bestAffordableEff = perkObj.efficiency;
+            props.bestPerk = perkName;
+        }
+        if (perkObj.hasOwnProperty("efficiency2")) {
+            if (perkObj.efficiency2 > bestEff) {
+                bestEff = perkObj.efficiency2;
+            }
+            if (couldBuyPerk(perkName,false,2) && perkObj.efficiency2 > bestAffordableEff) {
+                bestAffordableEff = perkObj.efficiency2;
+                props.bestPerk = perkName;
+            }
+        }
+    }
+    for (var i=0; i < eList.length; i++) {
+        var opacity = Math.max(eList[i]/bestEff,0.15);
+        var id = "label-" + pList[i].toLowerCase();
+        var element = document.getElementById(id).parentElement;
+        if (element.getAttribute('class').indexOf('grey') == -1) {
+            if (eList[i] == 0) {
+                element.setAttribute("style", "background: #666;");
+            } else {
+                element.setAttribute("style", "background: rgba(11, 200, 35, " + opacity + ");");
+            }
+        }
+    }
 }
 
 var switchTotalRadon = function() {
-	if (inputs['use-total'].checked) {
-		props.perksRadon = props.earnedRadon;
-	} else {
-		props.perksRadon = props.portalRadon;
-	}
-	
-	if (auxInputs.perksRadon.checkbox.checked) {
-		props.perksRadon = auxInputs.perksRadon.input.value;
-	} else {
-		auxInputs.perksRadon.input.value = props.perksRadon;
-	}
-	
-	if (props.perksRadon > 0) {
-		document.getElementById('clear-autobuy-button').disabled = false;
-		document.getElementById('autobuy-button').disabled = false;
-		document.getElementById('export-button').disabled = false;
-		document.getElementById('input-export').disabled = false;
-		document.getElementById('input-export').value = "";
-	}
+    if (inputs['use-total'].checked) {
+        props.perksRadon = props.earnedRadon;
+    } else {
+        props.perksRadon = props.portalRadon;
+    }
+    
+    if (auxInputs.perksRadon.checkbox.checked) {
+        props.perksRadon = auxInputs.perksRadon.input.value;
+    } else {
+        auxInputs.perksRadon.input.value = props.perksRadon;
+    }
+    
+    if (props.perksRadon > 0) {
+        document.getElementById('clear-autobuy-button').disabled = false;
+        document.getElementById('autobuy-button').disabled = false;
+        document.getElementById('export-button').disabled = false;
+        document.getElementById('input-export').disabled = false;
+        document.getElementById('input-export').value = "";
+    }
 
-	evaluatePerks();
+    evaluatePerks();
 }
 
 
 // get perk efficiencies at current levels and color code them accordingly
 var evaluatePerks = function(debug=false) {
 
-	readInputs();
-	
-	var saveAux = {};
-	
-	for (var [key,inputObj] of Object.entries(auxInputs)) {
-		saveAux[key + "Input"] = inputObj.input.value;
-		saveAux[key + "Checkbox"] = inputObj.checkbox.checked;
-	}
-	saveAux.lockAll = lockAuxEl.checked;
-	saveAux.inputTotal = inputs['use-total'].checked;
-	saveAux.obsNoopt = inputs['observation-noopt'].checked;
-	window.localStorage.setItem("saveAux", JSON.stringify(saveAux));
-		
-	if (!saveLoaded) return;
-	
-	// TODO: most perks don't change other perks' efficiencies (given our assumptions of local flatness)
-	//  So move the efficiency calculations to functions owned by each perk, and only update efficiency when actually
-	//  buying a perk. Notable exception for Observation (and carefully look for other exceptions), which will require
-	//  some exception mechanism to update interdependent perks' efficiencies.
-	// Now that we're doing a complex feedback iteration process for each perk efficiency, this is going to become necessary
-	//  to avoid exploding computation time.
-	
-	// Get various gain factors needed to calculate the value of trinkets (and also used to value their respective perks).
-	//  Motivation
-	var motiv = 1 + perks.Motivation.level * perks.Motivation.effect;
-	var motivGain = (motiv + perks.Motivation.effect) / motiv;
-	var motivCost = getPerkCost("Motivation",1);
-	// Power
-	var pow = 1 + perks.Power.level * perks.Power.effect;
-	var powGain = (pow + perks.Power.effect) / pow;
-	var powCost = getPerkCost("Power",1);
-	// Toughness
-	var tough = 1 + perks.Toughness.level * perks.Toughness.effect;
-	var toughGain = (tough + perks.Toughness.effect) / tough;
-	var toughCost = getPerkCost("Toughness",1);
-	
-	// Get the absolute Rn values for trinkets expected at baseline Observation and per marginal trinket,
-	//   and the expected count of trinkets at the end of this run at baseline Observation.
-	[props.trinketRadonPerRun,props.radonPerTrinket,props.baselineTrinketsNext]
-				= getTrinketValues(	motivGain,motivCost,
-									powGain  ,powCost  ,
-									toughGain,toughCost);
-	
-	// Artisanistry:
-	//   resource gain for equipment only
-	perks.Artisanistry.efficiency = getLogWeightedValue(1,1,perks.Artisanistry.effect,1,1,1)/getPerkCost("Artisanistry",1);
-	
-	// Carpentry:
-	//   population gain, also gives resources
-	var carpPop = perks.Carpentry.effect;
-	perks.Carpentry.efficiency = getLogWeightedValue(1,1,1,carpPop,1,1,carpPop)/getPerkCost("Carpentry",1);
-	
-	
-	// Criticality:
-	//   attack gain from crits (TODO: assumes 100% CC, might want a CC input for e.g. Duel)
-	var CD = 1 + props.shieldCD/100 + perks.Criticality.level * perks.Criticality.effect;
-	var CC = 1;
-	var critGain = ((1-CC) + CC * (CD + perks.Criticality.effect))/((1-CC) + CC*CD);
-	perks.Criticality.efficiency = getLogWeightedValue(critGain,1,1,1,1,1)/getPerkCost("Criticality",1);
-	
-	// Equality:
-	perks.Equality.efficiency = getLogWeightedValue(1,1,1,1,1,perks.Equality.effect)/getPerkCost("Equality",1);
-	
-	// Frenzy TODO
-	
-	// Greed:
-	//   all-resource and radon gain
-	var greedGain = perks.Greed.effect;
-	perks.Greed.efficiency = getLogWeightedValue(1,1,1,greedGain,greedGain,1)/getPerkCost("Greed",1);
-	
-	// Looting:
-	//   all-resource and radon gain
-	var loot = 1 + perks.Looting.level * perks.Looting.effect;
-	var lootGain = (loot + perks.Looting.effect) / loot;
-	var lootCost = getPerkCost("Looting",1);
-	perks.Looting.efficiency = getLogWeightedValue(1,1,1,lootGain,lootGain,1)/lootCost;
-	
-	// Motivation:
-	//   all-resource gain (no radon)
-	perks.Motivation.efficiency = getLogWeightedValue(1,1,1,motivGain,1,1)/motivCost;
-		
-	// Packrat:
-	//   all-resource gain from decreased storage costs (no radon)
-	// Note: 0.125 because you only pay taxes on the half of your last storage that you filled before buying it
-	// Note: / 2 because we might guess you spend as many resources as you can store after your last storage building
-	var storeTax = 0.125 / (1 + perks.Packrat.level * perks.Packrat.effect) / 2;
-	var storeTaxNext = 0.125 / (1 + (perks.Packrat.level + 1) * perks.Packrat.effect) / 2;
-	var ratGain = (1 - storeTaxNext) / (1 - storeTax);
-	perks.Packrat.efficiency = getLogWeightedValue(1,1,1,ratGain,1,1)/getPerkCost("Packrat",1);
-	
-	// Pheromones TODO (or not)
-	
-	// Power:
-	//   attack gain
-	perks.Power.efficiency = getLogWeightedValue(powGain,1,1,1,1,1)/powCost;
-	
-	// Prismal:
-	//   health gain from increased shielding
-	var prismLayers = 1;
-	var basePrismal = props.shieldPrismal + 100;
-	if (props.scruffyLevel >= 1) basePrismal += 25;
-	if (props.scruffyLevel >= 10) prismLayers = 2;
-	var prismHP = 1 + (basePrismal/100 + perks.Prismal.level * perks.Prismal.effect)*prismLayers;
-	var prismGain = (prismHP + perks.Prismal.effect * prismLayers) / prismHP;
-	perks.Prismal.efficiency = getLogWeightedValue(1,prismGain,1,1,1,1)/getPerkCost("Prismal",1);
-	
-	// Resilience:
-	//   health gain (compounding)
-	perks.Resilience.efficiency = getLogWeightedValue(1,perks.Resilience.effect,1,1,1,1)/getPerkCost("Resilience",1);
-	
-	// Tenacity:
-	//   attack gain (compounding, pre-calculated into the effect field)
-	perks.Tenacity.efficiency = getLogWeightedValue(perks.Tenacity.effect,1,1,1,1,1)/getPerkCost("Tenacity",1);
-	
-	// Toughness:
-	//   health gain
-	perks.Toughness.efficiency = getLogWeightedValue(1,toughGain,1,1,1,1)/toughCost;
-	
-	// Observation:
-	//  See getObservationGains for more details on valuation.
-	// NOTE we check for +1 and +2 levels, as +2 levels can be more efficient due to the extra free trinket drop.						
-	var [obsDirectGain,obsMoreTrinkets] = getObservationGains(1);
-	perks.Observation.efficiency = getLogWeightedValue(obsDirectGain,obsDirectGain,1,obsDirectGain,1,1,1,obsMoreTrinkets,1)/getPerkCost("Observation",1);
-	
-	// No point checking for 2-level efficiency if we can't afford 2 levels.
-	// (And more to the point, it breaks the way we flag the best perk if we give non-zero efficiency for the 2-level version....)
-	if (couldBuyPerk("Observation",false,2)) {
-		var [obsDirectGain2,obsMoreTrinkets2] = getObservationGains(2);
-		perks.Observation.efficiency2 = getLogWeightedValue(obsDirectGain2,obsDirectGain2,1,obsDirectGain2,1,1,1,obsMoreTrinkets2,2)/getPerkCost("Observation",2);
-	} else {
-		perks.Observation.efficiency2 = 0;
-	}
-	
-	// reset row colors (and any other property removal we might wish to do later in development & maintenance)
-	clearClasses();
-	
-	// color perks by raw efficiency, and store the most efficient perk name in props.bestPerk
-	efficiencyColorAndFlag();
-	
-	var totalCost = getTotalPerksCost();
-		
-	document.getElementById('total-radon-cost').innerText = (totalCost > 10000) ? totalCost.toExponential(3) : Math.round(totalCost);
-	
-	document.getElementById('input-export').value = "";
-	
-	if (debug) {
-		console.log("evaluatePerks(): generic debug message");
-	}
+    readInputs();
+    
+    var saveAux = {};
+    
+    for (var [key,inputObj] of Object.entries(auxInputs)) {
+        saveAux[key + "Input"] = inputObj.input.value;
+        saveAux[key + "Checkbox"] = inputObj.checkbox.checked;
+    }
+    saveAux.lockAll = lockAuxEl.checked;
+    saveAux.inputTotal = inputs['use-total'].checked;
+    saveAux.obsNoopt = inputs['observation-noopt'].checked;
+    window.localStorage.setItem("saveAux", JSON.stringify(saveAux));
+        
+    if (!saveLoaded) return;
+    
+    // TODO: most perks don't change other perks' efficiencies (given our assumptions of local flatness)
+    //  So move the efficiency calculations to functions owned by each perk, and only update efficiency when actually
+    //  buying a perk. Notable exception for Observation (and carefully look for other exceptions), which will require
+    //  some exception mechanism to update interdependent perks' efficiencies.
+    // Now that we're doing a complex feedback iteration process for each perk efficiency, this is going to become necessary
+    //  to avoid exploding computation time.
+    
+    // Get various gain factors needed to calculate the value of trinkets (and also used to value their respective perks).
+    //  Motivation
+    var motiv = 1 + perks.Motivation.level * perks.Motivation.effect;
+    var motivGain = (motiv + perks.Motivation.effect) / motiv;
+    var motivCost = getPerkCost("Motivation",1);
+    // Power
+    var pow = 1 + perks.Power.level * perks.Power.effect;
+    var powGain = (pow + perks.Power.effect) / pow;
+    var powCost = getPerkCost("Power",1);
+    // Toughness
+    var tough = 1 + perks.Toughness.level * perks.Toughness.effect;
+    var toughGain = (tough + perks.Toughness.effect) / tough;
+    var toughCost = getPerkCost("Toughness",1);
+    
+    // Get the absolute Rn values for trinkets expected at baseline Observation and per marginal trinket,
+    //   and the expected count of trinkets at the end of this run at baseline Observation.
+    [props.trinketRadonPerRun,props.radonPerTrinket,props.baselineTrinketsNext]
+                = getTrinketValues( motivGain,motivCost,
+                                    powGain  ,powCost  ,
+                                    toughGain,toughCost);
+    
+    // Artisanistry:
+    //   resource gain for equipment only
+    perks.Artisanistry.efficiency = getLogWeightedValue(1,1,perks.Artisanistry.effect,1,1,1)/getPerkCost("Artisanistry",1);
+    
+    // Carpentry:
+    //   population gain, also gives resources
+    var carpPop = perks.Carpentry.effect;
+    perks.Carpentry.efficiency = getLogWeightedValue(1,1,1,carpPop,1,1,carpPop)/getPerkCost("Carpentry",1);
+    
+    
+    // Criticality:
+    //   attack gain from crits (TODO: assumes 100% CC, might want a CC input for e.g. Duel)
+    var CD = 1 + props.shieldCD/100 + perks.Criticality.level * perks.Criticality.effect;
+    var CC = 1;
+    var critGain = ((1-CC) + CC * (CD + perks.Criticality.effect))/((1-CC) + CC*CD);
+    perks.Criticality.efficiency = getLogWeightedValue(critGain,1,1,1,1,1)/getPerkCost("Criticality",1);
+    
+    // Equality:
+    perks.Equality.efficiency = getLogWeightedValue(1,1,1,1,1,perks.Equality.effect)/getPerkCost("Equality",1);
+    
+    // Frenzy TODO
+    
+    // Greed:
+    //   all-resource and radon gain
+    var greedGain = perks.Greed.effect;
+    perks.Greed.efficiency = getLogWeightedValue(1,1,1,greedGain,greedGain,1)/getPerkCost("Greed",1);
+    
+    // Looting:
+    //   all-resource and radon gain
+    var loot = 1 + perks.Looting.level * perks.Looting.effect;
+    var lootGain = (loot + perks.Looting.effect) / loot;
+    var lootCost = getPerkCost("Looting",1);
+    perks.Looting.efficiency = getLogWeightedValue(1,1,1,lootGain,lootGain,1)/lootCost;
+    
+    // Motivation:
+    //   all-resource gain (no radon)
+    perks.Motivation.efficiency = getLogWeightedValue(1,1,1,motivGain,1,1)/motivCost;
+        
+    // Packrat:
+    //   all-resource gain from decreased storage costs (no radon)
+    // Note: 0.125 because you only pay taxes on the half of your last storage that you filled before buying it
+    // Note: / 2 because we might guess you spend as many resources as you can store after your last storage building
+    var storeTax = 0.125 / (1 + perks.Packrat.level * perks.Packrat.effect) / 2;
+    var storeTaxNext = 0.125 / (1 + (perks.Packrat.level + 1) * perks.Packrat.effect) / 2;
+    var ratGain = (1 - storeTaxNext) / (1 - storeTax);
+    perks.Packrat.efficiency = getLogWeightedValue(1,1,1,ratGain,1,1)/getPerkCost("Packrat",1);
+    
+    // Pheromones TODO (or not)
+    
+    // Power:
+    //   attack gain
+    perks.Power.efficiency = getLogWeightedValue(powGain,1,1,1,1,1)/powCost;
+    
+    // Prismal:
+    //   health gain from increased shielding
+    var prismLayers = 1;
+    var basePrismal = props.shieldPrismal + 100;
+    if (props.scruffyLevel >= 1) basePrismal += 25;
+    if (props.scruffyLevel >= 10) prismLayers = 2;
+    var prismHP = 1 + (basePrismal/100 + perks.Prismal.level * perks.Prismal.effect)*prismLayers;
+    var prismGain = (prismHP + perks.Prismal.effect * prismLayers) / prismHP;
+    perks.Prismal.efficiency = getLogWeightedValue(1,prismGain,1,1,1,1)/getPerkCost("Prismal",1);
+    
+    // Resilience:
+    //   health gain (compounding)
+    perks.Resilience.efficiency = getLogWeightedValue(1,perks.Resilience.effect,1,1,1,1)/getPerkCost("Resilience",1);
+    
+    // Tenacity:
+    //   attack gain (compounding, pre-calculated into the effect field)
+    perks.Tenacity.efficiency = getLogWeightedValue(perks.Tenacity.effect,1,1,1,1,1)/getPerkCost("Tenacity",1);
+    
+    // Toughness:
+    //   health gain
+    perks.Toughness.efficiency = getLogWeightedValue(1,toughGain,1,1,1,1)/toughCost;
+    
+    // Observation:
+    //  See getObservationGains for more details on valuation.
+    // NOTE we check for +1 and +2 levels, as +2 levels can be more efficient due to the extra free trinket drop.                       
+    var [obsDirectGain,obsMoreTrinkets] = getObservationGains(1);
+    perks.Observation.efficiency = getLogWeightedValue(obsDirectGain,obsDirectGain,1,obsDirectGain,1,1,1,obsMoreTrinkets,1)/getPerkCost("Observation",1);
+    
+    // No point checking for 2-level efficiency if we can't afford 2 levels.
+    // (And more to the point, it breaks the way we flag the best perk if we give non-zero efficiency for the 2-level version....)
+    if (couldBuyPerk("Observation",false,2)) {
+        var [obsDirectGain2,obsMoreTrinkets2] = getObservationGains(2);
+        perks.Observation.efficiency2 = getLogWeightedValue(obsDirectGain2,obsDirectGain2,1,obsDirectGain2,1,1,1,obsMoreTrinkets2,2)/getPerkCost("Observation",2);
+    } else {
+        perks.Observation.efficiency2 = 0;
+    }
+    
+    // reset row colors (and any other property removal we might wish to do later in development & maintenance)
+    clearClasses();
+    
+    // color perks by raw efficiency, and store the most efficient perk name in props.bestPerk
+    efficiencyColorAndFlag();
+    
+    var totalCost = getTotalPerksCost();
+        
+    document.getElementById('total-radon-cost').innerText = (totalCost > 10000) ? totalCost.toExponential(3) : Math.round(totalCost);
+    
+    document.getElementById('input-export').value = "";
+    
+    if (debug) {
+        console.log("evaluatePerks(): generic debug message");
+    }
 }
 
 var vars = {};
 var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-	vars[key] = value;
+    vars[key] = value;
 });
 
 var switchObsNoopt = function() {
-	perks.Observation.optimize = !inputs['observation-noopt'].checked;
-	evaluatePerks();
+    perks.Observation.optimize = !inputs['observation-noopt'].checked;
+    evaluatePerks();
 }
 
 var inputs = [];
 var inputElements = document.getElementById('perks-col').getElementsByTagName("INPUT");
 for (var i = inputElements.length - 1; i >=0; i--) {
-	var input = inputElements[i];
-	var inputId = input.getAttribute('id').replace("input-", "");
+    var input = inputElements[i];
+    var inputId = input.getAttribute('id').replace("input-", "");
 
-	
-	inputs[inputId] = input;
-		
-	if (inputId == "use-total") continue;
-	
-	if (inputId == "observation-noopt") {
-		input.onchange = switchObsNoopt;
-		continue;
-	}
-	
-	if (inputId != 'export') {
-		input.onkeyup = evaluatePerks;
-		input.onchange = evaluatePerks;
-		input.onpaste = evaluatePerks;
-		input.oncut = evaluatePerks;
-	}
-	
-	if (typeof(input.getAttribute('type')) != "undefined" && input.getAttribute('type') == "checkbox") {
-		input.addEventListener('change', (event) => {
-		  var row = event.target.parentElement.parentElement;
-		  if (event.target.checked) {
-			row.setAttribute('class', row.getAttribute('class').replace('grey', ''));
-		  } else {
-			row.setAttribute('class', row.getAttribute('class').replace('grey', '') + ' grey');
-		  }
-		  evaluatePerks();
-		})
-	}
+    
+    inputs[inputId] = input;
+        
+    if (inputId == "use-total") continue;
+    
+    if (inputId == "observation-noopt") {
+        input.onchange = switchObsNoopt;
+        continue;
+    }
+    
+    if (inputId != 'export') {
+        input.onkeyup = evaluatePerks;
+        input.onchange = evaluatePerks;
+        input.onpaste = evaluatePerks;
+        input.oncut = evaluatePerks;
+    }
+    
+    if (typeof(input.getAttribute('type')) != "undefined" && input.getAttribute('type') == "checkbox") {
+        input.addEventListener('change', (event) => {
+          var row = event.target.parentElement.parentElement;
+          if (event.target.checked) {
+            row.setAttribute('class', row.getAttribute('class').replace('grey', ''));
+          } else {
+            row.setAttribute('class', row.getAttribute('class').replace('grey', '') + ' grey');
+          }
+          evaluatePerks();
+        })
+    }
 }
 
 for (var [key,iObj] of Object.entries(auxInputs)) {
-	iObj.input.onkeyup = evaluatePerks;
-	iObj.input.onchange = evaluatePerks;
-	iObj.input.onpaste = evaluatePerks;
-	iObj.input.oncut = evaluatePerks;
-	iObj.checkbox.onchange = evaluatePerks;
+    iObj.input.onkeyup = evaluatePerks;
+    iObj.input.onchange = evaluatePerks;
+    iObj.input.onpaste = evaluatePerks;
+    iObj.input.oncut = evaluatePerks;
+    iObj.checkbox.onchange = evaluatePerks;
 }
 
 var checkAllAux = function() {
-	for (var [key,iObj] of Object.entries(auxInputs)) {
-		iObj.checkbox.checked = lockAuxEl.checked;
-	}
-	evaluatePerks();
+    for (var [key,iObj] of Object.entries(auxInputs)) {
+        iObj.checkbox.checked = lockAuxEl.checked;
+    }
+    evaluatePerks();
 }
 var lockAuxEl = document.getElementById('input-lock-aux');
 lockAuxEl.onchange = checkAllAux;
 
 function exportPerks() {
-	var exportedPerks = {};
-	var saveTextArea = document.getElementById('save-text-area');
-	var game = JSON.parse(LZString.decompressFromBase64(saveTextArea.value));
+    var exportedPerks = {};
+    var saveTextArea = document.getElementById('save-text-area');
+    var game = JSON.parse(LZString.decompressFromBase64(saveTextArea.value));
 
-	for (var [key, value] of Object.entries(perks)) {
-		if (typeof(value) !== "object" || !value.hasOwnProperty("optimize")) continue; // iterating over the perks, ignoring aux values
-		exportedPerks[key] = value.level;
-	}
-	
-	exportedPerks = JSON.stringify(exportedPerks);
-	var input = document.getElementById('input-export');
-	input.value = LZString.compressToBase64(exportedPerks);
-	input.focus();
-	input.select();
-	document.execCommand('copy');
+    for (var [key, value] of Object.entries(perks)) {
+        if (typeof(value) !== "object" || !value.hasOwnProperty("optimize")) continue; // iterating over the perks, ignoring aux values
+        exportedPerks[key] = value.level;
+    }
+    
+    exportedPerks = JSON.stringify(exportedPerks);
+    var input = document.getElementById('input-export');
+    input.value = LZString.compressToBase64(exportedPerks);
+    input.focus();
+    input.select();
+    document.execCommand('copy');
 }
 
 // zero out perk inputs and autobuy
 function clearAndAutobuyPerks() {
-	if (props.perksRadon > 0) {
-		for (var [key, value] of Object.entries(perks)) {
-			if (typeof(value) !== "object" || !value.hasOwnProperty("optimize") || !value.optimize) continue; // iterating over the perks, ignoring aux values and non-optimized perks
-			inputs[key.toLowerCase()].value = 0;
-		}
-		autobuyPerks();
-	}
+    if (props.perksRadon > 0) {
+        for (var [key, value] of Object.entries(perks)) {
+            if (typeof(value) !== "object" || !value.hasOwnProperty("optimize") || !value.optimize) continue; // iterating over the perks, ignoring aux values and non-optimized perks
+            inputs[key.toLowerCase()].value = 0;
+        }
+        autobuyPerks();
+    }
 }
 
 // autobuy from current input perk levels
 function autobuyPerks() {
-	evaluatePerks();
-	while (props.bestPerk !== "") {
-		var bestName = props.bestPerk;
-		var bestObj = perks[bestName];
-		var buy2 = bestObj.hasOwnProperty("efficiency2") && bestObj.efficiency2 > bestObj.efficiency;
-		if (buy2) {
-			if (!buyPerk(bestName,2) || bestObj.efficiency2 < 0) {
-				throw("ERROR: a perk was flagged to buy 2 levels at once, but it was unaffordable or had a negative efficiency: " + bestName);
-			}
-		} else if (!buyPerk(bestName) || bestObj.efficiency < 0) {
-			throw("ERROR: a maxed, unaffordable, or inefficient perk was flagged as best: " + bestName);
-			return;
-		}
-		inputs[bestName.toLowerCase()].value = bestObj.level;
-		evaluatePerks();
-	}
-	console.log("Total Radon for perks: " + props.perksRadon + ", Total Radon Spent: " + props.radonSpent);
+    evaluatePerks();
+    while (props.bestPerk !== "") {
+        var bestName = props.bestPerk;
+        var bestObj = perks[bestName];
+        var buy2 = bestObj.hasOwnProperty("efficiency2") && bestObj.efficiency2 > bestObj.efficiency;
+        if (buy2) {
+            if (!buyPerk(bestName,2) || bestObj.efficiency2 < 0) {
+                throw("ERROR: a perk was flagged to buy 2 levels at once, but it was unaffordable or had a negative efficiency: " + bestName);
+            }
+        } else if (!buyPerk(bestName) || bestObj.efficiency < 0) {
+            throw("ERROR: a maxed, unaffordable, or inefficient perk was flagged as best: " + bestName);
+            return;
+        }
+        inputs[bestName.toLowerCase()].value = bestObj.level;
+        evaluatePerks();
+    }
+    console.log("Total Radon for perks: " + props.perksRadon + ", Total Radon Spent: " + props.radonSpent);
 }
 
 if (window.localStorage.getItem("saveAux")) {
-	var saveAux = JSON.parse(window.localStorage.getItem("saveAux"));
-	for (var [key,inputObj] of Object.entries(auxInputs)) {
-		if (saveAux[key + "Input"] != null) {
-			inputObj.input.value = saveAux[key + "Input"];
-			inputObj.checkbox.checked = saveAux[key + "Checkbox"];
-		}
-	}
-	if (saveAux.lockAll != null) lockAuxEl.checked = saveAux.lockAll;
-	if (saveAux.inputTotal != null) inputs['use-total'].checked = saveAux.inputTotal;
-	if (saveAux.obsNoopt != null) inputs['observation-noopt'].checked = saveAux.obsNoopt;
+    var saveAux = JSON.parse(window.localStorage.getItem("saveAux"));
+    for (var [key,inputObj] of Object.entries(auxInputs)) {
+        if (saveAux[key + "Input"] != null) {
+            inputObj.input.value = saveAux[key + "Input"];
+            inputObj.checkbox.checked = saveAux[key + "Checkbox"];
+        }
+    }
+    if (saveAux.lockAll != null) lockAuxEl.checked = saveAux.lockAll;
+    if (saveAux.inputTotal != null) inputs['use-total'].checked = saveAux.inputTotal;
+    if (saveAux.obsNoopt != null) inputs['observation-noopt'].checked = saveAux.obsNoopt;
 }
 // order of perks
 // buy 2nd, 3rd...
