@@ -1041,6 +1041,13 @@ function getTrinketValues(	motivGain,motivCost,
 		res.push(totShineCost);
 	}
 	res.push(shinies); // also return the expected trinket count next run at baseline Obs
+	
+	// zero out per-run stats if at 0 Obs (these were used to help calculate the per-trinket gain for valuing the 1st level of Obs)
+	if (perks.Observation.level == 0) {
+		res[0] = 0;
+		res[2] = 0;
+	}
+	
 	return res;
 }
 
