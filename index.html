@@ -255,7 +255,6 @@ input[type=checkbox], input[type=radio] {
 </div>
 
 <script type="text/javascript">
-const maxPrismalShield = 250;
 // prestige equipment scaling, used when equip levels are small
 const equipScalingPrestige = {
     attack: Math.pow(Math.pow(1.19,13),1/Math.log(Math.pow(1.069,(57*0.85)))),
@@ -642,7 +641,7 @@ const auxInputList = [
         type: "float",
         value: 0,
         min: 0,
-        max: 250, },
+        max: null, },
     {   keyName: "perksRadon",
         divId: 'perks-radon',
         label: "Radon for Perks",
