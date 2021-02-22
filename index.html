@@ -521,7 +521,7 @@ const auxInputList = [
         divId: 'target-zone',
         label: "Target Zone",
         spacer: true,
-        title: "Target zone to optimize for clearing",
+        title: "Target zone to optimize for clearing. For farming this would be 1 zone before your portal zone, or the hardest zone to clear during your Rn challenge if that's the hardest part of the run. For pushing this should be the hardest zone you plan to clear.",
         type: "int",
         value: 0,
         min: null,
@@ -769,8 +769,8 @@ var loadSave = function() {
         
         // set aux inputs from game variables, unless any given field is locked (handled by setAuxInput function)
         
-        // target zone = current zone
-        setAuxInput("targetZone",game.global.world);
+        // target zone to CLEAR is 1 zone before the portal zone by default
+        setAuxInput("targetZone",game.global.world-1);
         
         // weapon/armor levels taken from dagger/boots (most likely to be leveled highest)
         setAuxInput("weaponLevels",game.equipment.Dagger.level || 1);
