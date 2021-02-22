@@ -1100,7 +1100,8 @@ function getObservationGains(levels) {
 // values as gain factors: attack, health, metal, food, F/M/L, radon/growth, population, equality
 // key values driving gain feedback to avoid endless positive feedback:
 //   tribute count (for greed), housing count, meteorologist count
-// trinket droprate and trinket count (increase in trinket count must be converted to a value outside this function)
+// trinket droprate and trinket count (increase in trinket count must be converted to a value outside this function),
+//   as well as the Obs level to consider for this valuation (in case we're evaluating Obs)
 // also need to keep track of what gains have already been applied (and should not be continuously re-applied):
 //   Vpushed = Va * Vh already applied
 //   V<x>Done = V<x> already applied
@@ -1112,7 +1113,7 @@ function getObservationGains(levels) {
 function iterateValueFeedback(valueArray) {
 	var [Va,Vh,Vm,Vf,Vres,Vrad,Vp,Ve,
 		 tribs,housing,mets,
-		 trinketRate,trinkets,
+		 trinketRate,trinkets,obsLevel,
 		 Vpushed=1,VmDone=1,VfDone=1,VresDone=1,VpDone=1] = valueArray;
 	
 	
@@ -1174,7 +1175,10 @@ function iterateValueFeedback(valueArray) {
 	// trinket gain: use a fixed drop rate based on target zone, which should be fine assuming the user has entered
 	//   a sensible value and we're only optimizing at the margins of a fractional zone (or maybe 1-2 zones)
 	moreTrinkets = pushZones * trinketRate;
-	trinketGain = 1 + moreTrinkets * perks.Observation.level / (100 + trinkets * perks.Observation.level);
+	var trinketMax = 1000 * obsLevel;
+	if (moreTrinkets + trinkets > trinketMax) moreTrinkets = trinketMax - trinkets;
+	if (moreTrinkets < 0) throw("Unexpectedly tried to value more trinkets than our trinket max!: " + trinkets);
+	trinketGain = 1 + moreTrinkets * obsLevel / (100 + trinkets * obsLevel);
 	Va *= trinketGain;
 	Vh *= trinketGain;
 	Vres *= trinketGain;
@@ -1195,17 +1199,18 @@ function iterateValueFeedback(valueArray) {
 	valueArray[10] = mets;
 	valueArray[11] = trinketRate;
 	valueArray[12] = trinkets;
-	valueArray[13] = Va * Vh;
-	valueArray[14] = Vm;
-	valueArray[15] = Vf;
-	valueArray[16] = Vres;
-	valueArray[17] = Vp;
+	//valueArray[13] = obsLevel;
+	valueArray[14] = Va * Vh;
+	valueArray[15] = Vm;
+	valueArray[16] = Vf;
+	valueArray[17] = Vres;
+	valueArray[18] = Vp;
 }
 
 const iterateValueLoops = 3;
 // Inputs: gain values for atk, hp, equip discount (or metal), radon, equality, pop
 //         moreTrinkets: increased count of trinkets on next run from Obs droprate increase
-function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve=1,Vp=1,moreTrinkets=0) {
+function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve=1,Vp=1,moreTrinkets=0,extraObs=0) {
 	
 	var Wa = props.clearWeight; // attack weight
 	var Wh = props.clearWeight + props.survivalWeight; // health weight
@@ -1218,12 +1223,12 @@ function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve=1,Vp=1,moreTrinkets=0) {
 	//	  trinketRate,trinkets,
 	//	  Vpushed=1,VmDone=1,VfDone=1,VresDone=1,VpDone=1] = valueArray;
 
-	// if there's any additional trinkets being valued, that indicates we're evaluating an increase in Obs level
-	var obsLevel = (moreTrinkets > 0) ? perks.Observation.level + 1 : perks.Observation.level;
+	// add Obs levels if we're evaluating Observation
+	var obsLevel = perks.Observation.level + extraObs;
 	
 	var valueArray = [	Va,Vh,Vgear,1,Vres,Vrad,Vp,Ve,
 						props.tributes,props.housingCount,props.meteorologists,
-						obsDropRate(obsLevel,props.targetZone),props.baselineTrinketsNext,
+						obsDropRate(obsLevel,props.targetZone),props.baselineTrinketsNext,obsLevel,
 						1,1,1,1,1,
 					 ];
 	
@@ -1233,6 +1238,9 @@ function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve=1,Vp=1,moreTrinkets=0) {
 	Vh = valueArray[1];
 	Vrad = valueArray[5];
 	Ve = valueArray[7];
+	Vtrink = valueArray[12];
+	
+	moreTrinkets += Vtrink - props.baselineTrinketsNext;
 	
 	// calculate unified Rn-like growth gain:
 	var Vgrowth = (Vrad * props.radonPerRun + props.trinketRadonPerRun 
@@ -1485,13 +1493,13 @@ var evaluatePerks = function(debug=false) {
 	//  See getObservationGains for more details on valuation.
 	// NOTE we check for +1 and +2 levels, as +2 levels can be more efficient due to the extra free trinket drop.						
 	var [obsDirectGain,obsMoreTrinkets] = getObservationGains(1);
-	perks.Observation.efficiency = getLogWeightedValue(obsDirectGain,obsDirectGain,1,obsDirectGain,1,1,1,obsMoreTrinkets)/getPerkCost("Observation",1);
+	perks.Observation.efficiency = getLogWeightedValue(obsDirectGain,obsDirectGain,1,obsDirectGain,1,1,1,obsMoreTrinkets,1)/getPerkCost("Observation",1);
 	
 	// No point checking for 2-level efficiency if we can't afford 2 levels.
 	// (And more to the point, it breaks the way we flag the best perk if we give non-zero efficiency for the 2-level version....)
 	if (couldBuyPerk("Observation",false,2)) {
 		var [obsDirectGain2,obsMoreTrinkets2] = getObservationGains(2);
-		perks.Observation.efficiency2 = getLogWeightedValue(obsDirectGain2,obsDirectGain2,1,obsDirectGain2,1,1,1,obsMoreTrinkets2)/getPerkCost("Observation",2);
+		perks.Observation.efficiency2 = getLogWeightedValue(obsDirectGain2,obsDirectGain2,1,obsDirectGain2,1,1,1,obsMoreTrinkets2,2)/getPerkCost("Observation",2);
 	} else {
 		perks.Observation.efficiency2 = 0;
 	}
