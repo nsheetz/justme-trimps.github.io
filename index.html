@@ -519,9 +519,9 @@ var LZString=function(){function o(o,r){if(!t[o]){t[o]={};for(var n=0;n<o.length
 const auxInputList = [
     {   keyName: "targetZone",
         divId: 'target-zone',
-        label: "Target Zone",
+        label: "Target Zone to clear",
         spacer: true,
-        title: "Target zone to optimize for clearing. For farming this would be 1 zone before your portal zone, or the hardest zone to clear during your Rn challenge if that's the hardest part of the run. For pushing this should be the hardest zone you plan to clear.",
+        title: "Target last zone to clear. This is only used for valuing radon an trinket gains based on last cleared zone, so there's no point picking a different zone - it won't affect the optimization process for pure pushing with no radon weight.",
         type: "int",
         value: 0,
         min: null,
@@ -530,7 +530,7 @@ const auxInputList = [
         divId: 'clear-weight',
         spacer: true,
         label: "Attack & Health weight",
-        title: "If you are farming and it's trivial to complete your radon challenge, set this to 0! It will still be valued for the effect of pushing power on radon gains (from Scruffy level 3, for example). This is the weight for how much you value attack * health, which determines clear speed at less than max equality. If you are used to Attack Weight and Health Weight, this is equivalent to Attack weight. This weight is not used for Equality at all.",
+        title: "If you are farming and it's trivial to complete your radon challenge, set this to 0! It will still be valued for the effect of pushing power on radon gains (from Scruffy level 3, for example). Set >0 if you need more pushing power to complete your current challenge in a reasonable amount of time. This is the weight for how much you value attack * health, which determines clear speed at less than max equality. If you are used to Attack Weight and Health Weight, this is equivalent to Attack weight. This weight is not used for Equality at all.",
         type: "float",
         value: 0,
         min: 0,
@@ -538,9 +538,9 @@ const auxInputList = [
     {   keyName: "survivalWeight",
         divId: 'survival-weight',
         label: "Additional Health/Equality weight",
-        title: "Weight placed on equality (and additional weight placed on health), for maximum survivability against high enemy attack at max equality. This helps determine how far you can push (perhaps very slowly) before you get stuck on fast enemies that can one-shot you every hit. This should be set to a small fraction (like 1/100 or less) of your Atk/HP weight unless you're doing a hard push. If you're used to separate attack & health weights, set this to your old Health Weight minus Attack Weight.",
+        title: "Weight placed on equality (and additional weight placed on health), for maximum survivability against high enemy attack at max equality. This helps determine how far you can push (perhaps very slowly) before you get stuck on fast enemies that can one-shot you every hit. This can be set to 0 and equality will still be used as a dump perk. If you need a little more equality than that small weights like 0.001 will still give a meaningful boost to Equality levels. If you're used to separate attack & health weights, set this to your old Health Weight minus Attack Weight.",
         type: "float",
-        value: 0.001,
+        value: 0,
         min: null, // secretly allow negative weights here, in case someone is really gung-ho on increasing attack weight above health weight for probably-wrong reasons (or some future change in mechanics)
         max: null, },
     {   keyName: "radonWeight",
@@ -1214,7 +1214,7 @@ function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve=1,Vp=1,moreTrinkets=0,extr
     
     var Wa = props.clearWeight; // attack weight
     var Wh = props.clearWeight + props.survivalWeight; // health weight
-    var We = props.survivalWeight; // equality weight
+    var We = Math.max(1e-100,props.survivalWeight); // equality weight: force >0 to use equality as a dump perk if the user sets 0 weight
     var Wr = props.radonWeight; // radon weight
 
     // from iterateValueFeedback:
