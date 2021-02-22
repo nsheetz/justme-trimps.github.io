@@ -554,10 +554,10 @@ const auxInputList = [
     {   keyName: "radonPerRun",
         divId: 'radon-perrun',
         label: "Radon per Run (if Rn weight > 0)",
-        title: "Typical Radon gains in a farming run. Needed for Observation (until your trinkets are capped). Can be extracted from your save if you paste a save from the end of a farming run. Doesn't need to be exact but a pretty good estimate is recommended. Only used when Rn weight > 0.",
+        title: "Typical Radon gains in a farming run. Needed for Observation (until your trinkets are capped). Can be extracted from your save if you paste a save from the end of a U2 farming run. Doesn't need to be exact but a pretty good estimate is recommended. Only used when Rn weight > 0.",
         type: "float",
-        value: 0,
-        min: 0,
+        value: null,
+        min: null,
         max: null, },
     {   keyName: "weaponLevels",
         divId: 'weapon-levels',
@@ -943,6 +943,9 @@ function readInputs() {
         }
         props[key] = legalizeInput(val,def);
     }
+    
+    // Accuracy doesn't matter prior to Obs, but 0 will give no value to radon gains so >0 is needed.
+    props.radonPerRun = Math.max(1,props.radonPerRun);
     
     // final enemy HP/ATK scaling including the sqrt(zone) component:
     //   (note we don't divide by 2, because we're adding the two log sqrt components together)
