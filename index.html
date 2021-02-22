@@ -1197,7 +1197,7 @@ function iterateValueFeedback(valueArray) {
 	valueArray[8] = tribs;
 	valueArray[9] = housing;
 	valueArray[10] = mets;
-	valueArray[11] = trinketRate;
+	//valueArray[11] = trinketRate;
 	valueArray[12] = trinkets;
 	//valueArray[13] = obsLevel;
 	valueArray[14] = Va * Vh;
@@ -1228,7 +1228,7 @@ function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve=1,Vp=1,moreTrinkets=0,extr
 	
 	var valueArray = [	Va,Vh,Vgear,1,Vres,Vrad,Vp,Ve,
 						props.tributes,props.housingCount,props.meteorologists,
-						obsDropRate(obsLevel,props.targetZone),props.baselineTrinketsNext,obsLevel,
+						obsDropRate(obsLevel,props.targetZone)/100,props.baselineTrinketsNext,obsLevel,
 						1,1,1,1,1,
 					 ];
 	
