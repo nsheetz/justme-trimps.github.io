@@ -179,6 +179,18 @@ input[type=checkbox], input[type=radio] {
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-prismal" /></div>
         </div>
         <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-frenzy-enabled" /></div>
+            <label class="col-sm-6 col-form-label" id="label-frenzy" for="input-frenzy">Frenzy </label>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-frenzy" /></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-observation-enabled" /></div>
+            <label class="col-sm-3 col-form-label" id="label-observation" for="input-observation">Observation </label>
+            <label class="col-sm-3 col-form-label" style="text-align: right;" id="label-observation-noopt" for="input-observation-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-observation-noopt" /></div>
+            <div class="col-sm-4"><input class="form-control" value="0" type="number" min="0" id="input-observation" /></div>
+        </div>
+        <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-range-enabled" /></div>
             <label class="col-sm-6 col-form-label" id="label-range" for="input-range">Range </label>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-range" /></div>
@@ -208,25 +220,13 @@ input[type=checkbox], input[type=radio] {
             <label class="col-sm-6 col-form-label" id="label-hunger" for="input-hunger">Hunger </label>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="30" id="input-hunger" /></div>
         </div>
-        <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-frenzy-enabled" /></div>
-            <label class="col-sm-6 col-form-label" id="label-frenzy" for="input-frenzy">Frenzy </label>
-            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-frenzy" /></div>
-        </div>
-        <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-observation-enabled" /></div>
-            <label class="col-sm-3 col-form-label" id="label-observation" for="input-observation">Observation </label>
-            <label class="col-sm-3 col-form-label" style="text-align: right;" id="label-observation-noopt" for="input-observation-noopt">lock level: </label>
-            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-observation-noopt" /></div>
-            <div class="col-sm-4"><input class="form-control" value="0" type="number" min="0" id="input-observation" /></div>
-        </div>
         <div class="row mt-2">
             <div class="col-sm-1"></div>
             <label class="col-sm-6 col-form-label">Total radon cost </label>
             <div class="col-sm-5" id="total-radon-cost"></div>
         </div>
         <div class="row mt-2">
-            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-use-total" onclick="switchTotalRadon()" /></div>
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-use-total" onclick="switchTotalRadon()" /></div>
             <label class="col-sm-11 col-form-label" id="label-use-total" for="input-use-total">Include Radon earned in current portal</label>
         </div>
         <div class="row mt-2">
@@ -260,12 +260,6 @@ const equipScalingPrestige = {
     attack: Math.pow(Math.pow(1.19,13),1/Math.log(Math.pow(1.069,(57*0.85)))),
     health: Math.pow(Math.pow(1.19,14),1/Math.log(Math.pow(1.069,(57*0.85)))),
 }
-// quick and dirty housing cost scaling:
-//   This is the average scaling across all housing types in U2, which will be approximately correct if the user has Hubs.
-//   I expect this is plenty good enough for our small 2nd-order resource->population corrections at any stage of U2, without
-//   asking the user to look at yet another input field for "best housing building", which must be maintained especially when
-//   loading a U1 save to prep for a U2 run.
-const logHousingScaling = Math.log(1.18);
 // Zone scaling after 60 (always used, just means we're a bit conservative at lower zones)
 //  HP: sqrt(zone) * (3.265^(1/2) * 1.1 * 1.32)^zone
 // ATK: sqrt(zone) * (3.27^(1/2) * 1.15 * 1.32)^zone 
@@ -301,6 +295,7 @@ function initPerks() {
         tributes: 0,
         trinkets: 0,
         housingCount: 0,
+        hubEnabled: 0,
         meteorologists: 0,
         tenacityTime: 0, // minutes of tenacity to optimize for
         coordLimited: 0, // 0-1 value of "how coord limited" we are
@@ -371,12 +366,14 @@ function initPerks() {
             efficiency: 0,
         },
         Frenzy: {
-            optimize: false, // TODO to figure out how frenzy works
+            optimize: true,
             locked: true,
             level: 0,
             priceBase: 1000000000000000,
             priceFact: 1.3,
-            effect: 0,
+            effect: 0.5,
+            procEffect: 0.001,
+            timeEffect: 5,
             efficiency: 0,
         },
         Greed: {
@@ -555,7 +552,7 @@ const auxInputList = [
         label: "Radon per Run (if Rn weight > 0)",
         title: "Typical Radon gains in a farming run. Needed for Observation (until your trinkets are capped). Can be extracted from your save if you paste a save from the end of a U2 farming run. Doesn't need to be exact but a pretty good estimate is recommended. Only used when Rn weight > 0.",
         type: "float",
-        value: null,
+        value: "",
         min: null,
         max: null, },
     {   keyName: "weaponLevels",
@@ -619,8 +616,8 @@ const auxInputList = [
         max: null, },
     {   keyName: "housingCount",
         divId: 'housing-count',
-        label: "Count of best housing type",
-        title: "How many of your best housing type to you get in your runs? Use Hub count if you have hubs. Affects the value of more resources for increasing population.",
+        label: "Collector count:",
+        title: "How many collectors do you get in your runs? Affects the value of more resources for increasing population. If you don't have collectors unlocked you can enter 0.",
         type: "int",
         value: 0,
         min: 0,
@@ -688,10 +685,19 @@ for (var i=0; i<auxInputList.length; i++) {
     tmpRow.setAttribute('class','row' + (iObj.spacer ? ' mt-2' : ''));
     var step = (iObj.type == 'float') ? ' step="any" ' : "";
     var minMaxSrc = (iObj.min === null ? "" : ' min="' + iObj.min + '" ') + (iObj.max === null ? "" : ' max="' + iObj.max + '" ');
-    tmpRow.innerHTML = '<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="' + checkboxDivName + 
+    if (key == "housingCount") {
+        tmpRow.innerHTML = '<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="' + checkboxDivName + 
+            '" /></div><label class="col-sm-3 col-form-label" style="text-align: right;" id="label-hub-enabled" for="input-hub-enabled">Hub unlocked: </label>' +
+            '<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-hub-enabled" /></div>' +
+            '<label class="col-sm-3 col-form-label" style="text-align: right;" id="' + labelDivName + '" for="' + inputDivName + '">' + iObj.label +
+            ' </label><div class="col-sm-4"><input class="form-control" value="' + iObj.value + '" title="' + iObj.title + 
+            '" type="number" ' + step + minMaxSrc + 'id="' + inputDivName + '" /></div>'
+    } else {
+        tmpRow.innerHTML = '<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="' + checkboxDivName + 
             '" /></div><label class="col-sm-6 col-form-label" id="' + labelDivName + '" for="' + inputDivName + '">' + iObj.label +
             ' </label><div class="col-sm-5"><input class="form-control" value="' + iObj.value + '" title="' + iObj.title + 
             '" type="number" ' + step + minMaxSrc + 'id="' + inputDivName + '" /></div>';
+    }
     auxColumnElement.insertBefore(tmpRow,null); // insert at end of the aux column
     
     // insert into auxInputs object for easy reference later
@@ -700,6 +706,8 @@ for (var i=0; i<auxInputList.length; i++) {
         checkbox: document.getElementById(checkboxDivName),
     };
 }
+
+var hubEl = document.getElementById('input-hub-enabled');
 
 var colorCheckboxRows = function() {
     var inputElements = document.getElementById('perks-col').getElementsByTagName("INPUT");
@@ -782,14 +790,11 @@ var loadSave = function() {
         setAuxInput("antennae",game.buildings.Antenna.owned || 0);
         
         // get count of best housing building (don't bother optimizing lower than gateways, the 2nd-order adjustments won't matter enough to bother)
-        var hubs = game.buildings.Hub.owned || 0;
         var cols = game.buildings.Collector.owned || 0;
-        var gats = game.buildings.Gateway.owned || 0;
         var housings = 0;
-        if (hubs > 0) housings = hubs;
-        else if (cols > 0) housings = cols;
-        else if (gats > 0) housings = gats;
-        setAuxInput("housingCount",housings);
+        var haveHubs = game.buildings.Hub.owned > 0;
+        setAuxInput("housingCount",cols);
+        if (!auxInputs["housingCount"].checkbox.checked) hubEl.checked = haveHubs;
         
         var shield = null;
         if (game.global.universe == 2)
@@ -878,7 +883,7 @@ function getGreedResourceFeedback(resBoost,tribs) {
     var tribsGained = Math.log(resBoost)/Math.log(1.05);
     if (tribs + tribsGained < 600) return [1,tribs];
     if (tribs + tribsGained > 1250) tribsGained = 1250 - tribs;
-    if (tribs < 600) tribsGained = tribs + tribsGanied - 600;
+    if (tribs < 600) tribsGained = tribs + tribsGained - 600;
     // don't go by specific breakpoints which we'd be foolish to tie to a specific resource gain, just smooth the every-25 bonus out evenly per tribute
     var baseGreed = getGreedEffect(tribs);
     var greedGain = (baseGreed + 0.00029*tribsGained) / baseGreed;
@@ -943,6 +948,9 @@ function readInputs() {
         }
         props[key] = legalizeInput(val,def);
     }
+    
+    // are hubs enabled?
+    props.hubEnabled = hubEl.checked;
     
     // Accuracy doesn't matter prior to Obs, but 0 will give no value to radon gains so >0 is needed.
     props.radonPerRun = Math.max(1,props.radonPerRun);
@@ -1102,7 +1110,7 @@ function getObservationGains(levels) {
 // INPUTS (also the output):
 // values as gain factors: attack, health, metal, food, F/M/L, radon/growth, population, equality
 // key values driving gain feedback to avoid endless positive feedback:
-//   tribute count (for greed), housing count, meteorologist count
+//   tribute count (for greed), collector count, are hubs enabled?, meteorologist count
 // trinket droprate and trinket count (increase in trinket count must be converted to a value outside this function),
 //   as well as the Obs level to consider for this valuation (in case we're evaluating Obs)
 // also need to keep track of what gains have already been applied (and should not be continuously re-applied):
@@ -1115,7 +1123,7 @@ function getObservationGains(levels) {
 // NOTE: metal/food are MUTLIPLICATIVE gain over and above the unified F/M/L gain.
 function iterateValueFeedback(valueArray) {
     var [Va,Vh,Vm,Vf,Vres,Vrad,Vp,Ve,
-         tribs,housing,mets,
+         tribs,collectors,hubEnabled,mets,
          trinketRate,trinkets,obsLevel,
          Vpushed=1,VmDone=1,VfDone=1,VresDone=1,VpDone=1] = valueArray;
     
@@ -1128,10 +1136,18 @@ function iterateValueFeedback(valueArray) {
     }
     
     // more resources buy more housing, which feeds back to more resources and population
-    var housingGain = 1 + Math.log(Vres/VresDone)/logHousingScaling/housing;
+    //  -> Don't bother with this small correction below Collectors, especially since Gateways don't scale with F/M/L.
+    //     Frags do scale with "some" resource boosts, but approximating them as non-scaling as a general rule is pretty close to correct.
+    var moreHousing = Math.log(Vf*Vres/(VfDone*VresDone))/Math.log(1.12); // Collectors scale with food (no other basic resources needed)
+    var baseHousing = collectors;
+    if (hubEnabled) {
+        moreHousing += 5*Math.log(Vres/VresDone)/Math.log(1.2); // 5 housing types below Gateway need wood, roughly 1.2 avg scaling (Gateway doesn't scale)
+        baseHousing *= 7; // estimate all housing types have the same number as Collectors (close enough for gain factor w.r.t. the small feedback effects here)
+    }
+    var housingGain = 1 + moreHousing/baseHousing;
     Vres *= housingGain;
     Vp *= housingGain;
-    housing += housingGain;
+    collectors += housingGain;
     
     // use equip scaling to convert resource value to atk/hp value
     var VmAdjusted = Vm*Vres/(VmDone*VresDone);
@@ -1198,16 +1214,17 @@ function iterateValueFeedback(valueArray) {
     valueArray[6] = Vp;
     valueArray[7] = Ve;
     valueArray[8] = tribs;
-    valueArray[9] = housing;
-    valueArray[10] = mets;
-    //valueArray[11] = trinketRate;
-    valueArray[12] = trinkets;
-    //valueArray[13] = obsLevel;
-    valueArray[14] = Va * Vh;
-    valueArray[15] = Vm;
-    valueArray[16] = Vf;
-    valueArray[17] = Vres;
-    valueArray[18] = Vp;
+    valueArray[9] = collectors;
+    //valueArray[10] = hubEnabled;
+    valueArray[11] = mets;
+    //valueArray[12] = trinketRate;
+    valueArray[13] = trinkets;
+    //valueArray[14] = obsLevel;
+    valueArray[15] = Va * Vh;
+    valueArray[16] = Vm;
+    valueArray[17] = Vf;
+    valueArray[18] = Vres;
+    valueArray[19] = Vp;
 }
 
 const iterateValueLoops = 3;
@@ -1222,15 +1239,15 @@ function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve=1,Vp=1,moreTrinkets=0,extr
 
     // from iterateValueFeedback:
     //   [Va,Vh,Vm,Vf,Vres,Vrad,Vp,Ve,
-    //    tribs,housing,mets,
-    //    trinketRate,trinkets,
+    //    tribs,collectors,hubEnabled,mets,
+    //    trinketRate,trinkets,obsLevel,
     //    Vpushed=1,VmDone=1,VfDone=1,VresDone=1,VpDone=1] = valueArray;
 
     // add Obs levels if we're evaluating Observation
     var obsLevel = perks.Observation.level + extraObs;
     
     var valueArray = [  Va,Vh,Vgear,1,Vres,Vrad,Vp,Ve,
-                        props.tributes,props.housingCount,props.meteorologists,
+                        props.tributes,props.housingCount,props.hubEnabled,props.meteorologists,
                         obsDropRate(obsLevel,props.targetZone)/100,props.baselineTrinketsNext,obsLevel,
                         1,1,1,1,1,
                      ];
@@ -1241,7 +1258,7 @@ function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve=1,Vp=1,moreTrinkets=0,extr
     Vh = valueArray[1];
     Vrad = valueArray[5];
     Ve = valueArray[7];
-    Vtrink = valueArray[12];
+    Vtrink = valueArray[13];
     
     moreTrinkets += Vtrink - props.baselineTrinketsNext;
     
@@ -1292,6 +1309,23 @@ function shinyCollect(level,zone) {
     var excessShinies = (1 + (level - 1)/2) * Math.pow(1.03,100) / 100 * excess;
     var freeShinies = Math.floor((zone+1-100)/25) * Math.floor(level/2);
     return scalingShinies + excessShinies + freeShinies;
+}
+
+// Calculate avg atk with frenzy, accounting for uptime.
+//   Optimizing for the difficult part of a run (5 hit deaths, no possibility of refreshing the effect)
+const frenzyHits = 5; // optimize for 5 hit deaths
+const frenzyDeathTime = 0.4 + 0.258 * frenzyHits // get off N hits then die, optimizing for Hyperspeed 1
+const frenzyHitTime = frenzyDeathTime/frenzyHits; // get off N hits then die
+function getFrenzyAvgAtk(level) {
+    // wait time in seconds
+    var frenzyProcWaitTime = frenzyHitTime / (perks.Frenzy.procEffect * level);
+    // frenzy uptime for each proc
+    var frenzyUptimePerProc = frenzyDeathTime * Math.log(perks.Frenzy.timeEffect * level / frenzyDeathTime + 1) / Math.log(2);
+    // uptime fraction
+    var frenzyUptimeFrac = frenzyUptimePerProc / (frenzyProcWaitTime + frenzyUptimePerProc);
+    // average attack per hit accounting for uptime fraction
+    var frenzyAvgAtk = 1 + frenzyUptimeFrac * perks.Frenzy.effect * level;
+    return frenzyAvgAtk;
 }
 
 var clearClasses = function() {
@@ -1382,6 +1416,7 @@ var evaluatePerks = function(debug=false) {
         saveAux[key + "Input"] = inputObj.input.value;
         saveAux[key + "Checkbox"] = inputObj.checkbox.checked;
     }
+    saveAux.hubEnabled = hubEl.checked;
     saveAux.lockAll = lockAuxEl.checked;
     saveAux.inputTotal = inputs['use-total'].checked;
     saveAux.obsNoopt = inputs['observation-noopt'].checked;
@@ -1437,7 +1472,12 @@ var evaluatePerks = function(debug=false) {
     // Equality:
     perks.Equality.efficiency = getLogWeightedValue(1,1,1,1,1,perks.Equality.effect)/getPerkCost("Equality",1);
     
-    // Frenzy TODO
+    // Frenzy
+    //   attack boost when frenzy is active (pro-rated by uptime "when the run gets hard" (5 hit deaths))
+    var frenzyAvgAtk = getFrenzyAvgAtk(perks.Frenzy.level);
+    var frenzyAvgAtkNext = getFrenzyAvgAtk(perks.Frenzy.level+1);
+    var frenzyGain = frenzyAvgAtkNext / frenzyAvgAtk;
+    perks.Frenzy.efficiency = getLogWeightedValue(frenzyGain,1,1,1,1,1)/getPerkCost("Frenzy",1);
     
     // Greed:
     //   all-resource and radon gain
@@ -1586,6 +1626,7 @@ var checkAllAux = function() {
 }
 var lockAuxEl = document.getElementById('input-lock-aux');
 lockAuxEl.onchange = checkAllAux;
+hubEl.onchange = evaluatePerks;
 
 function exportPerks() {
     var exportedPerks = {};
@@ -1645,6 +1686,7 @@ if (window.localStorage.getItem("saveAux")) {
             inputObj.checkbox.checked = saveAux[key + "Checkbox"];
         }
     }
+    if (saveAux.hubEnabled != null) hubEl.checked = saveAux.hubEnabled;
     if (saveAux.lockAll != null) lockAuxEl.checked = saveAux.lockAll;
     if (saveAux.inputTotal != null) inputs['use-total'].checked = saveAux.inputTotal;
     if (saveAux.obsNoopt != null) inputs['observation-noopt'].checked = saveAux.obsNoopt;
