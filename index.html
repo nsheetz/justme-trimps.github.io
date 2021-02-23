@@ -76,6 +76,7 @@
 
 h1 span { clear: both;display: block;font-size: 12px; }
 h2 span { clear: both;display: block;font-size: 12px; }
+h3 span { clear: both;display: block;font-size: 14px; }
 body { max-width: 1200px; margin: 0 auto; font-family: Helvetica, Verdana;}
 .green { background: green;  }
 .grey { background: #ddd; color: #888  }
@@ -243,8 +244,13 @@ input[type=checkbox], input[type=radio] {
     <div class="col-sm" id="aux-col">
         <div class="row">
             <div class="col-sm-12">
-            <h2>Misc inputs <span><b>Mouseover input boxes for more info</b></span></h2>
+            <h3>Mouseover input boxes for more info! <span>Any field may be entered manually. Otherwise see warnings below:</span></h3>
             </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4 bg-success" style="text-align: center;">Required user inputs</div>
+            <div class="col-sm-4 bg-primary" style="text-align: center;">Load from any save</div>
+            <div class="col-sm-4 bg-danger" style="text-align: center;">Load from U2 save<br>at end of run</div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-lock-aux" /></div>
@@ -516,7 +522,7 @@ const auxInputList = [
     {   keyName: "targetZone",
         divId: 'target-zone',
         label: "Target Zone to clear",
-        spacer: true,
+        bg: "bg-danger",
         title: "Target last zone to clear. This is only used for valuing radon an trinket gains based on last cleared zone, so there's no point picking a different zone - it won't affect the optimization process for pure pushing with no radon weight.",
         type: "int",
         value: 0,
@@ -524,7 +530,7 @@ const auxInputList = [
         max: null, },
     {   keyName: "clearWeight",
         divId: 'clear-weight',
-        spacer: true,
+        bg: "bg-success",
         label: "Attack & Health weight",
         title: "If you are farming and it's trivial to complete your radon challenge, set this to 0! It will still be valued for the effect of pushing power on radon gains (from Scruffy level 3, for example). Set >0 if you need more pushing power to complete your current challenge in a reasonable amount of time. This is the weight for how much you value attack * health, which determines clear speed at less than max equality. If you are used to Attack Weight and Health Weight, this is equivalent to Attack weight. This weight is not used for Equality at all.",
         type: "float",
@@ -533,6 +539,7 @@ const auxInputList = [
         max: null, },
     {   keyName: "survivalWeight",
         divId: 'survival-weight',
+        bg: "bg-success",
         label: "Additional Health/Equality weight",
         title: "Weight placed on equality (and additional weight placed on health), for maximum survivability against high enemy attack at max equality. This helps determine how far you can push (perhaps very slowly) before you get stuck on fast enemies that can one-shot you every hit. This can be set to 0 and equality will still be used as a dump perk. If you need a little more equality than that small weights like 0.001 will still give a meaningful boost to Equality levels. If you're used to separate attack & health weights, set this to your old Health Weight minus Attack Weight.",
         type: "float",
@@ -541,6 +548,7 @@ const auxInputList = [
         max: null, },
     {   keyName: "radonWeight",
         divId: 'radon-weight',
+        bg: "bg-success",
         label: "Radon weight",
         title: "Weight for how much you value growth from radon (and trinkets). If you are purely farming and can easily complete your radon challenge, this is the only weight you need, other than a tiny bit of survival weight (like 0.0001) to get some equality.",
         type: "float",
@@ -549,31 +557,16 @@ const auxInputList = [
         max: null, },
     {   keyName: "radonPerRun",
         divId: 'radon-perrun',
-        label: "Radon per Run (if Rn weight > 0)",
+        bg: "bg-danger",
+        label: "Radon Gain per Run (if Rn weight > 0)",
         title: "Typical Radon gains in a farming run. Needed for Observation (until your trinkets are capped). Can be extracted from your save if you paste a save from the end of a U2 farming run. Doesn't need to be exact but a pretty good estimate is recommended. Only used when Rn weight > 0.",
         type: "float",
         value: "",
         min: null,
         max: null, },
-    {   keyName: "weaponLevels",
-        divId: 'weapon-levels',
-        spacer: true,
-        label: "Weapon Levels",
-        title: "Dagger levels purchased at target zone",
-        type: "int",
-        value: 1,
-        min: 1,
-        max: null, },
-    {   keyName: "armorLevels",
-        divId: 'armor-levels',
-        label: "Armor Levels",
-        title: "Boots levels purchased at target zone",
-        type: "int",
-        value: 1,
-        min: 1,
-        max: null, },
     {   keyName: "coordLimited",
         divId: 'coord-limited',
+        bg: "bg-success",
         spacer: true,
         label: "Coord limited? (0-1 scale)",
         title: "Enter '0' if you can easily buy all coords with your population. Enter '1' if you definitely can't buy all coords. Enter something in between if you only need a bit more population to buy all coords. You can also increase this value (even above 1) if you just want to weight population gain more highly for some reason.",
@@ -583,16 +576,36 @@ const auxInputList = [
         max: null, },
     {   keyName: "tenacityTime",
         divId: 'tenacity-time',
+        bg: "bg-success",
         label: "Minutes of tenacity to optimize",
         title: "How many minutes of tenacity time would you like to optimize for? This is only meaningful if you haven't maxed Tenacity yet. A value of 0 still places significant weight on Tenacity.",
         type: "int",
         value: 0,
         min: 0,
         max: 120, },
+    {   keyName: "weaponLevels",
+        divId: 'weapon-levels',
+        spacer: true,
+        bg: "bg-danger",
+        label: "Weapon Levels",
+        title: "Dagger levels purchased at target zone",
+        type: "int",
+        value: 1,
+        min: 1,
+        max: null, },
+    {   keyName: "armorLevels",
+        divId: 'armor-levels',
+        bg: "bg-danger",
+        label: "Armor Levels",
+        title: "Boots levels purchased at target zone",
+        type: "int",
+        value: 1,
+        min: 1,
+        max: null, },
     {   keyName: "tributes",
         divId: 'tribute-count',
+        bg: "bg-danger",
         label: "Tributes purchased",
-        spacer: true,
         title: "Number of purchased tributes to consider for Greed",
         type: "int",
         value: 0,
@@ -600,30 +613,35 @@ const auxInputList = [
         max: null, },
     {   keyName: "meteorologists",
         divId: 'mets-count',
+        bg: "bg-danger",
         label: "Meteorologists",
         title: "Number of meteorologists to optimize for. Affects the value of food gains.",
         type: "int",
         value: 0,
         min: 0,
         max: null, },
-    {   keyName: "antennae",
-        divId: 'antenna-count',
-        label: "Antennas",
-        title: "Antennas purchased. Affects how Meteorologist gains from more food are valued.",
-        type: "int",
-        value: 0,
-        min: 0,
-        max: null, },
     {   keyName: "housingCount",
         divId: 'housing-count',
+        bg: "bg-danger",
         label: "Collector count:",
         title: "How many collectors do you get in your runs? Affects the value of more resources for increasing population. If you don't have collectors unlocked you can enter 0.",
         type: "int",
         value: 0,
         min: 0,
         max: null, },
+    {   keyName: "antennae",
+        divId: 'antenna-count',
+        bg: "bg-primary",
+        label: "Antennas",
+        space: true,
+        title: "Antennas purchased. Affects how Meteorologist gains from more food are valued.",
+        type: "int",
+        value: 0,
+        min: 0,
+        max: null, },
     {   keyName: "shieldCD",
         divId: 'crit-damage',
+        bg: "bg-primary",
         label: "Heirloom Crit Damage",
         spacer: true,
         title: "Crit damage stat on heirloom shield, in percent (do not divide by 100)",
@@ -633,6 +651,7 @@ const auxInputList = [
         max: null, },
     {   keyName: "shieldPrismal",
         divId: 'prismal-shield',
+        bg: "bg-primary",
         label: "Hierloom Prismatic Shield",
         title: "Prismatic Shield stat on heirloom shield, in percent (do not divide by 100)",
         type: "float",
@@ -641,8 +660,8 @@ const auxInputList = [
         max: null, },
     {   keyName: "perksRadon",
         divId: 'perks-radon',
+        bg: "bg-primary",
         label: "Radon for Perks",
-        spacer: true,
         title: "Total radon you have to spend on perks (with or without current portal included)",
         type: "float",
         value: 0,
@@ -650,6 +669,7 @@ const auxInputList = [
         max: null, },
     {   keyName: "scruffyLevel",
         divId: 'scruffy-level',
+        bg: "bg-primary",
         label: "Scruffy Level",
         title: "Scruffy Level: Affects perks whose value changes due to Scruffy abilities, like Prismal.",
         type: "int",
@@ -658,6 +678,7 @@ const auxInputList = [
         max: 20, },
     {   keyName: "trinkets",
         divId: 'rune-trinkets',
+        bg: "bg-primary",
         label: "Runetrinkets",
         title: "Number of Runetrinkets you have collected",
         type: "int",
@@ -685,16 +706,17 @@ for (var i=0; i<auxInputList.length; i++) {
     tmpRow.setAttribute('class','row' + (iObj.spacer ? ' mt-2' : ''));
     var step = (iObj.type == 'float') ? ' step="any" ' : "";
     var minMaxSrc = (iObj.min === null ? "" : ' min="' + iObj.min + '" ') + (iObj.max === null ? "" : ' max="' + iObj.max + '" ');
+    var labelBg = iObj.hasOwnProperty("bg")  ? (" " + iObj.bg + " ") : ""; 
     if (key == "housingCount") {
         tmpRow.innerHTML = '<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="' + checkboxDivName + 
-            '" /></div><label class="col-sm-3 col-form-label" style="text-align: right;" id="label-hub-enabled" for="input-hub-enabled">Hub unlocked: </label>' +
+            '" /></div><label class="col-sm-3 col-form-label bg-primary" style="text-align: right;" id="label-hub-enabled" for="input-hub-enabled">Hub unlocked: </label>' +
             '<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-hub-enabled" /></div>' +
-            '<label class="col-sm-3 col-form-label" style="text-align: right;" id="' + labelDivName + '" for="' + inputDivName + '">' + iObj.label +
+            '<label class="col-sm-3 col-form-label' + labelBg + '" style="text-align: right;" id="' + labelDivName + '" for="' + inputDivName + '">' + iObj.label +
             ' </label><div class="col-sm-4"><input class="form-control" value="' + iObj.value + '" title="' + iObj.title + 
             '" type="number" ' + step + minMaxSrc + 'id="' + inputDivName + '" /></div>'
     } else {
         tmpRow.innerHTML = '<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="' + checkboxDivName + 
-            '" /></div><label class="col-sm-6 col-form-label" id="' + labelDivName + '" for="' + inputDivName + '">' + iObj.label +
+            '" /></div><label class="col-sm-6 col-form-label' + labelBg + '" id="' + labelDivName + '" for="' + inputDivName + '">' + iObj.label +
             ' </label><div class="col-sm-5"><input class="form-control" value="' + iObj.value + '" title="' + iObj.title + 
             '" type="number" ' + step + minMaxSrc + 'id="' + inputDivName + '" /></div>';
     }
