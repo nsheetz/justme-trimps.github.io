@@ -716,8 +716,8 @@ for (var i=0; i<auxInputList.length; i++) {
             '" type="number" ' + step + minMaxSrc + 'id="' + inputDivName + '" /></div>'
     } else {
         tmpRow.innerHTML = '<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="' + checkboxDivName + 
-            '" /></div><label class="col-sm-6 col-form-label' + labelBg + '" id="' + labelDivName + '" for="' + inputDivName + '">' + iObj.label +
-            ' </label><div class="col-sm-5"><input class="form-control" value="' + iObj.value + '" title="' + iObj.title + 
+            '" /></div><label class="col-sm-7 col-form-label' + labelBg + '" id="' + labelDivName + '" for="' + inputDivName + '">' + iObj.label +
+            ' </label><div class="col-sm-4"><input class="form-control" value="' + iObj.value + '" title="' + iObj.title + 
             '" type="number" ' + step + minMaxSrc + 'id="' + inputDivName + '" /></div>';
     }
     auxColumnElement.insertBefore(tmpRow,null); // insert at end of the aux column
