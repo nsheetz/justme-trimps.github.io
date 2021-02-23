@@ -80,6 +80,7 @@ h3 span { clear: both;display: block;font-size: 14px; }
 body { max-width: 1200px; margin: 0 auto; font-family: Helvetica, Verdana;}
 .green { background: green;  }
 .grey { background: #ddd; color: #888  }
+
 input { margin-top: 4px; }
 
 input[type=checkbox], input[type=radio] {
@@ -709,9 +710,9 @@ for (var i=0; i<auxInputList.length; i++) {
     var labelBg = iObj.hasOwnProperty("bg")  ? (" " + iObj.bg + " ") : ""; 
     if (key == "housingCount") {
         tmpRow.innerHTML = '<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="' + checkboxDivName + 
-            '" /></div><label class="col-sm-3 col-form-label bg-primary" style="text-align: right;" id="label-hub-enabled" for="input-hub-enabled">Hub unlocked: </label>' +
-            '<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-hub-enabled" /></div>' +
-            '<label class="col-sm-3 col-form-label' + labelBg + '" style="text-align: right;" id="' + labelDivName + '" for="' + inputDivName + '">' + iObj.label +
+            '" /></div><label class="col-sm-3 col-form-label bg-primary" id="label-hub-enabled" for="input-hub-enabled">Hub unlocked:</label>' +
+            '<div class="col-sm-1"><input type="checkbox" class="form-check-input" style="margin-left:0.2rem; margin-top:0.8rem" id="input-hub-enabled" /></div>' +
+            '<label class="col-sm-3 col-form-label' + labelBg + ' id="' + labelDivName + '" for="' + inputDivName + '">' + iObj.label +
             ' </label><div class="col-sm-4"><input class="form-control" value="' + iObj.value + '" title="' + iObj.title + 
             '" type="number" ' + step + minMaxSrc + 'id="' + inputDivName + '" /></div>'
     } else {
