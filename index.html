@@ -103,8 +103,16 @@ input[type=checkbox], input[type=radio] {
 </div>
 <div class="container-fluid mt-3 mb-3">
     <div class="row">
+        <div class="col-sm-3">
+        </div>
         <div class="col-sm-12 form-group">
-            <label for="save-text-area">Paste your save here</label>
+            <div class="row">
+                <div class="col-sm-4"><label for="save-text-area">Paste your save here</label></div>
+                <div class="col-sm-6"></div>
+                <div class="col-sm-2">
+                    <button class="btn btn-primary" id="get-save-button" title="" style="margin-left:3.4rem" onclick="restoreSave()">Restore save</button>
+                </div>
+            </div>
             <textarea class="form-control" id="save-text-area" rows="3" onpaste="loadSave()"></textarea>
         </div>
     </div>
@@ -757,13 +765,21 @@ function setAuxInput(key, value) {
     if (!auxInputs[key].checkbox.checked) auxInputs[key].input.value = value;
 }
 
+var saveTextArea = document.getElementById('save-text-area');
+
+var restoreSave = function() {
+    var trimpsSave = JSON.parse(window.localStorage.getItem("trimpsSave"));
+    saveTextArea.value = trimpsSave.save;
+}
+
 var game = null;
 var loadSave = function() {
     
     setTimeout(function() {
-
-        var saveTextArea = document.getElementById('save-text-area');
         game = null;
+        
+        var trimpsSave = {save: saveTextArea.value};
+        window.localStorage.setItem("trimpsSave", JSON.stringify(trimpsSave));
         
         try {
             tmp = JSON.parse(LZString.decompressFromBase64(saveTextArea.value));
@@ -1411,6 +1427,9 @@ var switchTotalRadon = function() {
     }
     
     if (auxInputs.perksRadon.checkbox.checked) {
+        if (auxInputs.perksRadon.input.value < props.perksRadon) {
+            displayWarning("WARNING: You have locked the 'Radon for Perks' input with less Radon than you have in your pasted save. (If this was on purpose, you can ignore this warning.)");
+        }
         props.perksRadon = auxInputs.perksRadon.input.value;
     } else {
         auxInputs.perksRadon.input.value = props.perksRadon;
@@ -1425,6 +1444,10 @@ var switchTotalRadon = function() {
     }
 
     evaluatePerks();
+}
+
+function displayWarning(message) {
+    saveTextArea.value = message;
 }
 
 
@@ -1653,7 +1676,6 @@ hubEl.onchange = evaluatePerks;
 
 function exportPerks() {
     var exportedPerks = {};
-    var saveTextArea = document.getElementById('save-text-area');
     var game = JSON.parse(LZString.decompressFromBase64(saveTextArea.value));
 
     for (var [key, value] of Object.entries(perks)) {
