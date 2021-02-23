@@ -117,7 +117,7 @@ input[type=checkbox], input[type=radio] {
         </div>
     </div>
   <div class="row mt-3">
-    <div class="col-sm" id="perks-col">
+    <div class="col-sm mr-1" id="perks-col">
         <div class="row">
             <div class="col-sm-12">
             <h2>Perks   <span>The greener, the better</span><span>Checked = unlocked</span></h2>
@@ -250,10 +250,10 @@ input[type=checkbox], input[type=radio] {
             <div class="col-sm-12"><input class="form-control" value="Import save to use autobuy and export" id="input-export" disabled /></div>
         </div>
     </div>
-    <div class="col-sm" id="aux-col">
+    <div class="col-sm ml-1" id="aux-col">
         <div class="row">
             <div class="col-sm-12">
-            <h3>Mouseover input boxes for more info! <span>Any field may be entered manually. Otherwise see warnings below:</span></h3>
+            <h3>Mouseover input boxes for more info! <span>Any field may be entered manually. Otherwise see guidelines below:</span></h3>
             </div>
         </div>
         <div class="row">
@@ -298,6 +298,7 @@ function initPerks() {
         portalRadon: 0, // total radon available to use on the current portal
         earnedRadon: 0, // total radon, including that earned this run
         perksRadon: 0,  // total radon available for perks in this optimization run
+        perksRadonFromSave: 0,
         radonSpent: 0,  // radon spent on perks so far
         radonPerRun: 0, // radon per farming run (needed to value trinket gains)
         radonPerTrinket: 0, // the Rn-equivalent value of a marginal trinket
@@ -777,10 +778,7 @@ var loadSave = function() {
     
     setTimeout(function() {
         game = null;
-        
-        var trimpsSave = {save: saveTextArea.value};
-        window.localStorage.setItem("trimpsSave", JSON.stringify(trimpsSave));
-        
+                
         try {
             tmp = JSON.parse(LZString.decompressFromBase64(saveTextArea.value));
             game = tmp;
@@ -795,7 +793,12 @@ var loadSave = function() {
             saveTextArea.value = "That wasn't a save string (possibly a perk string?). Try again."
             return;
         }
-    
+        
+        initWarnings();
+        
+        var trimpsSave = {save: saveTextArea.value};
+        window.localStorage.setItem("trimpsSave", JSON.stringify(trimpsSave));
+
         var portal = game.portal;
         
         // set perk object to default values
@@ -1018,6 +1021,8 @@ function readInputs() {
     // S15 is a reduction in smithy cost scaling
     if (props.scruffyLevel >= 14) props.smithyScaling = 40;
     else props.smithyScaling = 50;
+    
+    checkWarnings();
 }
 
 function getTotalPerksCost() {
@@ -1421,19 +1426,18 @@ function efficiencyColorAndFlag() {
 
 var switchTotalRadon = function() {
     if (inputs['use-total'].checked) {
-        props.perksRadon = props.earnedRadon;
+        props.perksRadonFromSave = props.earnedRadon;
     } else {
-        props.perksRadon = props.portalRadon;
+        props.perksRadonFromSave = props.portalRadon;
     }
-    
+
     if (auxInputs.perksRadon.checkbox.checked) {
-        if (auxInputs.perksRadon.input.value < props.perksRadon) {
-            displayWarning("WARNING: You have locked the 'Radon for Perks' input with less Radon than you have in your pasted save. (If this was on purpose, you can ignore this warning.)");
-        }
         props.perksRadon = auxInputs.perksRadon.input.value;
     } else {
-        auxInputs.perksRadon.input.value = props.perksRadon;
+        auxInputs.perksRadon.input.value = props.perksRadonFromSave;
     }
+    
+    checkWarnings();
     
     if (props.perksRadon > 0) {
         document.getElementById('clear-autobuy-button').disabled = false;
@@ -1446,8 +1450,53 @@ var switchTotalRadon = function() {
     evaluatePerks();
 }
 
-function displayWarning(message) {
-    saveTextArea.value = message;
+var warnings = {
+};
+
+function initWarnings() {
+    if (warnings.anyActive) saveTextArea.value = "";
+    warnings = {
+        anyActive: false,
+        rnGain: {
+            message: "WARNING: A reasonable estimate of 'Radon Gain per Run' is necessary to account for Runetrinkets when the 'Radon weight' is > 0. (You can proceed if not entering your Rn gain per run was really on purpose, but you will get wildly inaccurate results.)",
+            active: false
+        },
+        rnLessThanSave: {
+            message: "WARNING: You have locked the 'Radon for Perks' input with less Radon than you have in your pasted save. (If this was on purpose, you can ignore this warning.)",
+            active: false,
+        },
+    };
+}
+
+initWarnings();
+
+function clearWarning(whichWarning) {
+    if (warnings[whichWarning].active) {
+        initWarnings();
+        return true;
+    }
+    return false;
+}
+
+function checkWarnings() {
+    var warnRnGain = perks.Observation.optimize && !perks.Observation.locked && props.radonWeight > 0 && props.radonPerRun <= 1;
+    var warnRnLessThanSave = auxInputs.perksRadon.input.value < props.perksRadonFromSave;
+    if (!warnRnGain) clearWarning("rnGain");
+    if (!warnRnLessThanSave) clearWarning("rnLessThanSave");
+    if (warnRnGain) displayWarning("rnGain");
+    if (warnRnLessThanSave) displayWarning("rnLessThanSave");
+}
+
+function displayWarning(whichWarning) {
+    if (warnings[whichWarning].active) return;
+    warnings[whichWarning].active = true;
+    var message = warnings[whichWarning].message;
+    if (warnings.anyActive) {
+        saveTextArea.value = saveTextArea.value + "\n" + message;
+    } else {
+        saveTextArea.value = message;
+    }
+    warnings.anyActive = true;
 }
 
 
