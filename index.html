@@ -1481,10 +1481,12 @@ function clearWarning(whichWarning) {
 function checkWarnings() {
     var warnRnGain = perks.Observation.optimize && !perks.Observation.locked && props.radonWeight > 0 && props.radonPerRun <= 1;
     var warnRnLessThanSave = auxInputs.perksRadon.input.value < props.perksRadonFromSave;
-    if (!warnRnGain) clearWarning("rnGain");
-    if (!warnRnLessThanSave) clearWarning("rnLessThanSave");
+    var doRestore = false;
+    if (!warnRnGain) doRestore |= clearWarning("rnGain");
+    if (!warnRnLessThanSave) doRestore |= clearWarning("rnLessThanSave");
     if (warnRnGain) displayWarning("rnGain");
     if (warnRnLessThanSave) displayWarning("rnLessThanSave");
+    if (doRestore) restoreSave();
 }
 
 function displayWarning(whichWarning) {
