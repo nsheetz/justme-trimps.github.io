@@ -1691,7 +1691,8 @@ var switchHideUnused = function() {
 function checkHideUnused() {
     for (var [perkName, perkObj] of Object.entries(perks)) {
         if (typeof(perkObj) !== "object" || !perkObj.hasOwnProperty("optimize")) continue; // iterating over the perks, ignoring aux values
-        var hide = props.hideUnused && (perkObj.locked || (perkObj.hasOwnProperty("max") && perkObj.level >= perkObj.max) || !perkObj.optimize);
+        var hide = props.hideUnused && (   perkObj.locked || (perkObj.hasOwnProperty("max") && perkObj.level >= perkObj.max) 
+                                        || !perkObj.optimize && !perkObj.hasOwnProperty("max"));
         var inputRow = inputs[perkName.toLowerCase()].parentElement.parentElement;
         if (hide) {
             inputRow.style.display = "none";
