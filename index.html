@@ -61,7 +61,6 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-
 /*!
  * Bootswatch v4.4.1
  * Homepage: https://bootswatch.com
@@ -120,9 +119,11 @@ input[type=checkbox], input[type=radio] {
   <div class="row mt-3">
     <div class="col-sm mr-1" id="perks-col">
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-6">
             <h2>Perks   <span>The greener, the better</span><span>Checked = unlocked</span></h2>
             </div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-hide-unused-perks" /></div>
+            <label class="col-sm-5 col-form-label" id="label-hide-unused-perks" style="text-align: center;" for="input-hide-unused-perks">Hide maxed, locked, and <br> unoptimized perks & inputs </label>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-resilience-enabled" /></div>
@@ -323,6 +324,7 @@ function initPerks() {
         weaponLevels: 1,
         armorLevels: 1,
         bestPerk: "", // 
+        hideUnused: false,
         // scaling^log(resource boost) = atk or hp boost
         equipScaling: {
             attack: equipScalingPrestige.attack,
@@ -749,7 +751,8 @@ var colorCheckboxRows = function() {
         
         if (typeof(input.getAttribute('type')) != "undefined" && input.getAttribute('type') == "checkbox") {
             if (   input.getAttribute('id') == 'input-use-total'
-                || input.getAttribute('id') == 'input-lock-aux') 
+                || input.getAttribute('id') == 'input-lock-aux'
+                || input.getAttribute('id') == 'input-hide-unused-perks') 
                 continue;
             
             var row = input.parentElement.parentElement;
@@ -1023,6 +1026,8 @@ function readInputs() {
     if (props.scruffyLevel >= 14) props.smithyScaling = 40;
     else props.smithyScaling = 50;
     
+    props.hideUnused = inputs['hide-unused-perks'].checked;
+    
     checkWarnings();
 }
 
@@ -1189,7 +1194,8 @@ function iterateValueFeedback(valueArray) {
         moreHousing += 5*Math.log(Vres/VresDone)/Math.log(1.2); // 5 housing types below Gateway need wood, roughly 1.2 avg scaling (Gateway doesn't scale)
         baseHousing *= 7; // estimate all housing types have the same number as Collectors (close enough for gain factor w.r.t. the small feedback effects here)
     }
-    var housingGain = 1 + moreHousing/baseHousing;
+    // if the user doesn't have collectors yet, don't bother with housing corrections
+    var housingGain = baseHousing >= 1 ? (1 + moreHousing/baseHousing) : 1;
     Vres *= housingGain;
     Vp *= housingGain;
     collectors += housingGain;
@@ -1518,6 +1524,7 @@ var evaluatePerks = function(debug=false) {
     saveAux.lockAll = lockAuxEl.checked;
     saveAux.inputTotal = inputs['use-total'].checked;
     saveAux.obsNoopt = inputs['observation-noopt'].checked;
+    saveAux.hideUnused = inputs['hide-unused-perks'].checked;
     window.localStorage.setItem("saveAux", JSON.stringify(saveAux));
         
     if (!saveLoaded) return;
@@ -1657,8 +1664,10 @@ var evaluatePerks = function(debug=false) {
     
     document.getElementById('input-export').value = "";
     
+    checkHideUnused();
+    
     if (debug) {
-        console.log("evaluatePerks(): generic debug message");
+        //console.log("evaluatePerks(): generic debug message");
     }
 }
 
@@ -1670,6 +1679,72 @@ var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,k
 var switchObsNoopt = function() {
     perks.Observation.optimize = !inputs['observation-noopt'].checked;
     evaluatePerks();
+}
+
+var switchHideUnused = function() {
+    readInputs();
+    evaluatePerks();
+}
+
+// go through perk rows and set/unset display:none based on whether or not they should be hidden
+//   (locked, maxed, non-optimized)
+function checkHideUnused() {
+    for (var [perkName, perkObj] of Object.entries(perks)) {
+        if (typeof(perkObj) !== "object" || !perkObj.hasOwnProperty("optimize")) continue; // iterating over the perks, ignoring aux values
+        var hide = props.hideUnused && (perkObj.locked || (perkObj.hasOwnProperty("max") && perkObj.level >= perkObj.max) || !perkObj.optimize);
+        var inputRow = inputs[perkName.toLowerCase()].parentElement.parentElement;
+        if (hide) {
+            inputRow.style.display = "none";
+        } else {
+            inputRow.style.display = "";
+        }
+    }
+    
+    // hide inputs that are not needed
+    
+    // max or locked tenacity: no need for tenacity time
+    var tmpRow = auxInputs.tenacityTime.input.parentElement.parentElement
+    if (perks.Tenacity.locked || props.hideUnused && (perks.Tenacity.level >= perks.Tenacity.max)) {
+        tmpRow.style.display = "none";
+    } else tmpRow.style.display = "";
+    // locked observation: no need for trinkets or Rn per run
+    var tmpRow = auxInputs.radonPerRun.input.parentElement.parentElement;
+    var tmpRow2 = auxInputs.trinkets.input.parentElement.parentElement;
+    if (perks.Observation.locked) {
+        tmpRow.style.display = "none";
+        tmpRow2.style.display = "none";
+    } else {
+        tmpRow.style.display = "";
+        tmpRow.style.display = "";
+    }
+    // antennas locked and hide inputs: don't show antennas (want to be able to force these on for testing)
+    tmpRow = auxInputs.antennae.input.parentElement.parentElement;
+    // don't hide unless we actually have 0 antennae entered! user may be testing a nonzero value ever if they're locked.
+    if (props.hideUnused && game !== null && game.buildings.Antenna.locked && props.antennae == 0) {
+        tmpRow.style.display = "none";
+    } else tmpRow.style.display = "";
+    // mets locked and hide inputs: don't show mets
+    tmpRow = auxInputs.meteorologists.input.parentElement.parentElement;
+    // don't hide unless we actually have 0 mets entered! user may be testing a nonzero value even though they're locked.
+    if (props.hideUnused && game !== null && game.jobs.Meteorologist.locked && props.meteorologists == 0) {
+        tmpRow.style.display = "none";
+    } else tmpRow.style.display = "";
+    // greed locked or hide inputs and tribs >= 1250: don't show tribs
+    tmpRow = auxInputs.tributes.input.parentElement.parentElement;
+    // don't hide a locked & maxed tribute input - too much danger of the user setting 1250 as a test and forgetting it
+    if (perks.Greed.locked || props.hideUnused && (props.tributes >= 1250 && !auxInputs.tributes.checkbox.checked || perks.Greed.level >= perks.Greed.max)) {
+        tmpRow.style.display = "none";
+    } else tmpRow.style.display = "";
+    // prismal shield only relevant until prismal is maxed
+    tmpRow = auxInputs.shieldPrismal.input.parentElement.parentElement;
+    if (props.hideUnused && (perks.Prismal.level >= perks.Prismal.max)) {
+        tmpRow.style.display = "none";
+    } else tmpRow.style.display = "";
+    // if collectors are locked don't show the collector/housing row
+    tmpRow = auxInputs.housingCount.input.parentElement.parentElement;
+    if (props.hideUnused && game !== null && game.buildings.Collector.locked && props.housingCount == 0) {
+        tmpRow.style.display = "none";
+    } else tmpRow.style.display = "";
 }
 
 var inputs = [];
@@ -1685,6 +1760,11 @@ for (var i = inputElements.length - 1; i >=0; i--) {
     
     if (inputId == "observation-noopt") {
         input.onchange = switchObsNoopt;
+        continue;
+    }
+    
+    if (inputId == "hide-unused-perks") {
+        input.onchange = switchHideUnused;
         continue;
     }
     
@@ -1787,11 +1867,14 @@ if (window.localStorage.getItem("saveAux")) {
     if (saveAux.lockAll != null) lockAuxEl.checked = saveAux.lockAll;
     if (saveAux.inputTotal != null) inputs['use-total'].checked = saveAux.inputTotal;
     if (saveAux.obsNoopt != null) inputs['observation-noopt'].checked = saveAux.obsNoopt;
+    if (saveAux.hideUnused != null) inputs['hide-unused-perks'].checked = saveAux.hideUnused;
 }
 // order of perks
 // buy 2nd, 3rd...
 
 </script>
-
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>
