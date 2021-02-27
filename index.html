@@ -114,9 +114,10 @@ input[type=checkbox], input[type=radio] {
         <div class="col-sm-12 form-group">
             <div class="row">
                 <div class="col-sm-2"><label for="save-text-area">Paste your save below</label></div>
-                <div class="col-sm-1"></div>
                 <div class="col-sm-1"><input type="checkbox" class="form-check-input" style="margin-left:3rem" id="input-dark-mode" /></div>
                 <label class="col-sm-2 col-form-label" id="label-dark-mode" style="margin-right:3rem;" for="input-dark-mode">Dark Mode</label>
+                <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" style="margin-left:3rem" id="input-hide-locked" /></div>
+                <label class="col-sm-2 col-form-label" id="label-hide-locked" style="margin-right:3rem;" for="input-hide-locked">Hide locked items</label>
                 <div class="col-sm-2">
                     <button class="btn btn-primary" id="get-save-button" title="" onclick="restoreSave()">Restore save</button>
                 </div>
@@ -137,147 +138,147 @@ input[type=checkbox], input[type=radio] {
             <label class="col-sm-3 col-form-label" id="label-hide-unused-perks" style="text-align: center;" for="input-hide-unused-perks">Hide maxed or unoptimized </label>
         </div>
         <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-resilience-enabled" /></div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-resilience-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-resilience" for="input-resilience">Resilience </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-resilience-noopt" for="input-resilience-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-resilience-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-resilience" /></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-greed-enabled" /></div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-greed-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-greed" for="input-greed">Greed </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-greed-noopt" for="input-greed-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-greed-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="40" id="input-greed" /></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-tenacity-enabled" /></div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-tenacity-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-tenacity" for="input-tenacity">Tenacity </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-tenacity-noopt" for="input-tenacity-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-tenacity-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="40" id="input-tenacity" /></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-criticality-enabled" /></div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-criticality-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-criticality" for="input-criticality">Criticality </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-criticality-noopt" for="input-criticality-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-criticality-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-criticality" /></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-equality-enabled" /></div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-equality-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-equality" for="input-equality">Equality </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-equality-noopt" for="input-equality-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-equality-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-equality" /></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-carpentry-enabled" /></div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-carpentry-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-carpentry" for="input-carpentry">Carpentry </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-carpentry-noopt" for="input-carpentry-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-carpentry-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-carpentry" /></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-artisanistry-enabled" /></div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-artisanistry-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-artisanistry" for="input-artisanistry">Artisanistry </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-artisanistry-noopt" for="input-artisanistry-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-artisanistry-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-artisanistry" /></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-packrat-enabled" /></div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-packrat-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-packrat" for="input-packrat">Packrat </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-packrat-noopt" for="input-packrat-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-packrat-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-packrat" /></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-motivation-enabled" /></div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-motivation-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-motivation" for="input-motivation">Motivation </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-motivation-noopt" for="input-motivation-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-motivation-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-motivation" /></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-power-enabled" /></div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-power-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-power" for="input-power">Power </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-power-noopt" for="input-power-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-power-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-power" /></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-toughness-enabled" /></div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-toughness-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-toughness" for="input-toughness">Toughness </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-toughness-noopt" for="input-toughness-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-toughness-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-toughness" /></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-looting-enabled" /></div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-looting-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-looting" for="input-looting">Looting </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-looting-noopt" for="input-looting-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-looting-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-looting" /></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-prismal-enabled" /></div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-prismal-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-prismal" for="input-prismal">Prismal </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-prismal-noopt" for="input-prismal-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-prismal-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-prismal" /></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-frenzy-enabled" /></div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-frenzy-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-frenzy" for="input-frenzy">Frenzy </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-frenzy-noopt" for="input-frenzy-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-frenzy-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-frenzy" /></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-observation-enabled" /></div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-observation-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-observation" for="input-observation">Observation </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-observation-noopt" for="input-observation-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-observation-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-observation" /></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-range-enabled" /></div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-range-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-range" for="input-range">Range </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-range-noopt" for="input-range-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-range-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-range" /></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-agility-enabled" /></div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-agility-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-agility" for="input-agility">Agility </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-agility-noopt" for="input-agility-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-agility-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="20" id="input-agility" /></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-bait-enabled" /></div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-bait-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-bait" for="input-bait">Bait </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-bait-noopt" for="input-bait-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-bait-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-bait" /></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-trumps-enabled" /></div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-trumps-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-trumps" for="input-trumps">Trumps </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-trumps-noopt" for="input-trumps-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-trumps-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-trumps" /></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-pheromones-enabled" /></div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-pheromones-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-pheromones" for="input-pheromones">Pheromones </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-pheromones-noopt" for="input-pheromones-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-pheromones-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-pheromones" /></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-hunger-enabled" /></div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-hunger-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-hunger" for="input-hunger">Hunger </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-hunger-noopt" for="input-hunger-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-hunger-noopt" /></div>
@@ -376,6 +377,7 @@ function initPerks() {
         armorLevels: 1,
         bestPerk: "", // 
         hideUnused: false,
+        hideLocked: true,
         showLevelLocks: false,
         darkMode: false,
         // scaling^log(resource boost) = atk or hp boost
@@ -612,8 +614,8 @@ const auxInputList = [
         bg: "bg-danger",
         title: "Target last zone to clear. This is only used for valuing radon an trinket gains based on last cleared zone, so there's no point picking a different zone - it won't affect the optimization process for pure pushing with no radon weight.",
         type: "int",
-        value: 0,
-        min: null,
+        value: 1,
+        min: 1,
         max: null, },
     {   keyName: "clearWeight",
         divId: 'clear-weight',
@@ -828,7 +830,8 @@ var colorCheckboxRows = function() {
                 || input.getAttribute('id') == 'input-lock-aux'
                 || input.getAttribute('id') == 'input-hide-unused-perks'
                 || input.getAttribute('id') == 'input-show-level-locks'
-                || input.getAttribute('id') == 'input-dark-mode')
+                || input.getAttribute('id') == 'input-dark-mode'
+                || input.getAttribute('id') == 'input-hide-locked')
                 continue;
             
             var row = input.parentElement.parentElement;
@@ -901,7 +904,7 @@ var loadSave = function() {
         // set aux inputs from game variables, unless any given field is locked (handled by setAuxInput function)
         
         // target zone to CLEAR is 1 zone before the portal zone by default
-        setAuxInput("targetZone",game.global.world-1);
+        setAuxInput("targetZone",Math.max(1,game.global.world-1));
         
         // weapon/armor levels taken from dagger/boots (most likely to be leveled highest)
         setAuxInput("weaponLevels",game.equipment.Dagger.level || 1);
@@ -1045,6 +1048,7 @@ function readInputs() {
     props.radonSpent = getTotalPerksCost();
     
     props.darkMode = inputs['dark-mode'].checked;
+    props.hideLocked = inputs['hide-locked'].checked
 
     // shove all aux input fields into the props structure
     for (var i=0; i<auxInputList.length; i++) {
@@ -1606,6 +1610,7 @@ var evaluatePerks = function(debug=false) {
     saveAux.hideUnused = inputs['hide-unused-perks'].checked;
     saveAux.showLevelLocks = inputs['show-level-locks'].checked;
     saveAux.darkMode = inputs['dark-mode'].checked;
+    saveAux.hideLocked = inputs['hide-locked'].checked;
     if (saveAux.showLevelLocks) {
         for (var [perkName,perkObj] of Object.entries(perks)) {
             saveAux[perkName + 'Lock'] = inputs[perkName.toLowerCase() + '-noopt'].checked;
@@ -1769,19 +1774,7 @@ var switchHideUnused = function() {
 
 // go through perk rows and set/unset display:none based on whether or not they should be hidden
 //   (locked, maxed, non-optimized)
-function checkHideUnused() {
-    for (var [perkName, perkObj] of Object.entries(perks)) {
-        if (typeof(perkObj) !== "object" || !perkObj.hasOwnProperty("optimize")) continue; // iterating over the perks, ignoring aux values
-        var hide = props.hideUnused && (   perkObj.locked || (perkObj.hasOwnProperty("max") && perkObj.level >= perkObj.max) 
-                                        || !perkObj.optimize && !perkObj.hasOwnProperty("max"));
-        var inputRow = inputs[perkName.toLowerCase()].parentElement.parentElement;
-        if (hide) {
-            inputRow.style.display = "none";
-        } else {
-            inputRow.style.display = "";
-        }
-    }
-    
+function checkHideUnused() {    
     // hide inputs that are not needed
     
     // max or locked tenacity: no need for tenacity time
@@ -1802,13 +1795,15 @@ function checkHideUnused() {
     // antennas locked and hide inputs: don't show antennas (want to be able to force these on for testing)
     tmpRow = auxInputs.antennae.input.parentElement.parentElement;
     // don't hide unless we actually have 0 antennae entered! user may be testing a nonzero value ever if they're locked.
-    if (props.hideUnused && game !== null && game.buildings.Antenna.locked && props.antennae == 0) {
+    if (    props.hideUnused && game !== null && game.buildings.Antenna.locked && props.antennae == 0
+        ||  props.hideLocked && (game === null || game.buildings.Antenna.locked && props.antennae == 0)) {
         tmpRow.style.display = "none";
     } else tmpRow.style.display = "";
     // mets locked and hide inputs: don't show mets
     tmpRow = auxInputs.meteorologists.input.parentElement.parentElement;
     // don't hide unless we actually have 0 mets entered! user may be testing a nonzero value even though they're locked.
-    if (props.hideUnused && game !== null && game.jobs.Meteorologist.locked && props.meteorologists == 0) {
+    if (    props.hideUnused && game !== null && game.jobs.Meteorologist.locked && props.meteorologists == 0
+        ||  props.hideLocked && (game === null || game.jobs.Meteorologist.locked && props.meteorologists == 0)) {
         tmpRow.style.display = "none";
     } else tmpRow.style.display = "";
     // greed locked or hide inputs and tribs >= 1250: don't show tribs
@@ -1817,16 +1812,32 @@ function checkHideUnused() {
     if (perks.Greed.locked || props.hideUnused && (props.tributes >= 1250 && !auxInputs.tributes.checkbox.checked || perks.Greed.level >= perks.Greed.max)) {
         tmpRow.style.display = "none";
     } else tmpRow.style.display = "";
-    // prismal shield only relevant until prismal is maxed
+    // prismal shield only relevant until prismal is maxed, and should be hidden when prismal is locked
     tmpRow = auxInputs.shieldPrismal.input.parentElement.parentElement;
-    if (props.hideUnused && (perks.Prismal.level >= perks.Prismal.max)) {
+    if (    props.hideUnused && (perks.Prismal.level >= perks.Prismal.max || perks.Prismal.locked)
+        ||  props.hideLocked && (game === null || perks.Prismal.locked)) {
         tmpRow.style.display = "none";
     } else tmpRow.style.display = "";
     // if collectors are locked don't show the collector/housing row
     tmpRow = auxInputs.housingCount.input.parentElement.parentElement;
-    if (props.hideUnused && game !== null && game.buildings.Collector.locked && props.housingCount == 0) {
+    if (    props.hideUnused && game !== null && game.buildings.Collector.locked && props.housingCount == 0
+        ||  props.hideLocked && (game === null || game.buildings.Collector.locked && props.housingCount == 0)) {
         tmpRow.style.display = "none";
     } else tmpRow.style.display = "";
+    
+    // hide locked & maxed perks
+    for (var [perkName, perkObj] of Object.entries(perks)) {
+        if (typeof(perkObj) !== "object" || !perkObj.hasOwnProperty("optimize")) continue; // iterating over the perks, ignoring aux values
+        var hide = props.hideUnused && (   perkObj.locked || (perkObj.hasOwnProperty("max") && perkObj.level >= perkObj.max) 
+                                        || !perkObj.optimize && !perkObj.hasOwnProperty("max"));
+        hide |= props.hideLocked && (game === null || perkObj.locked);
+        var inputRow = inputs[perkName.toLowerCase()].parentElement.parentElement;
+        if (hide) {
+            inputRow.style.display = "none";
+        } else {
+            inputRow.style.display = "";
+        }
+    }
 }
 
 var switchShowLevelLocks = function() {
@@ -1946,6 +1957,8 @@ for (var i = inputElements.length - 1; i >=0; i--) {
 }
 inputs['dark-mode'] = document.getElementById('input-dark-mode');
 inputs['dark-mode'].onchange = switchDarkMode;
+inputs['hide-locked'] = document.getElementById('input-hide-locked');
+inputs['hide-locked'].onchange = switchHideUnused;
 
 for (var [key,iObj] of Object.entries(auxInputs)) {
     iObj.input.onkeyup = evaluatePerks;
@@ -2027,6 +2040,7 @@ if (window.localStorage.getItem("saveAux")) {
     if (saveAux.inputTotal != null) inputs['use-total'].checked = saveAux.inputTotal;
     if (saveAux.hideUnused != null) inputs['hide-unused-perks'].checked = saveAux.hideUnused;
     if (saveAux.darkMode != null) inputs['dark-mode'].checked = saveAux.darkMode;
+    if (saveAux.hideLocked != null) inputs['hide-locked'].checked = saveAux.hideLocked;
     if (saveAux.showLevelLocks != null) {
         inputs['show-level-locks'].checked = saveAux.showLevelLocks;
         if (saveAux.showLevelLocks) {
@@ -2039,6 +2053,7 @@ if (window.localStorage.getItem("saveAux")) {
 
 switchShowLevelLocks();
 switchDarkMode();
+checkHideUnused();
 // order of perks
 // buy 2nd, 3rd...
 
