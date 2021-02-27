@@ -80,6 +80,12 @@ h3 span { clear: both;display: block;font-size: 14px; }
 body { max-width: 1200px; margin: 0 auto; font-family: Helvetica, Verdana;}
 .green { background: green;  }
 .grey { background: #ddd; color: #888  }
+.grey-dark {background: #111; color: #333}
+.input-dark {background: #A0A0A0; color: #A0A0A0}
+
+.bg-primary-dark{background-color:#202040 !important}
+.bg-success-dark{background-color:#204020 !important}
+.bg-danger-dark{background-color:#402020 !important}
 
 input { margin-top: 4px; }
 
@@ -108,7 +114,10 @@ input[type=checkbox], input[type=radio] {
         <div class="col-sm-12 form-group">
             <div class="row">
                 <div class="col-sm-4"><label for="save-text-area">Paste your save here</label></div>
-                <div class="col-sm-6"></div>
+                <div class="col-sm-1"></div>
+                <div class="col-sm-1"><input type="checkbox" class="form-check-input" style="margin-left:3rem" id="input-dark-mode" /></div>
+                <label class="col-sm-2 col-form-label" id="label-dark-mode" style="margin-right:3rem;" for="input-dark-mode">Dark Mode</label>
+                <div class="col-sm-1"></div>
                 <div class="col-sm-2">
                     <button class="btn btn-primary" id="get-save-button" title="" style="margin-left:3.4rem" onclick="restoreSave()">Restore save</button>
                 </div>
@@ -368,6 +377,7 @@ function initPerks() {
         bestPerk: "", // 
         hideUnused: false,
         showLevelLocks: false,
+        darkMode: false,
         // scaling^log(resource boost) = atk or hp boost
         equipScaling: {
             attack: equipScalingPrestige.attack,
@@ -817,14 +827,16 @@ var colorCheckboxRows = function() {
             if (   input.getAttribute('id') == 'input-use-total'
                 || input.getAttribute('id') == 'input-lock-aux'
                 || input.getAttribute('id') == 'input-hide-unused-perks'
-                || input.getAttribute('id') == 'input-show-level-locks') 
+                || input.getAttribute('id') == 'input-show-level-locks'
+                || input.getAttribute('id') == 'input-dark-mode')
                 continue;
             
             var row = input.parentElement.parentElement;
+            var greyName = props.darkMode ? 'grey-dark' : 'grey';
             if (input.checked) {
-              row.setAttribute('class', row.getAttribute('class').replace('grey', ''));
+              row.setAttribute('class', row.getAttribute('class').replace(greyName, ''));
             } else {
-              row.setAttribute('class', row.getAttribute('class').replace('grey', '') + ' grey');
+              row.setAttribute('class', row.getAttribute('class').replace(greyName, '') + ' ' + greyName);
             }
         }
     }
@@ -1031,6 +1043,8 @@ function readInputs() {
         }
     }
     props.radonSpent = getTotalPerksCost();
+    
+    props.darkMode = inputs['dark-mode'].checked;
 
     // shove all aux input fields into the props structure
     for (var i=0; i<auxInputList.length; i++) {
@@ -1484,12 +1498,13 @@ function efficiencyColorAndFlag() {
         }
     }
     for (var i=0; i < eList.length; i++) {
-        var opacity = Math.max(eList[i]/bestEff,0.15);
+        var opacity = Math.max(eList[i]/bestEff,0.15) / (props.darkMode ? 2 : 1);
         var id = "label-" + pList[i].toLowerCase();
         var element = document.getElementById(id).parentElement;
-        if (element.getAttribute('class').indexOf('grey') == -1) {
+        var greyName = props.darkMode ? 'grey-dark' : 'grey';
+        if (element.getAttribute('class').indexOf(greyName) == -1) {
             if (eList[i] == 0) {
-                element.setAttribute("style", "background: #666;");
+                element.setAttribute("style", "background: #444;");
             } else {
                 element.setAttribute("style", "background: rgba(11, 200, 35, " + opacity + ");");
             }
@@ -1574,7 +1589,6 @@ function displayWarning(whichWarning) {
     warnings.anyActive = true;
 }
 
-
 // get perk efficiencies at current levels and color code them accordingly
 var evaluatePerks = function(debug=false) {
 
@@ -1591,6 +1605,7 @@ var evaluatePerks = function(debug=false) {
     saveAux.inputTotal = inputs['use-total'].checked;
     saveAux.hideUnused = inputs['hide-unused-perks'].checked;
     saveAux.showLevelLocks = inputs['show-level-locks'].checked;
+    saveAux.darkMode = inputs['dark-mode'].checked;
     if (saveAux.showLevelLocks) {
         for (var [perkName,perkObj] of Object.entries(perks)) {
             saveAux[perkName + 'Lock'] = inputs[perkName.toLowerCase() + '-noopt'].checked;
@@ -1836,6 +1851,53 @@ var switchShowLevelLocks = function() {
     evaluatePerks();
 }
 
+var switchDarkMode = function() {
+    props.darkMode = inputs['dark-mode'].checked;
+    var adder = props.darkMode ? "-dark" : "";
+    var remer = props.darkMode ? "" : "-dark";
+    for (var bgtype of ["primary","success","danger"]) {
+        var tmpEls = [];
+        // we're removing the search class from these elements, which will remove them from the return value object of getElementsByClassName,
+        //   so we must push all the elements into a static array before altering their classes
+        for (var elem of document.getElementsByClassName("bg-" + bgtype + remer)) {
+            tmpEls.push(elem);
+        }
+        for (var elem of tmpEls) {
+            elem.classList.remove("bg-" + bgtype + remer);
+            elem.classList.add("bg-" + bgtype + adder);
+        }
+    }
+    adder = props.darkMode ? "grey-dark" : "grey";
+    remer = props.darkMode ? "grey" : "grey-dark";
+    var tmpEls = [];
+    for (var elem of document.getElementsByClassName(remer)) tmpEls.push(elem);
+    for (var elem of tmpEls) {
+        elem.classList.remove(remer);
+        elem.classList.add(adder);
+    }
+    adder = props.darkMode ? "bg-dark" : "";
+    remer = props.darkMode ? "" : "bg-dark";
+    var textAdder = props.darkMode ? "text-white" : "";
+    var textRemer = props.darkMade ? "" : "text-white";
+    for (var elem of document.getElementsByTagName("INPUT")) {
+        if (props.darkMode) {
+            elem.classList.add("bg-dark");
+            elem.classList.add("text-white");
+        } else {
+            elem.classList.remove("bg-dark");
+            elem.classList.remove("text-white");
+        }
+    }
+    if (props.darkMode) {
+        saveTextArea.classList.add("bg-dark");
+        saveTextArea.classList.add("text-white");
+    } else {
+        saveTextArea.classList.remove("bg-dark");
+        saveTextArea.classList.remove("text-white");
+    }
+    evaluatePerks();
+}
+
 var inputs = [];
 var inputElements = document.getElementById('perks-col').getElementsByTagName("INPUT");
 for (var i = inputElements.length - 1; i >=0; i--) {
@@ -1872,15 +1934,18 @@ for (var i = inputElements.length - 1; i >=0; i--) {
     if (typeof(input.getAttribute('type')) != "undefined" && input.getAttribute('type') == "checkbox") {
         input.addEventListener('change', (event) => {
           var row = event.target.parentElement.parentElement;
+          var greyName = props.darkMode ? 'grey-dark' : 'grey';
           if (event.target.checked) {
-            row.setAttribute('class', row.getAttribute('class').replace('grey', ''));
+            row.setAttribute('class', row.getAttribute('class').replace(greyName, ''));
           } else {
-            row.setAttribute('class', row.getAttribute('class').replace('grey', '') + ' grey');
+            row.setAttribute('class', row.getAttribute('class').replace(greyName, '') + ' ' + greyName);
           }
           evaluatePerks();
         })
     }
 }
+inputs['dark-mode'] = document.getElementById('input-dark-mode');
+inputs['dark-mode'].onchange = switchDarkMode;
 
 for (var [key,iObj] of Object.entries(auxInputs)) {
     iObj.input.onkeyup = evaluatePerks;
@@ -1961,6 +2026,7 @@ if (window.localStorage.getItem("saveAux")) {
     if (saveAux.lockAll != null) lockAuxEl.checked = saveAux.lockAll;
     if (saveAux.inputTotal != null) inputs['use-total'].checked = saveAux.inputTotal;
     if (saveAux.hideUnused != null) inputs['hide-unused-perks'].checked = saveAux.hideUnused;
+    if (saveAux.darkMode != null) inputs['dark-mode'].checked = saveAux.darkMode;
     if (saveAux.showLevelLocks != null) {
         inputs['show-level-locks'].checked = saveAux.showLevelLocks;
         if (saveAux.showLevelLocks) {
@@ -1972,6 +2038,7 @@ if (window.localStorage.getItem("saveAux")) {
 }
 
 switchShowLevelLocks();
+switchDarkMode();
 // order of perks
 // buy 2nd, 3rd...
 
