@@ -119,117 +119,159 @@ input[type=checkbox], input[type=radio] {
   <div class="row mt-3">
     <div class="col-sm mr-1" id="perks-col">
         <div class="row">
-            <div class="col-sm-6">
-            <h2>Perks   <span>The greener, the better</span><span>Checked = unlocked</span></h2>
+            <div class="col-sm-4">
+                <h2>Perks   <span>The greener, the better</span><span>Checked = available to buy</span></h2>
             </div>
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-show-level-locks" /></div>
+            <label class="col-sm-3 col-form-label" id="label-show-level-locks" style="text-align: center;" for="input-show-level-locks">Show level locks </label>
             <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-hide-unused-perks" /></div>
-            <label class="col-sm-5 col-form-label" id="label-hide-unused-perks" style="text-align: center;" for="input-hide-unused-perks">Hide maxed, locked, and <br> unoptimized perks & inputs </label>
+            <label class="col-sm-3 col-form-label" id="label-hide-unused-perks" style="text-align: center;" for="input-hide-unused-perks">Hide maxed or unoptimized </label>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-resilience-enabled" /></div>
-            <label class="col-sm-6 col-form-label" id="label-resilience" for="input-resilience">Resilience </label>
+            <label class="col-sm-5 col-form-label" id="label-resilience" for="input-resilience">Resilience </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-resilience-noopt" for="input-resilience-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-resilience-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-resilience" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-greed-enabled" /></div>
-            <label class="col-sm-6 col-form-label" id="label-greed" for="input-greed">Greed </label>
+            <label class="col-sm-5 col-form-label" id="label-greed" for="input-greed">Greed </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-greed-noopt" for="input-greed-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-greed-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="40" id="input-greed" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-tenacity-enabled" /></div>
-            <label class="col-sm-6 col-form-label" id="label-tenacity" for="input-tenacity">Tenacity </label>
+            <label class="col-sm-5 col-form-label" id="label-tenacity" for="input-tenacity">Tenacity </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-tenacity-noopt" for="input-tenacity-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-tenacity-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="40" id="input-tenacity" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-criticality-enabled" /></div>
-            <label class="col-sm-6 col-form-label" id="label-criticality" for="input-criticality">Criticality </label>
+            <label class="col-sm-5 col-form-label" id="label-criticality" for="input-criticality">Criticality </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-criticality-noopt" for="input-criticality-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-criticality-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-criticality" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-equality-enabled" /></div>
-            <label class="col-sm-6 col-form-label" id="label-equality" for="input-equality">Equality </label>
+            <label class="col-sm-5 col-form-label" id="label-equality" for="input-equality">Equality </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-equality-noopt" for="input-equality-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-equality-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-equality" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-carpentry-enabled" /></div>
-            <label class="col-sm-6 col-form-label" id="label-carpentry" for="input-carpentry">Carpentry </label>
+            <label class="col-sm-5 col-form-label" id="label-carpentry" for="input-carpentry">Carpentry </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-carpentry-noopt" for="input-carpentry-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-carpentry-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-carpentry" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-artisanistry-enabled" /></div>
-            <label class="col-sm-6 col-form-label" id="label-artisanistry" for="input-artisanistry">Artisanistry </label>
+            <label class="col-sm-5 col-form-label" id="label-artisanistry" for="input-artisanistry">Artisanistry </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-artisanistry-noopt" for="input-artisanistry-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-artisanistry-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-artisanistry" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-packrat-enabled" /></div>
-            <label class="col-sm-6 col-form-label" id="label-packrat" for="input-packrat">Packrat </label>
+            <label class="col-sm-5 col-form-label" id="label-packrat" for="input-packrat">Packrat </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-packrat-noopt" for="input-packrat-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-packrat-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-packrat" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-motivation-enabled" /></div>
-            <label class="col-sm-6 col-form-label" id="label-motivation" for="input-motivation">Motivation </label>
+            <label class="col-sm-5 col-form-label" id="label-motivation" for="input-motivation">Motivation </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-motivation-noopt" for="input-motivation-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-motivation-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-motivation" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-power-enabled" /></div>
-            <label class="col-sm-6 col-form-label" id="label-power" for="input-power">Power </label>
+            <label class="col-sm-5 col-form-label" id="label-power" for="input-power">Power </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-power-noopt" for="input-power-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-power-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-power" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-toughness-enabled" /></div>
-            <label class="col-sm-6 col-form-label" id="label-toughness" for="input-toughness">Toughness </label>
+            <label class="col-sm-5 col-form-label" id="label-toughness" for="input-toughness">Toughness </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-toughness-noopt" for="input-toughness-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-toughness-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-toughness" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-looting-enabled" /></div>
-            <label class="col-sm-6 col-form-label" id="label-looting" for="input-looting">Looting </label>
+            <label class="col-sm-5 col-form-label" id="label-looting" for="input-looting">Looting </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-looting-noopt" for="input-looting-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-looting-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-looting" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-prismal-enabled" /></div>
-            <label class="col-sm-6 col-form-label" id="label-prismal" for="input-prismal">Prismal </label>
+            <label class="col-sm-5 col-form-label" id="label-prismal" for="input-prismal">Prismal </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-prismal-noopt" for="input-prismal-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-prismal-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" id="input-prismal" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-frenzy-enabled" /></div>
-            <label class="col-sm-6 col-form-label" id="label-frenzy" for="input-frenzy">Frenzy </label>
+            <label class="col-sm-5 col-form-label" id="label-frenzy" for="input-frenzy">Frenzy </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-frenzy-noopt" for="input-frenzy-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-frenzy-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-frenzy" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-observation-enabled" /></div>
-            <label class="col-sm-3 col-form-label" id="label-observation" for="input-observation">Observation </label>
-            <label class="col-sm-2 col-form-label" style="text-align: right;" id="label-observation-noopt" for="input-observation-noopt">lock level: </label>
-            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-observation-noopt" /></div>
+            <label class="col-sm-5 col-form-label" id="label-observation" for="input-observation">Observation </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-observation-noopt" for="input-observation-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-observation-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-observation" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-range-enabled" /></div>
-            <label class="col-sm-6 col-form-label" id="label-range" for="input-range">Range </label>
+            <label class="col-sm-5 col-form-label" id="label-range" for="input-range">Range </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-range-noopt" for="input-range-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-range-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-range" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-agility-enabled" /></div>
-            <label class="col-sm-6 col-form-label" id="label-agility" for="input-agility">Agility </label>
+            <label class="col-sm-5 col-form-label" id="label-agility" for="input-agility">Agility </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-agility-noopt" for="input-agility-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-agility-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="20" id="input-agility" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-bait-enabled" /></div>
-            <label class="col-sm-6 col-form-label" id="label-bait" for="input-bait">Bait </label>
+            <label class="col-sm-5 col-form-label" id="label-bait" for="input-bait">Bait </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-bait-noopt" for="input-bait-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-bait-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-bait" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-trumps-enabled" /></div>
-            <label class="col-sm-6 col-form-label" id="label-trumps" for="input-trumps">Trumps </label>
+            <label class="col-sm-5 col-form-label" id="label-trumps" for="input-trumps">Trumps </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-trumps-noopt" for="input-trumps-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-trumps-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-trumps" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-pheromones-enabled" /></div>
-            <label class="col-sm-6 col-form-label" id="label-pheromones" for="input-pheromones">Pheromones </label>
+            <label class="col-sm-5 col-form-label" id="label-pheromones" for="input-pheromones">Pheromones </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-pheromones-noopt" for="input-pheromones-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-pheromones-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-pheromones" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-hunger-enabled" /></div>
-            <label class="col-sm-6 col-form-label" id="label-hunger" for="input-hunger">Hunger </label>
+            <label class="col-sm-5 col-form-label" id="label-hunger" for="input-hunger">Hunger </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-hunger-noopt" for="input-hunger-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-hunger-noopt" /></div>
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="30" id="input-hunger" /></div>
         </div>
         <div class="row mt-2">
@@ -325,6 +367,7 @@ function initPerks() {
         armorLevels: 1,
         bestPerk: "", // 
         hideUnused: false,
+        showLevelLocks: false,
         // scaling^log(resource boost) = atk or hp boost
         equipScaling: {
             attack: equipScalingPrestige.attack,
@@ -336,6 +379,7 @@ function initPerks() {
         Agility: {
             optimize: false,
             locked: true,
+            levLocked: false,
             level: 0,
             priceBase: 4,
             priceFact: 1.3,
@@ -344,6 +388,7 @@ function initPerks() {
         Artisanistry: {
             optimize: true,
             locked: true,
+            levLocked: false,
             level: 0,
             priceBase: 15,
             priceFact: 1.3,
@@ -353,6 +398,7 @@ function initPerks() {
         Bait: {
             optimize: false,
             locked: true,
+            levLocked: false,
             level: 0,
             priceBase: 4,
             priceFact: 1.3,
@@ -360,6 +406,7 @@ function initPerks() {
         Carpentry: {
             optimize: true,
             locked: true,
+            levLocked: false,
             level: 0,
             priceBase: 25,
             priceFact: 1.3,
@@ -369,6 +416,7 @@ function initPerks() {
         Criticality: {
             optimize: true,
             locked: true,
+            levLocked: false,
             level: 0,
             priceBase: 100,
             priceFact: 1.3,
@@ -378,6 +426,7 @@ function initPerks() {
         Equality: {
             optimize: true,
             locked: true,
+            levLocked: false,
             level: 0,
             priceBase: 1,
             priceFact: 1.5,
@@ -387,6 +436,7 @@ function initPerks() {
         Frenzy: {
             optimize: true,
             locked: true,
+            levLocked: false,
             level: 0,
             priceBase: 1000000000000000,
             priceFact: 1.3,
@@ -398,6 +448,7 @@ function initPerks() {
         Greed: {
             optimize: true,
             locked: true,
+            levLocked: false,
             level: 0,
             priceBase: 10000000000,
             priceFact: 1.3,
@@ -408,6 +459,7 @@ function initPerks() {
         Hunger: {
             optimize: false,
             locked: true,
+            levLocked: false,
             level: 0,
             priceBase: 1000000,
             priceFact: 1.3,
@@ -416,6 +468,7 @@ function initPerks() {
         Looting: {
             optimize: true,
             locked: true,
+            levLocked: false,
             level: 0,
             priceBase: 1,
             priceFact: 1.3,
@@ -425,6 +478,7 @@ function initPerks() {
         Motivation: {
             optimize: true,
             locked: true,
+            levLocked: false,
             level: 0,
             priceBase: 2,
             priceFact: 1.3,
@@ -434,6 +488,7 @@ function initPerks() {
         Observation: {
             optimize: true,
             locked: true,
+            levLocked: false,
             canDisable: true,
             level: 0,
             priceBase: 5000000000000000000,
@@ -445,6 +500,7 @@ function initPerks() {
         Packrat: {
             optimize: true,
             locked: true,
+            levLocked: false,
             level: 0,
             priceBase: 3,
             priceFact: 1.3,
@@ -454,6 +510,7 @@ function initPerks() {
         Pheromones: {
             optimize: false, // TODO: SHOULD we optimize this? might need to in endgame
             locked: true,
+            levLocked: false,
             level: 0,
             priceBase: 3,
             priceFact: 1.3,
@@ -463,6 +520,7 @@ function initPerks() {
         Power: {
             optimize: true,
             locked: true,
+            levLocked: false,
             level: 0,
             priceBase: 1,
             priceFact: 1.3,
@@ -472,6 +530,7 @@ function initPerks() {
         Prismal: {
             optimize: true,
             locked: true,
+            levLocked: false,
             level: 0,
             priceBase: 1,
             priceFact: 1.3,
@@ -482,6 +541,7 @@ function initPerks() {
         Range: {
             optimize: false,
             locked: true,
+            levLocked: false,
             level: 0,
             priceBase: 1,
             priceFact: 1.3,
@@ -490,6 +550,7 @@ function initPerks() {
         Resilience: {
             optimize: true,
             locked: true,
+            levLocked: false,
             level: 0,
             priceBase: 100,
             priceFact: 1.3,
@@ -499,6 +560,7 @@ function initPerks() {
         Tenacity: {
             optimize: true,
             locked: true,
+            levLocked: false,
             level: 0,
             priceBase: 50000000,
             priceFact: 1.3,
@@ -509,6 +571,7 @@ function initPerks() {
         Toughness: {
             optimize: true,
             locked: true,
+            levLocked: false,
             level: 0,
             priceBase: 1,
             priceFact: 1.3,
@@ -518,6 +581,7 @@ function initPerks() {
         Trumps: {
             optimize: false,
             locked: true,
+            levLocked: false,
             level: 0,
             priceBase: 3,
             priceFact: 1.3,
@@ -752,7 +816,8 @@ var colorCheckboxRows = function() {
         if (typeof(input.getAttribute('type')) != "undefined" && input.getAttribute('type') == "checkbox") {
             if (   input.getAttribute('id') == 'input-use-total'
                 || input.getAttribute('id') == 'input-lock-aux'
-                || input.getAttribute('id') == 'input-hide-unused-perks') 
+                || input.getAttribute('id') == 'input-hide-unused-perks'
+                || input.getAttribute('id') == 'input-show-level-locks') 
                 continue;
             
             var row = input.parentElement.parentElement;
@@ -958,6 +1023,7 @@ function readInputs() {
     for (var [perkName, perkObj] of Object.entries(perks)) {
         if (typeof(perkObj) !== "object" || !perkObj.hasOwnProperty("optimize")) continue; // iterating over the perks, ignoring aux values
         perkObj.locked = !inputs[perkName.toLowerCase() + "-enabled"].checked;
+        perkObj.levLocked = inputs[perkName.toLowerCase() + "-noopt"].checked;
         perkObj.level = parseInt(inputs[perkName.toLowerCase()].value) || 0;
         if (perkObj.hasOwnProperty("max") && perkObj.level > perkObj.max) {
             perkObj.level = perkObj.max;
@@ -965,8 +1031,6 @@ function readInputs() {
         }
     }
     props.radonSpent = getTotalPerksCost();
-    
-    perks.Observation.optimize = !inputs['observation-noopt'].checked;
 
     // shove all aux input fields into the props structure
     for (var i=0; i<auxInputList.length; i++) {
@@ -1027,6 +1091,7 @@ function readInputs() {
     else props.smithyScaling = 50;
     
     props.hideUnused = inputs['hide-unused-perks'].checked;
+    props.showLevelLocks = inputs['show-level-locks'].checked;
     
     checkWarnings();
 }
@@ -1403,6 +1468,7 @@ function efficiencyColorAndFlag() {
         if (perkObj.efficiency > bestEff) {
             bestEff = perkObj.efficiency;
         }
+        if (perkObj.levLocked) continue; // don't buy level-locked perks
         if (couldBuyPerk(perkName,false) && perkObj.efficiency > bestAffordableEff) {
             bestAffordableEff = perkObj.efficiency;
             props.bestPerk = perkName;
@@ -1486,7 +1552,7 @@ function clearWarning(whichWarning) {
 }
 
 function checkWarnings() {
-    var warnRnGain = perks.Observation.optimize && !perks.Observation.locked && props.radonWeight > 0 && props.radonPerRun <= 1;
+    var warnRnGain = perks.Observation.optimize && !perks.Observation.levLocked && !perks.Observation.locked && props.radonWeight > 0 && props.radonPerRun <= 1;
     var warnRnLessThanSave = auxInputs.perksRadon.input.value < props.perksRadonFromSave;
     var doRestore = false;
     if (!warnRnGain) doRestore |= clearWarning("rnGain");
@@ -1523,8 +1589,13 @@ var evaluatePerks = function(debug=false) {
     saveAux.hubEnabled = hubEl.checked;
     saveAux.lockAll = lockAuxEl.checked;
     saveAux.inputTotal = inputs['use-total'].checked;
-    saveAux.obsNoopt = inputs['observation-noopt'].checked;
     saveAux.hideUnused = inputs['hide-unused-perks'].checked;
+    saveAux.showLevelLocks = inputs['show-level-locks'].checked;
+    if (saveAux.showLevelLocks) {
+        for (var [perkName,perkObj] of Object.entries(perks)) {
+            saveAux[perkName + 'Lock'] = inputs[perkName.toLowerCase() + '-noopt'].checked;
+        }
+    }
     window.localStorage.setItem("saveAux", JSON.stringify(saveAux));
         
     if (!saveLoaded) return;
@@ -1676,11 +1747,6 @@ var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,k
     vars[key] = value;
 });
 
-var switchObsNoopt = function() {
-    perks.Observation.optimize = !inputs['observation-noopt'].checked;
-    evaluatePerks();
-}
-
 var switchHideUnused = function() {
     readInputs();
     evaluatePerks();
@@ -1748,6 +1814,28 @@ function checkHideUnused() {
     } else tmpRow.style.display = "";
 }
 
+var switchShowLevelLocks = function() {
+    props.showLevelLocks = inputs['show-level-locks'].checked;
+    for (var [perkName,perkObj] of Object.entries(perks)) {
+        labEl = document.getElementById('label-' + perkName.toLowerCase());
+        lockEl = document.getElementById('input-' + perkName.toLowerCase() + '-noopt');
+        lockLabEl = document.getElementById('label-' + perkName.toLowerCase() + '-noopt');
+        if (props.showLevelLocks) {
+            labEl.classList.remove("col-sm-5");
+            labEl.classList.add("col-sm-3");
+            lockEl.style.display = "";
+            lockLabEl.style.display = "";
+        } else {
+            labEl.classList.remove("col-sm-3");
+            labEl.classList.add("col-sm-5");
+            lockEl.style.display = "none";
+            lockLabEl.style.display = "none";
+            lockEl.checked = false; // actually un-check all level locks when hiding
+        }
+    }
+    evaluatePerks();
+}
+
 var inputs = [];
 var inputElements = document.getElementById('perks-col').getElementsByTagName("INPUT");
 for (var i = inputElements.length - 1; i >=0; i--) {
@@ -1759,13 +1847,18 @@ for (var i = inputElements.length - 1; i >=0; i--) {
         
     if (inputId == "use-total") continue;
     
-    if (inputId == "observation-noopt") {
-        input.onchange = switchObsNoopt;
+    if (inputId == "hide-unused-perks") {
+        input.onchange = switchHideUnused;
         continue;
     }
     
-    if (inputId == "hide-unused-perks") {
-        input.onchange = switchHideUnused;
+    if (inputId == "show-level-locks") {
+        input.onchange = switchShowLevelLocks;
+        continue;
+    }
+    
+    if (inputId.includes('noopt')) {
+        input.onchange = switchShowLevelLocks;
         continue;
     }
     
@@ -1828,7 +1921,7 @@ function exportPerks() {
 function clearAndAutobuyPerks() {
     if (props.perksRadon > 0) {
         for (var [key, value] of Object.entries(perks)) {
-            if (typeof(value) !== "object" || !value.hasOwnProperty("optimize") || !value.optimize) continue; // iterating over the perks, ignoring aux values and non-optimized perks
+            if (typeof(value) !== "object" || !value.hasOwnProperty("optimize") || !value.optimize || value.levLocked) continue; // iterating over the perks, ignoring aux values and non-optimized perks
             inputs[key.toLowerCase()].value = 0;
         }
         autobuyPerks();
@@ -1863,13 +1956,22 @@ if (window.localStorage.getItem("saveAux")) {
             inputObj.input.value = saveAux[key + "Input"];
             inputObj.checkbox.checked = saveAux[key + "Checkbox"];
         }
-    }
+    }   
     if (saveAux.hubEnabled != null) hubEl.checked = saveAux.hubEnabled;
     if (saveAux.lockAll != null) lockAuxEl.checked = saveAux.lockAll;
     if (saveAux.inputTotal != null) inputs['use-total'].checked = saveAux.inputTotal;
-    if (saveAux.obsNoopt != null) inputs['observation-noopt'].checked = saveAux.obsNoopt;
     if (saveAux.hideUnused != null) inputs['hide-unused-perks'].checked = saveAux.hideUnused;
+    if (saveAux.showLevelLocks != null) {
+        inputs['show-level-locks'].checked = saveAux.showLevelLocks;
+        if (saveAux.showLevelLocks) {
+            for (var [perkName,perkObj] of Object.entries(perks)) {
+                if (saveAux[perkName + "Lock"] != null) inputs[perkName.toLowerCase() + '-noopt'].checked = saveAux[perkName + "Lock"];
+            }
+        }
+    }
 }
+
+switchShowLevelLocks();
 // order of perks
 // buy 2nd, 3rd...
 
