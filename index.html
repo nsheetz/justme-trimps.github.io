@@ -83,9 +83,9 @@ body { max-width: 1200px; margin: 0 auto; font-family: Helvetica, Verdana;}
 .grey-dark {background: #111; color: #333}
 .input-dark {background: #A0A0A0; color: #A0A0A0}
 
-.bg-primary-dark{background-color:#202040 !important}
-.bg-success-dark{background-color:#204020 !important}
-.bg-danger-dark{background-color:#402020 !important}
+.bg-primary-dark{background-color:#181830 !important}
+.bg-success-dark{background-color:#183018 !important}
+.bg-danger-dark{background-color:#301818 !important}
 
 input { margin-top: 4px; }
 
@@ -113,14 +113,14 @@ input[type=checkbox], input[type=radio] {
         </div>
         <div class="col-sm-12 form-group">
             <div class="row">
-                <div class="col-sm-4"><label for="save-text-area">Paste your save here</label></div>
+                <div class="col-sm-2"><label for="save-text-area">Paste your save below</label></div>
                 <div class="col-sm-1"></div>
                 <div class="col-sm-1"><input type="checkbox" class="form-check-input" style="margin-left:3rem" id="input-dark-mode" /></div>
                 <label class="col-sm-2 col-form-label" id="label-dark-mode" style="margin-right:3rem;" for="input-dark-mode">Dark Mode</label>
-                <div class="col-sm-1"></div>
                 <div class="col-sm-2">
-                    <button class="btn btn-primary" id="get-save-button" title="" style="margin-left:3.4rem" onclick="restoreSave()">Restore save</button>
+                    <button class="btn btn-primary" id="get-save-button" title="" onclick="restoreSave()">Restore save</button>
                 </div>
+                <div class="col-sm-2"></div>
             </div>
             <textarea class="form-control" id="save-text-area" rows="3" onpaste="loadSave()"></textarea>
         </div>
