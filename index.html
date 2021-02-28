@@ -98,19 +98,18 @@ input[type=checkbox], input[type=radio] {
 </head>
 <body>
 <div class="container-fluid mt-3 mb-3">
+    <div class="row"><p></p></div>
     <div class="row">
-        <div class="col-sm-3">
-        </div>
         <div class="col-sm-12 form-group">
             <div class="row">
-                <div class="col-sm-2"><label for="save-text-area">Paste your save below</label></div>
+                <div class="col-sm-3"><label for="save-text-area">Paste your save below</label></div>
+                <div class="col-sm-2">
+                    <button class="btn btn-primary" id="get-save-button" style="margin-left:0rem; margin-bottom:0.5rem;" title="" onclick="restoreSave()">Restore save</button>
+                </div>
                 <div class="col-sm-1"><input type="checkbox" class="form-check-input" style="margin-left:3rem" id="input-dark-mode" /></div>
                 <label class="col-sm-2 col-form-label" id="label-dark-mode" style="margin-right:3rem;" for="input-dark-mode">Dark Mode</label>
                 <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" style="margin-left:3rem" id="input-hide-locked" /></div>
                 <label class="col-sm-2 col-form-label" id="label-hide-locked" style="margin-right:3rem;" for="input-hide-locked">Hide spoilers</label>
-                <div class="col-sm-2">
-                    <button class="btn btn-primary" id="get-save-button" title="" onclick="restoreSave()">Restore save</button>
-                </div>
                 <div class="col-sm-2"></div>
             </div>
             <textarea class="form-control" id="save-text-area" rows="3" onpaste="loadSave()"></textarea>
