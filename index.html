@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Surky</title>
+    <title>Surky: A Trimps U2 Perk Calculator</title>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -99,16 +99,6 @@ input[type=checkbox], input[type=radio] {
 <body>
 <div class="container-fluid mt-3 mb-3">
     <div class="row">
-        <div class="col-sm-12">
-            <h1 class="mr-3">
-            Trimps U2 perks
-            <span>UI adapted from justme's calc</span>
-            </h1>
-        </div>
-    </div>
-</div>
-<div class="container-fluid mt-3 mb-3">
-    <div class="row">
         <div class="col-sm-3">
         </div>
         <div class="col-sm-12 form-group">
@@ -117,7 +107,7 @@ input[type=checkbox], input[type=radio] {
                 <div class="col-sm-1"><input type="checkbox" class="form-check-input" style="margin-left:3rem" id="input-dark-mode" /></div>
                 <label class="col-sm-2 col-form-label" id="label-dark-mode" style="margin-right:3rem;" for="input-dark-mode">Dark Mode</label>
                 <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" style="margin-left:3rem" id="input-hide-locked" /></div>
-                <label class="col-sm-2 col-form-label" id="label-hide-locked" style="margin-right:3rem;" for="input-hide-locked">Hide locked items</label>
+                <label class="col-sm-2 col-form-label" id="label-hide-locked" style="margin-right:3rem;" for="input-hide-locked">Hide spoilers</label>
                 <div class="col-sm-2">
                     <button class="btn btn-primary" id="get-save-button" title="" onclick="restoreSave()">Restore save</button>
                 </div>
@@ -612,7 +602,7 @@ const auxInputList = [
         divId: 'target-zone',
         label: "Target Zone to clear",
         bg: "bg-danger",
-        title: "Target last zone to clear. This is only used for valuing radon an trinket gains based on last cleared zone, so there's no point picking a different zone - it won't affect the optimization process for pure pushing with no radon weight.",
+        title: "Target last zone to clear. This is only used for valuing radon and trinket gains based on last cleared zone, so there's no point picking a different zone - it won't affect the optimization process for pure pushing with no radon weight.",
         type: "int",
         value: 1,
         min: 1,
@@ -798,9 +788,9 @@ for (var i=0; i<auxInputList.length; i++) {
     var labelBg = iObj.hasOwnProperty("bg")  ? (" " + iObj.bg + " ") : ""; 
     if (key == "housingCount") {
         tmpRow.innerHTML = '<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="' + checkboxDivName + 
-            '" /></div><label class="col-sm-3 col-form-label bg-primary" id="label-hub-enabled" for="input-hub-enabled">Hub unlocked:</label>' +
-            '<div class="col-sm-1 bg-primary"><input type="checkbox" class="form-check-input" style="margin-left:0.2rem; margin-top:0.8rem" id="input-hub-enabled" /></div>' +
-            '<label class="col-sm-3 col-form-label' + labelBg + ' id="' + labelDivName + '" for="' + inputDivName + '">' + iObj.label +
+            '" /></div><label class="col-sm-3 col-form-label bg-primary" style="text-align:right;" id="label-hub-enabled" for="input-hub-enabled">Hub unlocked:</label>' +
+            '<div class="col-sm-1 bg-primary"><input type="checkbox" class="form-check-input" style="margin-left:0.2rem; margin-top:0.7rem" id="input-hub-enabled" /></div>' +
+            '<label class="col-sm-3 col-form-label' + labelBg + '" id="' + labelDivName + '" for="' + inputDivName + '">' + iObj.label +
             ' </label><div class="col-sm-4"><input class="form-control" value="' + iObj.value + '" title="' + iObj.title + 
             '" type="number" ' + step + minMaxSrc + 'id="' + inputDivName + '" /></div>'
     } else {
@@ -1825,6 +1815,24 @@ function checkHideUnused() {
         ||  props.hideLocked && (game === null || game.buildings.Collector.locked && props.housingCount == 0)) {
         tmpRow.style.display = "none";
     } else tmpRow.style.display = "";
+    // if maxed fields are hidden: hide hubs once unlocked
+    // if spoilers are hidden: hide hubs if not unlocked
+    // So basically hide them hubs unless someone really wants to see the field.
+    colLab = document.getElementById('label-housing-count');
+    hubLab = document.getElementById('label-hub-enabled');
+    hubBox = document.getElementById('input-hub-enabled').parentElement;
+    if (    props.hideUnused && game !== null && !game.buildings.Hub.locked && props.hubEnabled
+        ||  props.hideLocked && (game === null || game.buildings.Hub.locked && !props.hubEnabled)) {
+        hubLab.style.display = "none";
+        hubBox.style.display = "none";
+        colLab.classList.remove('col-sm-3');
+        colLab.classList.add('col-sm-7');
+    } else {
+        hubLab.style.display = "";
+        hubBox.style.display = "";
+        colLab.classList.remove('col-sm-7');
+        colLab.classList.add('col-sm-3');
+    }
     
     // hide locked & maxed perks
     for (var [perkName, perkObj] of Object.entries(perks)) {
