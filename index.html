@@ -1797,9 +1797,17 @@ function checkHideUnused() {
         tmpRow.style.display = "none";
     } else tmpRow.style.display = "";
     // greed locked or hide inputs and tribs >= 1250: don't show tribs
+    // If greed is unlocked DO NOT hide tributes < 1250 even if greed is maxed. A locked trib count <1250 will
+    //   keep giving credit to resource boosts for buying more tributes which is a HUGE error if tribs are actually
+    //   maxed.
+    // Hiding tribute count at 1250 if greed is maxed is fine, but DON'T hide the tribute count ever if greed is not
+    //   maxed. Too much danger of the user manually entering 1250 earlier in the greed curve and getting bad results
+    //   during a critical portion of the game for optimizing greed levels and resource boosts.
+    //   YES, there is some danger of the user entering 1250 and getting maxed greed too early (and then the field
+    //   getting hidden), but there is only a very brief phase of the game where greed is maxed but 1250 tributes is
+    //   still tricky to reach, so the danger is minor and short-lived.
     tmpRow = auxInputs.tributes.input.parentElement.parentElement;
-    // don't hide a locked & maxed tribute input - too much danger of the user setting 1250 as a test and forgetting it
-    if (perks.Greed.locked || props.hideUnused && (props.tributes >= 1250 && !auxInputs.tributes.checkbox.checked || perks.Greed.level >= perks.Greed.max)) {
+    if (perks.Greed.locked || props.hideUnused && (props.tributes >= 1250 && (!auxInputs.tributes.checkbox.checked || perks.Greed.level >= perks.Greed.max))) {
         tmpRow.style.display = "none";
     } else tmpRow.style.display = "";
     // prismal shield only relevant until prismal is maxed, and should be hidden when prismal is locked
