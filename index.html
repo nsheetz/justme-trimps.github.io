@@ -1025,7 +1025,7 @@ function getTenacityEffect(time) {
 }
 
 function legalizeInput(val,backup) {
-    if (val == null) return backup;
+    if (isNaN(val)) return backup;
     return val;
 }
 
