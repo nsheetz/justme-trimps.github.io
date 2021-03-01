@@ -872,7 +872,6 @@ var loadSave = function() {
         
         initWarnings();
 
-
         var portal = game.portal;
         
         // set perk object to default values
@@ -893,24 +892,32 @@ var loadSave = function() {
         
         // set aux inputs from game variables, unless any given field is locked (handled by setAuxInput function)
         
-        // target zone to CLEAR is 1 zone before the portal zone by default
-        setAuxInput("targetZone",Math.max(1,game.global.world-1));
-        
-        // weapon/armor levels taken from dagger/boots (most likely to be leveled highest)
-        setAuxInput("weaponLevels",game.equipment.Dagger.level || 1);
-        setAuxInput("armorLevels",game.equipment.Boots.level || 1);
-        
-        // get current purchased tributes, mets, etc
-        setAuxInput("tributes",game.buildings.Tribute.owned || 0);
-        setAuxInput("meteorologists",game.jobs.Meteorologist.owned || 0);
-        setAuxInput("antennae",game.buildings.Antenna.owned || 0);
-        
-        // get count of best housing building (don't bother optimizing lower than gateways, the 2nd-order adjustments won't matter enough to bother)
-        var cols = game.buildings.Collector.owned || 0;
-        var housings = 0;
-        var haveHubs = game.buildings.Hub.owned > 0;
-        setAuxInput("housingCount",cols);
+        // "red" fields should only be overwritten if loading a U2 save (values will be garbage in U1)
+        if (game.global.universe == 2) {
+            // target zone to CLEAR is 1 zone before the portal zone by default
+            setAuxInput("targetZone",Math.max(1,game.global.world-1));
+            
+            // weapon/armor levels taken from dagger/boots (most likely to be leveled highest)
+            setAuxInput("weaponLevels",game.equipment.Dagger.level || 1);
+            setAuxInput("armorLevels",game.equipment.Boots.level || 1);
+            
+            // get current purchased tributes, mets, etc
+            setAuxInput("tributes",game.buildings.Tribute.owned || 0);
+            setAuxInput("meteorologists",game.jobs.Meteorologist.owned || 0);
+            
+            // get count of best housing building (don't bother optimizing lower than gateways, the 2nd-order adjustments won't matter enough to bother)
+            var cols = game.buildings.Collector.owned || 0;
+            setAuxInput("housingCount",cols);
+                    
+            setAuxInput("radonPerRun",game.resources.radon.owned);
+        }
+                
+        var haveHubs = !game.buildings.Hub.locked;
         if (!auxInputs["housingCount"].checkbox.checked) hubEl.checked = haveHubs;
+
+        // remaining fields are "safe" to load from a U1 save because they are persistent regardless of universe
+
+        setAuxInput("antennae",game.buildings.Antenna.owned || 0);
         
         var shield = null;
         if (game.global.universe == 2)
@@ -925,14 +932,13 @@ var loadSave = function() {
             if (critDamageMod)  { setAuxInput("shieldCD",Math.round(critDamageMod[1] / 10)); }  else { setAuxInput("shieldCD",0); }
             if (prismalMod)     { setAuxInput("shieldPrismal",Math.round(prismalMod[1])); }     else { setAuxInput("shieldPrismal",0); }
         }
+        
 
         // calculate Scruffy level (adapted from Fluffy.getLevel() in the game source code)
         setAuxInput("scruffyLevel",Math.floor(Math.log(((game.global.fluffyExp2 / 1000) * 3) + 1) / Math.log(4)));
         
         // SHINIES
         setAuxInput("trinkets",game.portal.Observation.trinkets);
-        
-        setAuxInput("radonPerRun",game.resources.radon.owned);
         
         saveLoaded = true;
         
