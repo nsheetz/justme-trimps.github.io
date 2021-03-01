@@ -867,10 +867,11 @@ var loadSave = function() {
             return;
         }
         
-        initWarnings();
-        
         var trimpsSave = {save: saveTextArea.value};
         window.localStorage.setItem("trimpsSave", JSON.stringify(trimpsSave));
+        
+        initWarnings();
+
 
         var portal = game.portal;
         
@@ -1539,11 +1540,15 @@ function initWarnings() {
     warnings = {
         anyActive: false,
         rnGain: {
-            message: "WARNING: A reasonable estimate of 'Radon Gain per Run' is necessary to account for Runetrinkets when the 'Radon weight' is > 0. (You can proceed if not entering your Rn gain per run was really on purpose, but you will get wildly inaccurate results.)",
+            message: "WARNING: A reasonable estimate of 'Radon Gain per Run' is necessary to account for Runetrinkets when the 'Radon weight' is > 0. (You can proceed if the entered Rn gain value was on purpose, but you will likely get wildly inaccurate results.)",
             active: false
         },
         rnLessThanSave: {
             message: "WARNING: You have locked the 'Radon for Perks' input with less Radon than you have in your pasted save. (If this was on purpose, you can ignore this warning.)",
+            active: false,
+        },
+        greedTribs: {
+            message: "WARNING: You have set the 'Tributes purchased' input below the 1250 cap for Greed, with Greed maxed. This will drastically overvalue resource perks unless it's really correct. (If you did this on purpose because you can't easily max tributes, then you can ignore this warning.)",
             active: false,
         },
     };
@@ -1560,13 +1565,16 @@ function clearWarning(whichWarning) {
 }
 
 function checkWarnings() {
-    var warnRnGain = perks.Observation.optimize && !perks.Observation.levLocked && !perks.Observation.locked && props.radonWeight > 0 && props.radonPerRun <= 1;
+    var warnRnGain = perks.Observation.optimize && !perks.Observation.levLocked && !perks.Observation.locked && props.radonWeight > 0 && props.radonPerRun <= props.perksRadon/1e6;
     var warnRnLessThanSave = auxInputs.perksRadon.input.value < props.perksRadonFromSave;
+    var warnGreedTribs = auxInputs.tributes.input.value < 1250 && perks.Greed.level >= 40;
     var doRestore = false;
     if (!warnRnGain) doRestore |= clearWarning("rnGain");
     if (!warnRnLessThanSave) doRestore |= clearWarning("rnLessThanSave");
+    if (!warnGreedTribs) doRestore |= clearWarning("greedTribs");
     if (warnRnGain) displayWarning("rnGain");
     if (warnRnLessThanSave) displayWarning("rnLessThanSave");
+    if (warnGreedTribs) displayWarning("greedTribs");
     if (doRestore) restoreSave();
 }
 
