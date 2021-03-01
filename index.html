@@ -1071,6 +1071,7 @@ function readInputs() {
             auxInputs[key].input.value = max;
         }
         props[key] = legalizeInput(val,def);
+        auxInputs[key].input.value = props[key];
     }
     
     // are hubs enabled?
