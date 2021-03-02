@@ -229,7 +229,7 @@ input[type=checkbox], input[type=radio] {
             <label class="col-sm-5 col-form-label" id="label-observation" for="input-observation">Observation </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-observation-noopt" for="input-observation-noopt">lock level: </label>
             <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-observation-noopt" /></div>
-            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" id="input-observation" /></div>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="50" id="input-observation" /></div>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-range-enabled" /></div>
@@ -1046,33 +1046,8 @@ function readInputs() {
     props.darkMode = inputs['dark-mode'].checked;
     props.hideLocked = inputs['hide-locked'].checked
 
-    // shove all aux input fields into the props structure
-    for (var i=0; i<auxInputList.length; i++) {
-        var iObj = auxInputList[i];
-        var key = iObj.keyName;
-        var def = iObj.value;
-        var type = iObj.type;
-        var min = iObj.min;
-        var max = iObj.max;
-        var val = 0;
-        if (type === 'int') {
-            val = parseInt(auxInputs[key].input.value);
-        } else if (type === 'float') {
-            val = parseFloat(auxInputs[key].input.value);
-        } else {
-            console.log("ERROR: found an aux field without int or float type - please fix!");
-        }
-        if (min !== null && val < min) {
-            val = min;
-            auxInputs[key].input.value = min;
-        }
-        if (max !== null && val > max) {
-            val = max;
-            auxInputs[key].input.value = max;
-        }
-        props[key] = legalizeInput(val,def);
-        auxInputs[key].input.value = props[key];
-    }
+    // legalize aux inputs, forcing legal values back into fields as necessary
+    legalizeAux(true);
     
     // are hubs enabled?
     props.hubEnabled = hubEl.checked;
@@ -1991,9 +1966,53 @@ inputs['dark-mode'].onchange = switchDarkMode;
 inputs['hide-locked'] = document.getElementById('input-hide-locked');
 inputs['hide-locked'].onchange = switchHideUnused;
 
+// only color bad input fields
+var colorLegalizeAux = function() {legalizeAux(false);}
+
+// legalize aux values and color bad inputs, forcing fields to legalized values if forceFields=true
+function legalizeAux(forceFields=false) {
+    // shove all aux input fields into the props structure
+    for (var i=0; i<auxInputList.length; i++) {
+        var iObj = auxInputList[i];
+        var key = iObj.keyName;
+        var def = iObj.value;
+        var type = iObj.type;
+        var min = iObj.min;
+        var max = iObj.max;
+        var val = 0;
+        if (type === 'int') {
+            val = parseInt(auxInputs[key].input.value);
+        } else if (type === 'float') {
+            val = parseFloat(auxInputs[key].input.value);
+        } else {
+            console.log("ERROR: found an aux field without int or float type - please fix!");
+        }
+        var badNum = isNaN(val);
+        if (badNum) {
+            auxInputs[key].input.classList.add('bg-warning');
+        } else {
+            auxInputs[key].input.classList.remove('bg-warning');
+        }
+        if (min !== null && val < min) {
+            val = min;
+            auxInputs[key].input.value = min;
+        }
+        if (max !== null && val > max) {
+            val = max;
+            auxInputs[key].input.value = max;
+        }
+        props[key] = legalizeInput(val,def);
+        if (forceFields) {
+            auxInputs[key].input.classList.remove('bg-warning');
+            auxInputs[key].input.value = props[key];
+        }
+    }
+}
+
 for (var [key,iObj] of Object.entries(auxInputs)) {
-    iObj.input.onkeyup = evaluatePerks;
-    iObj.input.onchange = evaluatePerks;
+    //iObj.input.onkeyup = colorLegalizeAux;
+    iObj.input.oninput = colorLegalizeAux;
+    iObj.input.onblur = evaluatePerks;
     iObj.input.onpaste = evaluatePerks;
     iObj.input.oncut = evaluatePerks;
     iObj.checkbox.onchange = evaluatePerks;
