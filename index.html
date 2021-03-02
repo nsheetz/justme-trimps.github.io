@@ -638,7 +638,7 @@ const auxInputList = [
         bg: "bg-danger",
         label: "Radon Gain per Run (if Rn weight > 0)",
         title: "Typical Radon gains in a farming run. Needed for Observation (until your trinkets are capped). Can be extracted from your save if you paste a save from the end of a U2 farming run. Doesn't need to be exact but a pretty good estimate is recommended. Only used when Rn weight > 0.",
-        type: "float",
+        type: "floatext",
         value: "",
         min: null,
         max: null, },
@@ -741,7 +741,7 @@ const auxInputList = [
         bg: "bg-primary",
         label: "Radon for Perks",
         title: "Total radon you have to spend on perks (with or without current portal included)",
-        type: "float",
+        type: "floatext",
         value: 0,
         min: 0,
         max: null, },
@@ -785,18 +785,19 @@ for (var i=0; i<auxInputList.length; i++) {
     var step = (iObj.type == 'float') ? ' step="any" ' : "";
     var minMaxSrc = (iObj.min === null ? "" : ' min="' + iObj.min + '" ') + (iObj.max === null ? "" : ' max="' + iObj.max + '" ');
     var labelBg = iObj.hasOwnProperty("bg")  ? (" " + iObj.bg + " ") : ""; 
+    var type = (iObj.type == 'floatext') ? 'text' : 'number';
     if (key == "housingCount") {
         tmpRow.innerHTML = '<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="' + checkboxDivName + 
             '" /></div><label class="col-sm-3 col-form-label bg-primary" style="text-align:right;" id="label-hub-enabled" for="input-hub-enabled">Hub unlocked:</label>' +
             '<div class="col-sm-1 bg-primary"><input type="checkbox" class="form-check-input" style="margin-left:0.2rem; margin-top:0.7rem" id="input-hub-enabled" /></div>' +
             '<label class="col-sm-3 col-form-label' + labelBg + '" id="' + labelDivName + '" for="' + inputDivName + '">' + iObj.label +
             ' </label><div class="col-sm-4"><input class="form-control" value="' + iObj.value + '" title="' + iObj.title + 
-            '" type="number" ' + step + minMaxSrc + 'id="' + inputDivName + '" /></div>'
+            '" type="' + type + '" ' + step + minMaxSrc + 'id="' + inputDivName + '" name="' + key + '"/></div>'
     } else {
         tmpRow.innerHTML = '<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="' + checkboxDivName + 
             '" /></div><label class="col-sm-7 col-form-label' + labelBg + '" id="' + labelDivName + '" for="' + inputDivName + '">' + iObj.label +
             ' </label><div class="col-sm-4"><input class="form-control" value="' + iObj.value + '" title="' + iObj.title + 
-            '" type="number" ' + step + minMaxSrc + 'id="' + inputDivName + '" /></div>';
+            '" type="' + type + '" ' + step + minMaxSrc + 'id="' + inputDivName + '" name="' + key + '" /></div>';
     }
     auxColumnElement.insertBefore(tmpRow,null); // insert at end of the aux column
     
@@ -836,7 +837,10 @@ var colorCheckboxRows = function() {
 
 // set aux input only if not locked
 function setAuxInput(key, value) {
-    if (!auxInputs[key].checkbox.checked) auxInputs[key].input.value = value;
+    if (!auxInputs[key].checkbox.checked) {
+        auxInputs[key].input.value = value;
+        if (auxInputs[key].input.type == 'text') auxInputs[key].rawValue = value;
+    }
 }
 
 var saveTextArea = document.getElementById('save-text-area');
@@ -1496,8 +1500,13 @@ var switchTotalRadon = function() {
     }
 
     if (auxInputs.perksRadon.checkbox.checked) {
-        props.perksRadon = auxInputs.perksRadon.input.value;
+        // if the value is locked there are 3 possible cases:
+        //  -> manually entered, and rawValue was stored by the event handler for the input field
+        //  -> loaded from localstorage, and rawValue was stored while loading the localstorage info
+        //  -> loaded from save while unlocked (locked later), and rawValue was stored when loading the save while unlocked
+        props.perksRadon = auxInputs.perksRadon.rawValue;
     } else {
+        auxInputs.perksRadon.rawValue = props.perksRadonFromSave;
         auxInputs.perksRadon.input.value = props.perksRadonFromSave;
     }
     
@@ -1548,7 +1557,7 @@ function clearWarning(whichWarning) {
 
 function checkWarnings() {
     var warnRnGain = perks.Observation.optimize && !perks.Observation.levLocked && !perks.Observation.locked && props.radonWeight > 0 && props.radonPerRun <= props.perksRadon/1e6;
-    var warnRnLessThanSave = auxInputs.perksRadon.checkbox.checked && (auxInputs.perksRadon.input.value < props.perksRadonFromSave);
+    var warnRnLessThanSave = auxInputs.perksRadon.checkbox.checked && (auxInputs.perksRadon.rawValue < props.perksRadonFromSave);
     var warnGreedTribs = auxInputs.tributes.input.value < 1250 && perks.Greed.level >= 40;
     var doRestore = false;
     if (!warnRnGain) doRestore |= clearWarning("rnGain");
@@ -1575,13 +1584,17 @@ function displayWarning(whichWarning) {
 
 // get perk efficiencies at current levels and color code them accordingly
 var evaluatePerks = function(debug=false) {
-
+   
     readInputs();
     
     var saveAux = {};
     
     for (var [key,inputObj] of Object.entries(auxInputs)) {
-        saveAux[key + "Input"] = inputObj.input.value;
+        if (inputObj.input.type == 'text') {
+            saveAux[key + "Input"] = inputObj.rawValue;
+        } else {
+            saveAux[key + "Input"] = inputObj.input.value;
+        }
         saveAux[key + "Checkbox"] = inputObj.checkbox.checked;
     }
     saveAux.hubEnabled = hubEl.checked;
@@ -1968,7 +1981,19 @@ inputs['hide-locked'] = document.getElementById('input-hide-locked');
 inputs['hide-locked'].onchange = switchHideUnused;
 
 // only color bad input fields
-var colorLegalizeAux = function() {legalizeAux(false);}
+var colorLegalizeAux = function(evt) {
+    legalizeAux(false);
+}
+
+// un-prettify the text-based field that triggered the event before doing the evaluation
+var parseAndEvaluate = function(evt) {
+    elem = evt.currentTarget;
+    // when triggering this event handler on user input, store the entered value as the true value
+    if (elem.type === "text") {
+        auxInputs[elem.name].rawValue = parseFloat(elem.value);
+    }
+    evaluatePerks();
+}
 
 // legalize aux values and color bad inputs, forcing fields to legalized values if forceFields=true
 function legalizeAux(forceFields=false) {
@@ -1981,7 +2006,10 @@ function legalizeAux(forceFields=false) {
         var min = iObj.min;
         var max = iObj.max;
         var val = 0;
-        if (type === 'int') {
+        if (type === 'floatext') {
+            if (forceFields) val = auxInputs[key].rawValue;
+            else val = parseFloat(auxInputs[key].input.value); // if only coloring bad input in progress, read the input field
+        } else if (type === 'int') {
             val = parseInt(auxInputs[key].input.value);
         } else if (type === 'float') {
             val = parseFloat(auxInputs[key].input.value);
@@ -1997,15 +2025,21 @@ function legalizeAux(forceFields=false) {
         if (min !== null && val < min) {
             val = min;
             auxInputs[key].input.value = min;
+            if (type === 'floatext') auxInputs[key].rawValue = min;
         }
         if (max !== null && val > max) {
             val = max;
             auxInputs[key].input.value = max;
+            if (type === 'floatext') auxInputs[key].rawValue = max;
         }
         props[key] = legalizeInput(val,def);
         if (forceFields) {
             auxInputs[key].input.classList.remove('bg-warning');
-            auxInputs[key].input.value = props[key];
+            if (type === 'floatext') {
+                auxInputs[key].input.value = Number(props[key]).toExponential(4);
+            } else {
+                auxInputs[key].input.value = props[key];
+            }
         }
     }
 }
@@ -2013,10 +2047,10 @@ function legalizeAux(forceFields=false) {
 for (var [key,iObj] of Object.entries(auxInputs)) {
     //iObj.input.onkeyup = colorLegalizeAux;
     iObj.input.oninput = colorLegalizeAux;
-    iObj.input.onblur = evaluatePerks;
-    iObj.input.onpaste = evaluatePerks;
-    iObj.input.oncut = evaluatePerks;
-    iObj.checkbox.onchange = evaluatePerks;
+    iObj.input.onblur = parseAndEvaluate;
+    iObj.input.onpaste = parseAndEvaluate;
+    iObj.input.oncut = parseAndEvaluate;
+    iObj.checkbox.onchange = parseAndEvaluate;
 }
 
 var checkAllAux = function() {
@@ -2083,6 +2117,7 @@ if (window.localStorage.getItem("saveAux")) {
     for (var [key,inputObj] of Object.entries(auxInputs)) {
         if (saveAux[key + "Input"] != null) {
             inputObj.input.value = saveAux[key + "Input"];
+            if (inputObj.input.type === 'text') auxInputs[key].rawValue = saveAux[key + "Input"];
             inputObj.checkbox.checked = saveAux[key + "Checkbox"];
         }
     }   
