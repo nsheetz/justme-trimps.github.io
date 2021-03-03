@@ -1373,6 +1373,9 @@ function iterateValueFeedback(valueArray) {
     var pushZones = Math.log(pushPower) / props.logEnemyScaling;
     // speedbooks give 25% resources per zone
     Vres *= Math.pow(1.25,pushZones);
+    // coords give 25% atk/hp per zone IF NOT COORD LIMITED
+    Va *= Math.pow(1.25,pushZones*(1-Math.min(1,coordAdjust)));
+    Vh *= Math.pow(1.25,pushZones*(1-Math.min(1,coordAdjust)));
     // Scruffy level 3 gives compounding 3% Rn per additional zone
     if (props.scruffyLevel >= 3) Vrad *= Math.pow(1.03,pushZones);
     // VS1 gives additive 0.25% VM Rn per additional zone
