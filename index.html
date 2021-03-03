@@ -2169,7 +2169,6 @@ hubEl.onchange = evaluatePerks;
 
 function exportPerks() {
     var exportedPerks = {};
-    var game = JSON.parse(LZString.decompressFromBase64(saveTextArea.value));
 
     for (var [key, value] of Object.entries(perks)) {
         if (typeof(value) !== "object" || !value.hasOwnProperty("optimize")) continue; // iterating over the perks, ignoring aux values
