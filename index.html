@@ -1682,6 +1682,7 @@ var evaluatePerks = function(debug=false) {
     saveAux.showLevelLocks = inputs['show-level-locks'].checked;
     saveAux.darkMode = inputs['dark-mode'].checked;
     saveAux.hideLocked = inputs['hide-locked'].checked;
+    saveAux.preset = presetElem.value;
     if (saveAux.showLevelLocks) {
         for (var [perkName,perkObj] of Object.entries(perks)) {
             saveAux[perkName + 'Lock'] = inputs[perkName.toLowerCase() + '-noopt'].checked;
@@ -1725,9 +1726,10 @@ var evaluatePerks = function(debug=false) {
     perks.Artisanistry.efficiency = getLogWeightedValue(1,1,perks.Artisanistry.effect,1,1,1)/getPerkCost("Artisanistry",1);
     
     // Bait:
-    //   population in Trappa
+    //   population in Trappa, but derate resource gains like for Motivation
     if (props.specialChallenge == 'trappa' && !perks.Bait.levLocked) {
         var baitPop = 1+ 1/(1 + perks.Bait.level);
+        //perks.Bait.efficiency = getLogWeightedValue(1,1,1,Math.pow(baitPop,0.002),1,1,baitPop)/getPerkCost("Bait",1);
         perks.Bait.efficiency = getLogWeightedValue(1,1,1,baitPop,1,1,baitPop)/getPerkCost("Bait",1);
     }
     
@@ -2241,6 +2243,7 @@ if (window.localStorage.getItem("saveAux")) {
     if (saveAux.hideUnused != null) inputs['hide-unused-perks'].checked = saveAux.hideUnused;
     if (saveAux.darkMode != null) inputs['dark-mode'].checked = saveAux.darkMode;
     if (saveAux.hideLocked != null) inputs['hide-locked'].checked = saveAux.hideLocked;
+    if (saveAux.preset != null) presetElem.value = saveAux.preset;
     if (saveAux.showLevelLocks != null) {
         inputs['show-level-locks'].checked = saveAux.showLevelLocks;
         if (saveAux.showLevelLocks) {
