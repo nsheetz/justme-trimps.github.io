@@ -1320,14 +1320,15 @@ function iterateValueFeedback(valueArray) {
     //     Frags do scale with "some" resource boosts, but approximating them as non-scaling as a general rule is pretty close to correct.
     var moreHousing = Math.log(Vf*Vres/(VfDone*VresDone))/Math.log(1.12); // Collectors scale with food (no other basic resources needed)
     var baseHousing = collectors;
-    if (hubEnabled) {
+    // for downsize we make the same adjustments as for hubs, just saying "all housing buildings have the same value"
+    if (hubEnabled || props.specialChallenge == 'downsize') {
         moreHousing += 5*Math.log(Vres/VresDone)/Math.log(1.2); // 5 housing types below Gateway need wood, roughly 1.2 avg scaling (Gateway doesn't scale)
         baseHousing *= 7; // estimate all housing types have the same number as Collectors (close enough for gain factor w.r.t. the small feedback effects here)
     }
-    // if the user doesn't have collectors yet, don't bother with housing corrections
+    // if the user doesn't have collectors yet, don't bother with housing corrections (yes this will exclude O.G. downsize, tough)
     var housingGain = baseHousing >= 1 ? (1 + moreHousing/baseHousing) : 1;
     Vres *= housingGain;
-    Vp *= housingGain;
+    Vp *= (props.specialChalleng == 'trappa') ? 1 : housingGain; // Trappa housing doesn't help buy more coords
     collectors += housingGain;
     
     // use equip scaling to convert resource value to atk/hp value
@@ -1341,7 +1342,13 @@ function iterateValueFeedback(valueArray) {
     Vh *= smithyGain;
     
     // if coord limited, account for population gain to coords
-    var coordGain = Math.pow(1.25,Math.log(Vp/VpDone)/Math.log(1.25) * props.coordLimited);
+    var coordAdjust = props.coordLimited;
+    if (props.specialChallenge == 'downsize' || props.specialChallenge == 'trappa') {
+        // just assume coord limited in trappa & downsize so the user doesn't have to edit the coordLimited field
+        //   (while still allowing the user to specify a value > 1 if desired)
+        coordAdjust = Math.max(coordAdjust,1);
+    }
+    var coordGain = Math.pow(1.25,Math.log(Vp/VpDone)/Math.log(1.25) * coordAdjust);
     Va *= coordGain;
     Vh *= coordGain;    
         
@@ -1695,6 +1702,7 @@ var evaluatePerks = function(debug=false) {
     //  Motivation
     var motiv = 1 + perks.Motivation.level * perks.Motivation.effect;
     var motivGain = (motiv + perks.Motivation.effect) / motiv;
+    if (props.specialChallenge == 'trappa') motivGain = Math.pow(motivGain,0.002); // derate motivation by 500x in trappa (don't want to zero it out but it doesn't increase F/M/L meaningfully)
     var motivCost = getPerkCost("Motivation",1);
     // Power
     var pow = 1 + perks.Power.level * perks.Power.effect;
@@ -1726,7 +1734,12 @@ var evaluatePerks = function(debug=false) {
     // Carpentry:
     //   population gain, also gives resources
     var carpPop = perks.Carpentry.effect;
-    perks.Carpentry.efficiency = getLogWeightedValue(1,1,1,carpPop,1,1,carpPop)/getPerkCost("Carpentry",1);
+    if (props.specialChallenge == 'trappa') {
+        // In Trappa, carp gives more housing which gives more drops, but does not increase available Trimps
+        perks.Carpentry.efficiency = getLogWeightedValue(1,1,1,carpPop,1,1,1)/getPerkCost("Carpentry",1);
+    } else {
+        perks.Carpentry.efficiency = getLogWeightedValue(1,1,1,carpPop,1,1,carpPop)/getPerkCost("Carpentry",1);
+    }
     
     // Trumps:
     //   population in downsize
@@ -1770,6 +1783,7 @@ var evaluatePerks = function(debug=false) {
     
     // Motivation:
     //   all-resource gain (no radon)
+    // Note motivGain is already derated for Trappa above
     perks.Motivation.efficiency = getLogWeightedValue(1,1,1,motivGain,1,1)/motivCost;
         
     // Packrat:
