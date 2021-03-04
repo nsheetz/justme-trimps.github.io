@@ -389,6 +389,7 @@ function initPerks() {
         hideLocked: true,
         showLevelLocks: false,
         darkMode: false,
+        baitDump: false, // secret setting to dump remaining Rn into bait after all other perks
         specialChallenge: null, // does the dropdown specify a special challenge?
         // scaling^log(resource boost) = atk or hp boost
         equipScaling: {
@@ -940,7 +941,9 @@ var loadSave = function() {
         var portal = game.portal;
         
         // set perk object to default values
+        var bdTmp = props.baitDump;
         initPerks();
+        props.baitDump = bdTmp;
         presetSpecialOpt();
         
         // read save into input perk fields
@@ -1686,6 +1689,7 @@ var evaluatePerks = function(debug=false) {
     saveAux.darkMode = inputs['dark-mode'].checked;
     saveAux.hideLocked = inputs['hide-locked'].checked;
     saveAux.preset = presetElem.value;
+    saveAux.baitDump = props.baitDump;
     if (saveAux.showLevelLocks) {
         for (var [perkName,perkObj] of Object.entries(perks)) {
             saveAux[perkName + 'Lock'] = inputs[perkName.toLowerCase() + '-noopt'].checked;
@@ -2194,7 +2198,7 @@ function clearAndAutobuyPerks() {
             inputs[key.toLowerCase()].value = 0;
         }
         // zero out bait after Trappa unlock, unless in trappa preset
-        if (props.specialChallenge != 'trappa' && game.global.highestRadonLevelCleared >= 59 && !perks.Bait.levLocked) inputs["bait"].value = 0;
+        if (game.global.highestRadonLevelCleared >= 59 && !perks.Bait.levLocked) inputs["bait"].value = 0;
         if (!perks.Trumps.levLocked) inputs['trumps'].value = 0; // zero out trumps, it will be used as a dump perk even outside of downsize
         autobuyPerks();
     }
@@ -2227,6 +2231,11 @@ function autobuyPerks() {
         while (buyPerk("Trumps",1));
         inputs['trumps'].value = perks.Trumps.level;
     }
+    // secret setting to dump remaining Rn into bait for feeeeeee
+    if (props.baitDump) {
+        while (buyPerk("Bait",1));
+        inputs['bait'].value = perks.Trumps.level;
+    }
     console.log("Total Radon for perks: " + props.perksRadon + ", Total Radon Spent: " + props.radonSpent);
 }
 
@@ -2246,6 +2255,7 @@ if (window.localStorage.getItem("saveAux")) {
     if (saveAux.darkMode != null) inputs['dark-mode'].checked = saveAux.darkMode;
     if (saveAux.hideLocked != null) inputs['hide-locked'].checked = saveAux.hideLocked;
     if (saveAux.preset != null) presetElem.value = saveAux.preset;
+    if (saveAux.baitDump != null) props.baitDump = saveAux.baitDump;
     if (saveAux.showLevelLocks != null) {
         inputs['show-level-locks'].checked = saveAux.showLevelLocks;
         if (saveAux.showLevelLocks) {
