@@ -932,7 +932,8 @@ function presetSpecialOpt() {
             if (trapHrs == null) {
                 trapHrs = 5;
             }
-            auxInputs.coordLimited.input.value = trapHrs;   
+            auxInputs.coordLimited.input.value = trapHrs; 
+            auxInputs.coordLimited.input.title = "Roughly how many hours of trapping do you plan to do in this run? Affects the value of Bait. Decimal values like '0.5' and '3.7' are allowed. Entering '0' will place no value on Bait.";
             coordEl.innerText = "Hours of trapping";
             coordEl.style.fontWeight = "bold";
             adder = props.darkMode ? "bg-warning-dark" : "bg-warning";
@@ -949,6 +950,7 @@ function presetSpecialOpt() {
                 coordLim = 0;
             }
             auxInputs.coordLimited.input.value = coordLim;
+            auxInputs.coordLimited.input.title = "Enter '0' if you can easily buy all coords with your population. Enter '1' if you definitely can't buy all coords. Enter something in between if you only need a bit more population to buy all coords. You can also increase this value (even above 1) if you just want to weight population gain more highly for some reason.";
             coordEl.innerText = "Coord limited? (0-1 scale)";
             coordEl.style.fontWeight = "";
             adder = props.darkMode ? "bg-success-dark" : "bg-success";
