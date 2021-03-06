@@ -1644,6 +1644,15 @@ function efficiencyColorAndFlag() {
             }
         }
     }
+    for (var [perkName,perkObj] of Object.entries(perks)) {
+        var diff = Math.round(perkObj.level - game.portal[perkName].radLevel);
+        var perkLabel = document.getElementById('label-' + perkName.toLowerCase());
+        if (diff != 0) {
+            perkLabel.innerText = perkName + " (" + (diff > 0 ? "+" : "") + diff + ")";
+        } else {
+            perkLabel.innerText = perkName;
+        }
+    }
 }
 
 var switchTotalRadon = function() {
