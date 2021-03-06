@@ -317,11 +317,13 @@ input[type=checkbox], input[type=radio] {
                         <option value="tufarm">Difficult Radon challenge</option>
                         <option value="push">Push/C^3/Mayhem</option>
                     </optgroup>
-                    <optgroup label="Special presets (optimize for unique challenge rules)">
+                    <optgroup label="Special presets (optimize for unique rules/requirements)">
                         <option value="trappacarp">Trappa (max pop starting spec)</option>
                         <option value="trappa">Trappa (final spec)</option>
                         <option value="downsize">Downsize</option>
                         <option value="duel">Duel</option>
+                        <option value="resplus">Resources (+maps)</option>
+                        <option value="resminus">Resources (-maps)</option>
                     </optgroup>
                 </select>
             </div>
@@ -945,6 +947,12 @@ function presetSpecialOpt() {
     } else {
         perks.Trumps.optimize = false;
     }
+    if (preset == 'resplus') {
+        props.specialChallenge = 'resplus';
+    }
+    if (preset == 'resminus') {
+        props.specialChallenge = 'resminus';
+    }
     checkHideUnused();
 }
 
@@ -1200,6 +1208,10 @@ function readInputs() {
         props.specialChallenge = 'downsize';
     } else if (preset == 'duel') {
         props.specialChallenge = 'duel';
+    } else if (preset == 'resplus') {
+        props.specialChallenge = 'resplus';
+    } else if (preset == 'resminus') {
+        props.specialChallenge = 'resminus';
     } else props.specialChallenge = null;
     
     checkWarnings();
@@ -1414,7 +1426,12 @@ function iterateValueFeedback(valueArray) {
     var pushPower = Va * Vh / Vpushed;
     var pushZones = Math.log(pushPower) / props.logEnemyScaling;
     // speedbooks give 25% resources per zone
-    Vres *= Math.pow(1.25,pushZones);
+    if (props.specialChallenge == 'resplus') {
+        // when collecting resources from +maps, we only get 10% resource gain per map
+        Vres *= Math.pow(1.1,pushZones);
+    } else {
+        Vres *= Math.pow(1.25,pushZones);
+    }
     // coords give 25% atk/hp per zone IF NOT COORD LIMITED
     Va *= Math.pow(1.25,pushZones*(1-Math.min(1,coordAdjust)));
     Vh *= Math.pow(1.25,pushZones*(1-Math.min(1,coordAdjust)));
@@ -1489,6 +1506,7 @@ function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve=1,Vp=1,moreTrinkets=0,extr
     
     Va = valueArray[0];
     Vh = valueArray[1];
+    Vres = valueArray[4];
     Vrad = valueArray[5];
     Ve = valueArray[7];
     Vtrink = valueArray[13];
@@ -1506,6 +1524,9 @@ function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve=1,Vp=1,moreTrinkets=0,extr
     //   Wa*log(A) + Wh*log(H) + We*log(E) + Wr*log(R)
     
     var res = Wa*Math.log(Va) + Wh*Math.log(Vh) + We*Math.log(Ve) + Wr*Math.log(Vgrowth);
+    if (props.specialChallenge == 'resplus' || props.specialChallenge == 'resminus') {
+        res = Math.log(Vres) + (1e-100)*Math.log(Ve); // hack to still use equality as a primary dump perk
+    }
     if (isNaN(res)) {
         console.log("ERROR: NaN result!")
     }
