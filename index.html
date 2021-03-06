@@ -380,6 +380,7 @@ function initPerks() {
         meteorologists: 0,
         tenacityTime: 0, // minutes of tenacity to optimize for
         coordLimited: 0, // 0-1 value of "how coord limited" we are
+        trapHrs: 5, // hours of trapping
         clearWeight: 1,
         survivalWeight: 1,
         radonWeight: 1,
@@ -666,6 +667,16 @@ const auxInputList = [
         value: "",
         min: null,
         max: null, },
+    {   keyName: "trapHrs",
+        divId: 'trap-hours',
+        bg: 'bg-warning',
+        spacer: true,
+        label: "Hours of trapping",
+        title: "Roughly how many hours of trapping do you plan to do in this run? Affects the value of Bait. Decimal values like '0.5' and '3.7' are allowed. Entering '0' will place no value on Bait.",
+        type: "float",
+        value: 5,
+        min: 0,
+        max: null, },
     {   keyName: "coordLimited",
         divId: 'coord-limited',
         bg: "bg-success",
@@ -900,13 +911,13 @@ var fillPreset = function() {
     evaluatePerks();
 }
 
-coordEl = document.getElementById('label-coord-limited');
 function presetSpecialOpt() {
     preset = presetElem.value;
     if (preset == 'trappacarp') {
         props.specialChallenge = 'trappacarp';
     }
     if (preset == 'trappa') {
+        props.specialChallenge = 'trappa';
         perks.Bait.optimize = true;
         // This function is called when changing to the Trappa setting, or when loading a save.
         // Preset change case 1: User loaded a save from a previous run, then directly changed the preset to Trappa.
@@ -925,44 +936,16 @@ function presetSpecialOpt() {
         //   assumption may be completely wrong (if someone chooses not to use their respec to max starting pop) leading
         //   Bait to be drastically undervalued.
         props.trappaStartPop = 10 * Math.pow(1.1,inputs['carpentry'].value);
-        // coordLimited input changes to specify hours of trapping
-        if (coordEl.innerText != "Hours of trapping") {
-            window.localStorage.setItem("coordLim",auxInputs.coordLimited.input.value);
-            var trapHrs = window.localStorage.getItem("trapHrs");
-            if (trapHrs == null) {
-                trapHrs = 5;
-            }
-            auxInputs.coordLimited.input.value = trapHrs; 
-            auxInputs.coordLimited.input.title = "Roughly how many hours of trapping do you plan to do in this run? Affects the value of Bait. Decimal values like '0.5' and '3.7' are allowed. Entering '0' will place no value on Bait.";
-            coordEl.innerText = "Hours of trapping";
-            coordEl.style.fontWeight = "bold";
-            adder = props.darkMode ? "bg-warning-dark" : "bg-warning";
-            coordEl.classList.remove("bg-success-dark","bg-success");
-            coordEl.classList.add(adder);
-        }
     } else {
         perks.Bait.optimize = false;
-        // coordLimited input restored if exiting trappa setting
-        if (coordEl.innerText == "Hours of trapping") {
-            window.localStorage.setItem("trapHrs",auxInputs.coordLimited.input.value);
-            var coordLim = window.localStorage.getItem("coordLim");
-            if (coordLim == null) {
-                coordLim = 0;
-            }
-            auxInputs.coordLimited.input.value = coordLim;
-            auxInputs.coordLimited.input.title = "Enter '0' if you can easily buy all coords with your population. Enter '1' if you definitely can't buy all coords. Enter something in between if you only need a bit more population to buy all coords. You can also increase this value (even above 1) if you just want to weight population gain more highly for some reason.";
-            coordEl.innerText = "Coord limited? (0-1 scale)";
-            coordEl.style.fontWeight = "";
-            adder = props.darkMode ? "bg-success-dark" : "bg-success";
-            coordEl.classList.remove("bg-warning-dark","bg-warning");
-            coordEl.classList.add(adder);
-        }
     }
     if (preset == 'downsize') {
+        props.specialChallenge = 'downsize';
         perks.Trumps.optimize = true;
     } else {
         perks.Trumps.optimize = false;
     }
+    checkHideUnused();
 }
 
 var game = null;
@@ -1404,7 +1387,7 @@ function iterateValueFeedback(valueArray) {
         // assume coord limited in downsize (allowing the user to weight further toward pop if desired)
         coordAdjust = Math.max(coordAdjust,1);
     } else if (props.specialChalleng == 'trappa') {
-        // Trappa is always coord limited, and the input field is reclaimed for trapping hours instead.
+        // Trappa is always coord limited, and the input field is hidden (replaced by the trapping hours field)
         coordAdjust = 1;
     }
     var coordGain = Math.pow(1.25,Math.log(Vp/VpDone)/Math.log(1.25) * coordAdjust);
@@ -1799,9 +1782,8 @@ var evaluatePerks = function(debug=false) {
     // Bait:
     //   population in Trappa, but derate resource gains like for Motivation
     if (props.specialChallenge == 'trappa' && !perks.Bait.levLocked) {
-        // 5hrs, 3600 seconds per hr, 10 ticks per second, 10x base trimps per tick (S0 ability)
-        // In the Trappa setting, the "coordLimited" field is re-used for trapping hours.
-        var baitTime = 3600*10*10 * props.coordLimited;
+        // 3600 seconds per hr, 10 ticks per second, 10x base trimps per tick (S0 ability)
+        var baitTime = 3600*10*10 * props.trapHrs;
         var totalBaitPopBase = baitTime * (1 + perks.Bait.level);
         var totalBaitPopNext = baitTime * (2 + perks.Bait.level);
         var baitPop = (totalBaitPopNext + props.trappaStartPop)/(totalBaitPopBase + props.trappaStartPop);
@@ -2036,6 +2018,17 @@ function checkHideUnused() {
         } else {
             inputRow.style.display = "";
         }
+    }
+    
+    // hide coordLimited setting in trappa vs. trapping hours setting in any other preset
+    var coordRow = auxInputs.coordLimited.input.parentElement.parentElement;
+    var trapRow = auxInputs.trapHrs.input.parentElement.parentElement;
+    if (props.specialChallenge == 'trappa') {
+        coordRow.style.display = "none";
+        trapRow.style.display = "";
+    } else {
+        coordRow.style.display = "";
+        trapRow.style.display = "none";
     }
 }
 
