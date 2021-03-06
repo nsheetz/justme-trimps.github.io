@@ -1195,10 +1195,7 @@ function getTotalPerksCost() {
 // NOTE that this weight does NOT capture the direct powerlevel gain value of more trinkets, which is captured elsewhere,
 //   including feedback mechanisms via more resources and further pushing that aren't appropriate to use for "Radon-like"
 //   growth weight. This is only capturing the long term growth value of additional trinket drops.
-function getTrinketValues(  motivGain,motivCost,
-                            powGain,powCost,
-                            toughGain,toughCost,
-                         ) {
+function getTrinketValues(  motivCost,powCost,toughCost ) {
     // trinket gain from pushing power will be 0 when Obs level is 0, so go ahead and calculate
     //   the value of trinket growth based on 1 Obs level to help evaluate the value of the first Obs
     //   level itself.
@@ -1223,21 +1220,20 @@ function getTrinketValues(  motivGain,motivCost,
     for (var marginalShine of [marginalShinePerRun,marginalShinePerTrinket]) {  
         // For each of Mot/Pow/Tough, presuming those levels are efficient, calculate the Rn cost of getting 
         //   the equivalent boost the marginal shine.
-        // NOTE: We don't account for diminishing returns of Mot/Pow/Tough here, since the return curve is locally
-        //   very flat in the small marginalShine ranges we're likely to see with nearly optimized perks, so it should be 
-        //   vastly dominated by the exponential cost scaling of these perks.
         // Total cost of N levels for a compounding price factor of F and next level cost of C:
         //   C/(F-1) * (F^N - 1)
-        // Converting from gain factor G to number of levels needed N using a 1-level gain of H is approximately:
-        //   N = (G-1)/(H-1), given that G is close to 1 and the gain curve for these perks is quite flat for small gains.
+        // Starting from a level of L, the gain factor of N more levels of any of these perks is:
+        //   G = (100 + (L+N)*5)/(100 + L*5)
+        // So solving for N we get:
+        //   N = (G-1)*(20+L)
         var motF = perks.Motivation.priceFact;
-        var motN = (marginalShine-1)/(motivGain-1);
+        var motN = (marginalShine-1)*(20 + perks.Motivation.level);
         var motShineCost = motivCost/(motF-1) * (Math.pow(motF,motN) - 1);
         var powF = perks.Power.priceFact;
-        var powN = (marginalShine-1)/(powGain-1);
+        var powN = (marginalShine-1)*(20 + perks.Power.level);
         var powShineCost = powCost/(powF-1) * (Math.pow(powF,powN) - 1);
         var touF = perks.Toughness.priceFact;
-        var touN = (marginalShine-1)/(toughGain-1);
+        var touN = (marginalShine-1)*(20 + perks.Toughness.level);
         var touShineCost = toughCost/(touF-1) * (Math.pow(touF,touN) - 1);
         // sum up all the costs of the powerlevel perks
         var totShineCost = motShineCost + powShineCost + touShineCost;
@@ -1729,7 +1725,7 @@ var evaluatePerks = function(debug=false) {
     //  Motivation
     var motiv = 1 + perks.Motivation.level * perks.Motivation.effect;
     var motivGain = (motiv + perks.Motivation.effect) / motiv;
-    if (props.specialChallenge == 'trappa') motivGain = Math.pow(motivGain,0.001); // derate motivation in trappa (don't want to zero it out but it doesn't increase F/M/L meaningfully)
+    if (props.specialChallenge == 'trappa') motivGain = Math.pow(motivGain,0.0001); // derate motivation in trappa (don't want to zero it out but it doesn't increase F/M/L meaningfully)
     var motivCost = getPerkCost("Motivation",1);
     // Power
     var pow = 1 + perks.Power.level * perks.Power.effect;
@@ -1742,14 +1738,8 @@ var evaluatePerks = function(debug=false) {
     
     // Get the absolute Rn values for trinkets expected at baseline Observation and per marginal trinket,
     //   and the expected count of trinkets at the end of this run at baseline Observation.
-    // Note in Trappa, Motivation is severely devalued, so we pretend it has enormous gain to dilute its trinket value.
-    var noMotTrink = perks.Motivation.levLocked || (props.specialChallenge == 'trappa');
-    var noPowTrink = perks.Power.levLocked;
-    var noTouTrink = perks.Toughness.levLocked;
     [props.trinketRadonPerRun,props.radonPerTrinket,props.baselineTrinketsNext]
-                = getTrinketValues( (noMotTrink ? 1000 : motivGain),motivCost,
-                                    (noPowTrink ? 1000 : powGain  ),powCost  ,
-                                    (noTouTrink ? 1000 : toughGain),toughCost);
+                = getTrinketValues( motivCost,powCost,toughCost );
     
     // Artisanistry:
     //   resource gain for equipment only
@@ -1765,7 +1755,7 @@ var evaluatePerks = function(debug=false) {
         var totalBaitPopBase = baitTime * (1 + perks.Bait.level);
         var totalBaitPopNext = baitTime * (2 + perks.Bait.level);
         var baitPop = (totalBaitPopNext + props.trappaStartPop)/(totalBaitPopBase + props.trappaStartPop);
-        perks.Bait.efficiency = getLogWeightedValue(1,1,1,Math.pow(baitPop,0.001),1,1,baitPop)/getPerkCost("Bait",1);
+        perks.Bait.efficiency = getLogWeightedValue(1,1,1,Math.pow(baitPop,0.0001),1,1,baitPop)/getPerkCost("Bait",1);
     }
     
     // Carpentry:
