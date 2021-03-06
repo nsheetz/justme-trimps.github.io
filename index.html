@@ -317,7 +317,8 @@ input[type=checkbox], input[type=radio] {
                         <option value="push">Push/C^3/Mayhem</option>
                     </optgroup>
                     <optgroup label="Special presets (optimize for unique challenge rules)">
-                        <option value="trappa">Trappa</option>
+                        <option value="trappacarp">Trappa (max pop starting spec)</option>
+                        <option value="trappa">Trappa (final spec)</option>
                         <option value="downsize">Downsize</option>
                         <option value="duel">Duel</option>
                     </optgroup>
@@ -877,7 +878,7 @@ var presetElem = document.getElementById('preset-select');
 // fill preset weights from the dropdown menu and set special challenge
 var fillPreset = function() {
     var preset = presetElem.value;
-    var weights = [];
+    var weights = [0,0,0];
     if (preset == 'ezfarm') {
         weights = [0,0,1];
     } else if (preset == 'tufarm') {
@@ -900,8 +901,12 @@ var fillPreset = function() {
 
 function presetSpecialOpt() {
     preset = presetElem.value;
+    if (preset == 'trappacarp') {
+        props.specialChallenge = 'trappacarp';
+    }
     if (preset == 'trappa') {
         perks.Bait.optimize = true;
+        props.trappaStartPop = 10 * Math.pow(1.1,inputs['carpentry'].value);
     } else {
         perks.Bait.optimize = false;
     }
@@ -1153,7 +1158,9 @@ function readInputs() {
     props.showLevelLocks = inputs['show-level-locks'].checked;
     
     var preset = presetElem.value;
-    if (preset == 'trappa') {
+    if (preset == 'trappacarp') {
+        props.specialChallenge = 'trappacarp';
+    } else if (preset == 'trappa') {
         props.specialChallenge = 'trappa';
     } else if (preset == 'downsize') {
         props.specialChallenge = 'downsize';
@@ -1466,7 +1473,11 @@ function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve=1,Vp=1,moreTrinkets=0,extr
     // For cost-efficiency between perks with wildly different costs & effects we use the log of this value, which simplifies to:
     //   Wa*log(A) + Wh*log(H) + We*log(E) + Wr*log(R)
     
-    return Wa*Math.log(Va) + Wh*Math.log(Vh) + We*Math.log(Ve) + Wr*Math.log(Vgrowth);
+    var res = Wa*Math.log(Va) + Wh*Math.log(Vh) + We*Math.log(Ve) + Wr*Math.log(Vgrowth);
+    if (isNaN(res)) {
+        console.log("ERROR: NaN result!")
+    }
+    return res;
 }
 
 function obsDropRate(level,zone) {
@@ -1563,11 +1574,17 @@ function efficiencyColorAndFlag() {
     }
     for (var i=0; i < eList.length; i++) {
         var opacity = Math.max(eList[i]/bestEff,0.15) / (props.darkMode ? 2 : 1);
+        if (props.specialChallenge == 'trappacarp') {
+            if (pList[i] == 'Carpentry') {
+                opacity = props.darkMode ? 0.5 : 1;
+                eList[i] = 1;
+            } else opacity = 0;
+        }
         var id = "label-" + pList[i].toLowerCase();
         var element = document.getElementById(id).parentElement;
         var greyName = props.darkMode ? 'grey-dark' : 'grey';
         if (element.getAttribute('class').indexOf(greyName) == -1) {
-            if (eList[i] == 0) {
+            if (eList[i] == 0 || opacity == 0) {
                 element.setAttribute("style", "background: #444;");
             } else {
                 element.setAttribute("style", "background: rgba(11, 200, 35, " + opacity + ");");
@@ -1710,7 +1727,7 @@ var evaluatePerks = function(debug=false) {
     //  Motivation
     var motiv = 1 + perks.Motivation.level * perks.Motivation.effect;
     var motivGain = (motiv + perks.Motivation.effect) / motiv;
-    if (props.specialChallenge == 'trappa') motivGain = Math.pow(motivGain,0.002); // derate motivation by 500x in trappa (don't want to zero it out but it doesn't increase F/M/L meaningfully)
+    if (props.specialChallenge == 'trappa') motivGain = Math.pow(motivGain,0.001); // derate motivation in trappa (don't want to zero it out but it doesn't increase F/M/L meaningfully)
     var motivCost = getPerkCost("Motivation",1);
     // Power
     var pow = 1 + perks.Power.level * perks.Power.effect;
@@ -1723,10 +1740,11 @@ var evaluatePerks = function(debug=false) {
     
     // Get the absolute Rn values for trinkets expected at baseline Observation and per marginal trinket,
     //   and the expected count of trinkets at the end of this run at baseline Observation.
+    // Note in Trappa, Motivation is severely devalued, so we pretend it has enormous gain to dilute its trinket value.
     [props.trinketRadonPerRun,props.radonPerTrinket,props.baselineTrinketsNext]
-                = getTrinketValues( motivGain,motivCost,
-                                    powGain  ,powCost  ,
-                                    toughGain,toughCost);
+                = getTrinketValues( (props.specialChallenge == 'trappa' ? 1000 : motivGain),motivCost,
+                                      powGain  ,powCost  ,
+                                      toughGain,toughCost);
     
     // Artisanistry:
     //   resource gain for equipment only
@@ -1735,9 +1753,14 @@ var evaluatePerks = function(debug=false) {
     // Bait:
     //   population in Trappa, but derate resource gains like for Motivation
     if (props.specialChallenge == 'trappa' && !perks.Bait.levLocked) {
-        var baitPop = 1+ 1/(1 + perks.Bait.level);
-        //perks.Bait.efficiency = getLogWeightedValue(1,1,1,Math.pow(baitPop,0.002),1,1,baitPop)/getPerkCost("Bait",1);
-        perks.Bait.efficiency = getLogWeightedValue(1,1,1,baitPop,1,1,baitPop)/getPerkCost("Bait",1);
+        // TODO: do we need to let the user specify baitTime? Ideally we'd have specialized inputs just for trappa.
+        // Using hardcoded 5 hours of trapping for now, but this will undervalue bait for very long runs.
+        // 5hrs, 3600 seconds per hr, 10 ticks per second, 10x base trimps per tick (S0 ability)
+        const baitTime = 5*3600*10*10;
+        var totalBaitPopBase = baitTime * (1 + perks.Bait.level);
+        var totalBaitPopNext = baitTime * (2 + perks.Bait.level);
+        var baitPop = (totalBaitPopNext + props.trappaStartPop)/(totalBaitPopBase + props.trappaStartPop);
+        perks.Bait.efficiency = getLogWeightedValue(1,1,1,Math.pow(baitPop,0.001),1,1,baitPop)/getPerkCost("Bait",1);
     }
     
     // Carpentry:
@@ -2200,13 +2223,23 @@ function clearAndAutobuyPerks() {
         // zero out bait after Trappa unlock, unless in trappa preset
         if (game.global.highestRadonLevelCleared >= 59 && !perks.Bait.levLocked) inputs["bait"].value = 0;
         if (!perks.Trumps.levLocked) inputs['trumps'].value = 0; // zero out trumps, it will be used as a dump perk even outside of downsize
-        autobuyPerks();
+        // for max carp, just max out carp!
+        if (props.specialChallenge == 'trappacarp') {
+            while (buyPerk('Carpentry',1));
+            inputs['carpentry'].value = perks.Carpentry.level;
+            evaluatePerks();
+        } else { autobuyPerks(); }
     }
 }
 
 // autobuy from current input perk levels
 function autobuyPerks() {
     evaluatePerks();
+    // this function is not used for max pop starting spec for trappa
+    if (props.specialChallenge == 'trappacarp') {
+        clearAndAutobuyPerks();
+        return;
+    }
     // optimize Bait for Trappa
     perks.Bait.optimize = (props.specialChallenge == 'trappa');
     // optimize Trumps for Downsize
@@ -2236,6 +2269,7 @@ function autobuyPerks() {
         while (buyPerk("Bait",1));
         inputs['bait'].value = perks.Trumps.level;
     }
+    evaluatePerks();
     console.log("Total Radon for perks: " + props.perksRadon + ", Total Radon Spent: " + props.radonSpent);
 }
 
