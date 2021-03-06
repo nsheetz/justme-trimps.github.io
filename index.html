@@ -313,17 +313,17 @@ input[type=checkbox], input[type=radio] {
             <div class="col-sm-4">
                 <select name="preset" id="preset-select" onchange="fillPreset()">
                     <optgroup label="Basic presets (fill suggested weights)">
-                        <option value="ezfarm">Easy Radon challenge</option>
-                        <option value="tufarm">Difficult Radon challenge</option>
+                        <option value="ezfarm" title="Use if you can easily complete your radon challenge quickly with no golden battle. Pushing perks will still be valued for gains to S3 and other growth mechanisms.">Easy Radon challenge</option>
+                        <option value="tufarm" title="Use if you need some extra pushing power to complete your radon challenge, especially if you still need golden battle. This will almost always be the right setting when you first start a new radon challenge.">Difficult Radon challenge</option>
                         <option value="push">Push/C^3/Mayhem</option>
                     </optgroup>
-                    <optgroup label="Special presets (optimize for unique rules/requirements)">
-                        <option value="trappacarp">Trappa (max pop starting spec)</option>
-                        <option value="trappa">Trappa (final spec)</option>
-                        <option value="downsize">Downsize</option>
-                        <option value="duel">Duel</option>
-                        <option value="resplus">Resources (+maps)</option>
-                        <option value="resminus">Resources (-maps)</option>
+                    <optgroup label="Special presets (optimize for unique rules/requirements, and fill suggested weights)">
+                        <option value="trappacarp" title="Use this setting to max Carpentry when portalling into Trappa, if you can get enough starting population this way to be significant compared to how much you can trap.">Trappa/^3 (max pop starting spec)</option>
+                        <option value="trappa" title="Be sure to enter an 'Hours of trapping' value below to help value Bait! Use this setting either when portalling into Trappa (if you can't get enough Carpentry for a meaningful amount of starting population), or after portalling into the map pop setting. Your currently entered Carpentry value (or the one from a freshly loaded save) will be used to calculate starting population. coordLimited=1 is assumed.">Trappa^3 (final spec)</option>
+                        <option value="downsize" title="This setting optimizes for each housing building giving only 1 Trimp. coordLimited=1 is assumed as the minimum (but a larger value to overweight population will be respected).">Downsize/^3</option>
+                        <option value="duel" title="This setting optimizes for less than 100% CC in Duel. It's a very minor effect that only matters for Criticality so feel free to skip this setting if you like.">Duel/^3</option>
+                        <option value="resplus" title="Optimize for max resource gains from +maps. Only use this if you are farming maps above your current zone and care ONLY about total resource gains. All user entered weights are ignored in favor of resource gains. Pushing perks are still valued for increasing the level of map you can farm.">Resources (+maps)</option>
+                        <option value="resminus" title="Optimize for max resource gains from -maps. Only use this if you are farming maps at or below your current zone and care ONLY about total resource gains. All user entered weights are ignored in favor of resource gains. Pushing perks are still valued for increasing the level of map you can farm.">Resources (-maps)</option>
                     </optgroup>
                 </select>
             </div>
@@ -2115,9 +2115,13 @@ var switchDarkMode = function() {
     if (props.darkMode) {
         saveTextArea.classList.add("bg-dark");
         saveTextArea.classList.add("text-white");
+        presetElem.classList.add("bg-dark");
+        presetElem.classList.add("text-white");
     } else {
         saveTextArea.classList.remove("bg-dark");
         saveTextArea.classList.remove("text-white");
+        presetElem.classList.remove("bg-dark");
+        presetElem.classList.remove("text-white");
     }
     evaluatePerks();
 }
