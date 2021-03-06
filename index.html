@@ -86,6 +86,7 @@ body { max-width: 1200px; margin: 0 auto; font-family: Helvetica, Verdana;}
 .bg-primary-dark{background-color:#181830 !important}
 .bg-success-dark{background-color:#183018 !important}
 .bg-danger-dark{background-color:#301818 !important}
+.bg-warning-dark{background-color:#303018 !important}
 
 input { margin-top: 4px; }
 
@@ -899,6 +900,7 @@ var fillPreset = function() {
     evaluatePerks();
 }
 
+coordEl = document.getElementById('label-coord-limited');
 function presetSpecialOpt() {
     preset = presetElem.value;
     if (preset == 'trappacarp') {
@@ -906,9 +908,53 @@ function presetSpecialOpt() {
     }
     if (preset == 'trappa') {
         perks.Bait.optimize = true;
+        // This function is called when changing to the Trappa setting, or when loading a save.
+        // Preset change case 1: User loaded a save from a previous run, then directly changed the preset to Trappa.
+        //   This is fine. Presumably the carp level in the save is within a small handful of levels of what they'll
+        //   have at the start of their Trappa run, so this estimate should be pretty good.
+        // Preset change case 2: User already used the 'trappacarp' optimization and then changed the preset.
+        //   This is also good. No need to load another save as the optimized max-carp level will apply to their
+        //   starting population, as desired.
+        // Save load case 1: Same as preset change case 1, but with the setting changed before loading the save.
+        //   Still good.
+        // Save load case 2: User loaded a save after portalling (with or without the trappacarp setting).
+        //   All good, as their carp level in the loaded save will accurately reflect starting pop.
+        // It has been suggested to simply assume all Rn is spent on carp, but I don't like this, as the above should
+        //   cover all realistic use cases without needing to make an assumption, even if "case 1" may be inaccurate
+        //   by a carp level or three (which won't have any disastrous effect on the valuation of Bait). Whereas the
+        //   assumption may be completely wrong (if someone chooses not to use their respec to max starting pop) leading
+        //   Bait to be drastically undervalued.
         props.trappaStartPop = 10 * Math.pow(1.1,inputs['carpentry'].value);
+        // coordLimited input changes to specify hours of trapping
+        if (coordEl.innerText != "Hours of trapping") {
+            window.localStorage.setItem("coordLim",auxInputs.coordLimited.input.value);
+            var trapHrs = window.localStorage.getItem("trapHrs");
+            if (trapHrs == null) {
+                trapHrs = 5;
+            }
+            auxInputs.coordLimited.input.value = trapHrs;   
+            coordEl.innerText = "Hours of trapping";
+            coordEl.style.fontWeight = "bold";
+            adder = props.darkMode ? "bg-warning-dark" : "bg-warning";
+            coordEl.classList.remove("bg-success-dark","bg-success");
+            coordEl.classList.add(adder);
+        }
     } else {
         perks.Bait.optimize = false;
+        // coordLimited input restored if exiting trappa setting
+        if (coordEl.innerText == "Hours of trapping") {
+            window.localStorage.setItem("trapHrs",auxInputs.coordLimited.input.value);
+            var coordLim = window.localStorage.getItem("coordLim");
+            if (coordLim == null) {
+                coordLim = 0;
+            }
+            auxInputs.coordLimited.input.value = coordLim;
+            coordEl.innerText = "Coord limited? (0-1 scale)";
+            coordEl.style.fontWeight = "";
+            adder = props.darkMode ? "bg-success-dark" : "bg-success";
+            coordEl.classList.remove("bg-warning-dark","bg-warning");
+            coordEl.classList.add(adder);
+        }
     }
     if (preset == 'downsize') {
         perks.Trumps.optimize = true;
@@ -949,6 +995,7 @@ var loadSave = function() {
         var bdTmp = props.baitDump;
         initPerks();
         props.baitDump = bdTmp;
+        props.darkMode = inputs['dark-mode'].checked;
         
         // read save into input perk fields
         // enable perks (in input fields and perks object) based on locked status from save
@@ -1351,10 +1398,12 @@ function iterateValueFeedback(valueArray) {
     
     // if coord limited, account for population gain to coords
     var coordAdjust = props.coordLimited;
-    if (props.specialChallenge == 'downsize' || props.specialChallenge == 'trappa') {
-        // just assume coord limited in trappa & downsize so the user doesn't have to edit the coordLimited field
-        //   (while still allowing the user to specify a value > 1 if desired)
+    if (props.specialChallenge == 'downsize') {
+        // assume coord limited in downsize (allowing the user to weight further toward pop if desired)
         coordAdjust = Math.max(coordAdjust,1);
+    } else if (props.specialChalleng == 'trappa') {
+        // Trappa is always coord limited, and the input field is reclaimed for trapping hours instead.
+        coordAdjust = 1;
     }
     var coordGain = Math.pow(1.25,Math.log(Vp/VpDone)/Math.log(1.25) * coordAdjust);
     Va *= coordGain;
@@ -1748,10 +1797,9 @@ var evaluatePerks = function(debug=false) {
     // Bait:
     //   population in Trappa, but derate resource gains like for Motivation
     if (props.specialChallenge == 'trappa' && !perks.Bait.levLocked) {
-        // TODO: do we need to let the user specify baitTime? Ideally we'd have specialized inputs just for trappa.
-        // Using hardcoded 5 hours of trapping for now, but this will undervalue bait for very long runs.
         // 5hrs, 3600 seconds per hr, 10 ticks per second, 10x base trimps per tick (S0 ability)
-        const baitTime = 5*3600*10*10;
+        // In the Trappa setting, the "coordLimited" field is re-used for trapping hours.
+        var baitTime = 3600*10*10 * props.coordLimited;
         var totalBaitPopBase = baitTime * (1 + perks.Bait.level);
         var totalBaitPopNext = baitTime * (2 + perks.Bait.level);
         var baitPop = (totalBaitPopNext + props.trappaStartPop)/(totalBaitPopBase + props.trappaStartPop);
@@ -2015,7 +2063,7 @@ var switchDarkMode = function() {
     props.darkMode = inputs['dark-mode'].checked;
     var adder = props.darkMode ? "-dark" : "";
     var remer = props.darkMode ? "" : "-dark";
-    for (var bgtype of ["primary","success","danger"]) {
+    for (var bgtype of ["primary","success","danger","warning"]) {
         var tmpEls = [];
         // we're removing the search class from these elements, which will remove them from the return value object of getElementsByClassName,
         //   so we must push all the elements into a static array before altering their classes
@@ -2281,9 +2329,15 @@ if (window.localStorage.getItem("saveAux")) {
     if (saveAux.lockAll != null) lockAuxEl.checked = saveAux.lockAll;
     if (saveAux.inputTotal != null) inputs['use-total'].checked = saveAux.inputTotal;
     if (saveAux.hideUnused != null) inputs['hide-unused-perks'].checked = saveAux.hideUnused;
-    if (saveAux.darkMode != null) inputs['dark-mode'].checked = saveAux.darkMode;
+    if (saveAux.darkMode != null) {
+        inputs['dark-mode'].checked = saveAux.darkMode;
+        props.darkMode = saveAux.darkMode;
+    }
     if (saveAux.hideLocked != null) inputs['hide-locked'].checked = saveAux.hideLocked;
-    if (saveAux.preset != null) presetElem.value = saveAux.preset;
+    if (saveAux.preset != null) {
+        presetElem.value = saveAux.preset;
+        presetSpecialOpt();
+    }
     if (saveAux.baitDump != null) props.baitDump = saveAux.baitDump;
     if (saveAux.showLevelLocks != null) {
         inputs['show-level-locks'].checked = saveAux.showLevelLocks;
