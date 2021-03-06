@@ -949,7 +949,6 @@ var loadSave = function() {
         var bdTmp = props.baitDump;
         initPerks();
         props.baitDump = bdTmp;
-        presetSpecialOpt();
         
         // read save into input perk fields
         // enable perks (in input fields and perks object) based on locked status from save
@@ -963,6 +962,9 @@ var loadSave = function() {
             calcPerk.locked = portalPerk.radLocked;
             inputs[key.toLowerCase() + "-enabled"].checked = !portalPerk.radLocked;
         }
+        
+        // needs to be after perks since it looks at perk values
+        presetSpecialOpt();
         
         // set aux inputs from game variables, unless any given field is locked (handled by setAuxInput function)
         
@@ -1338,7 +1340,7 @@ function iterateValueFeedback(valueArray) {
     // if the user doesn't have collectors yet, don't bother with housing corrections (yes this will exclude O.G. downsize, tough)
     var housingGain = baseHousing >= 1 ? (1 + moreHousing/baseHousing) : 1;
     Vres *= housingGain;
-    Vp *= (props.specialChalleng == 'trappa') ? 1 : housingGain; // Trappa housing doesn't help buy more coords
+    Vp *= (props.specialChallenge == 'trappa') ? 1 : housingGain; // Trappa housing doesn't help buy more coords
     collectors += housingGain;
     
     // use equip scaling to convert resource value to atk/hp value
@@ -1741,10 +1743,13 @@ var evaluatePerks = function(debug=false) {
     // Get the absolute Rn values for trinkets expected at baseline Observation and per marginal trinket,
     //   and the expected count of trinkets at the end of this run at baseline Observation.
     // Note in Trappa, Motivation is severely devalued, so we pretend it has enormous gain to dilute its trinket value.
+    var noMotTrink = perks.Motivation.levLocked || (props.specialChallenge == 'trappa');
+    var noPowTrink = perks.Power.levLocked;
+    var noTouTrink = perks.Toughness.levLocked;
     [props.trinketRadonPerRun,props.radonPerTrinket,props.baselineTrinketsNext]
-                = getTrinketValues( (props.specialChallenge == 'trappa' ? 1000 : motivGain),motivCost,
-                                      powGain  ,powCost  ,
-                                      toughGain,toughCost);
+                = getTrinketValues( (noMotTrink ? 1000 : motivGain),motivCost,
+                                    (noPowTrink ? 1000 : powGain  ),powCost  ,
+                                    (noTouTrink ? 1000 : toughGain),toughCost);
     
     // Artisanistry:
     //   resource gain for equipment only
