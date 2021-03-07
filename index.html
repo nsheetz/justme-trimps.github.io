@@ -904,7 +904,7 @@ var fillPreset = function() {
     if (preset == 'ezfarm') {
         weights = [0,0,1];
     } else if (preset == 'tufarm') {
-        weights = [1,0.5,5];
+        weights = [1,0.5,10]; // with GU recommendations, we want a big Rn weight
     } else if (preset == 'push') {
         weights = [1,1,0];
     } else if (preset == 'trappa') {
@@ -2394,22 +2394,9 @@ function autobuyPerks() {
     }
     // recommend golden upgrades:
     //   -if hazardous heirloom, buy GV first
-    //   -strategy 1: start buying GBs. when we hit the crossover point where the next GR is more valuable, buy GRs.
-    //   -strategy 2: vice versa.
-    //   -recommend the strategy that has the fewest manual upgrades needed
+    //   -start buying GRs. when the next GR no longer increases total weighted value, stop.
     var GUavail = Math.floor(props.targetZone / 25) + 16 + Math.floor((game.global.achievementBonus - 10000)/2000);
     var GVcount = (props.hazzie && props.radonWeight > 0) ? 8 : 0;
-    // strategy 1:
-    var GBcount = 0;
-    var GBgain = GUgain(GUavail,GVcount,GBcount,true);
-    var GBgainNext = GUgain(GUavail,GVcount,GBcount+1,true);
-    // while the next GB improves the total weighted value, keep buying GB
-    while (GBcount < (GUavail - GVcount) && GBgain < GBgainNext) {
-        GBcount++;
-        GBgain = GBgainNext;
-        GBgainNext = GUgain(GUavail,GVcount,GBcount+1,true);
-    }
-    // strategy 2:
     var GRcount = 0;
     var GRgain = GUgain(GUavail,GVcount,GRcount,false);
     var GRgainNext = GUgain(GUavail,GVcount,GRcount+1,false);
@@ -2421,15 +2408,11 @@ function autobuyPerks() {
     }
     // final recommendation
     var GUtext = "GU Strategy (ALPHA FEATURE): " + (GVcount > 0 ? (GVcount + " GVs, then ") : "");
-    if (GBcount < GRcount) {
-        GRcount = GUavail - GVcount - GBcount;
-        if (GBcount > 0) GUtext += GBcount + " GBs, then ";
-        GUtext += GRcount + " GRs";
-    } else {
-        GBcount = GUavail - GVcount - GRcount;
-        if (GRcount > 0) GUtext += GRcount + " GRs, then ";
-        GUtext += GBcount + " GBs";
-    }
+    var GRpct = (GRcount + GVcount) * (GRcount + GVcount + 1) / 2 - GVcount * (GVcount+1) / 2;
+    GBcount = GUavail - GVcount - GRcount;
+    var GBpct = 3 * (GUavail * (GUavail+1) / 2 - (GRcount + GVcount) * (GRcount + GVcount + 1) / 2);
+    if (GRcount > 0) GUtext += GRcount + " GRs (" + GRpct + "%), then ";
+    GUtext += GBcount + " GBs (" + GBpct + "%)";
     guElem.innerText = GUtext;
     props.showGUs = true;
     evaluatePerks();
