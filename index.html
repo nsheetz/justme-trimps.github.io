@@ -1214,6 +1214,37 @@ function readInputs() {
         props.specialChallenge = 'resminus';
     } else props.specialChallenge = null;
     
+    // calculate coefficients for tauntimp housing correction
+    var housingTypes = {
+        collector: [50,1.12],
+    }
+    if (props.hubEnabled || props.specialChallenge == 'downsize') {
+        housingTypes.hut        = [1 ,1.24];
+        housingTypes.house      = [1 ,1.22];
+        housingTypes.mansion    = [9 ,1.20];
+        housingTypes.hotel      = [15,1.18];
+        housingTypes.resort     = [26,1.16];
+        housingTypes.gateway    = [31,1.14];
+    }
+    var coefC = 0;
+    var termR = 0;
+    var typeCount = 0;
+    for (var [key,[startZone,scaling]] of Object.entries(housingTypes)) {
+        var tauntRate = Math.pow(1.003,3.4 * (props.scruffyLevel >= 9 ? (3.5/3) : 1));
+        var scaleZones = props.targetZone - startZone;
+        var houseRate = Math.log(1.25)/Math.log(scaling);
+        var taunTemp = Math.pow(tauntRate,scaleZones);
+        var tauntRm1 = tauntRate - 1
+        coefC += (taunTemp-1)/tauntRm1;
+        termR += tauntRate * houseRate * (taunTemp * (scaleZones*tauntRm1 - 1) + 1) / (tauntRm1*tauntRm1);
+        typeCount++;
+    }
+    props.coefC = coefC / typeCount;
+    props.termR = termR / typeCount;
+    // to a good approximation for zones substantially past the last housing unlock, total population (scaled by best housing base pop) is:
+    //   <best housing count> * coefC - termR
+    // So we can use these values to estimate the actual marginal gain in tauntimp-adjusted population.
+    
     checkWarnings();
 }
 
@@ -1378,7 +1409,11 @@ function iterateValueFeedback(valueArray) {
         baseHousing *= 7; // estimate all housing types have the same number as Collectors (close enough for gain factor w.r.t. the small feedback effects here)
     }
     // if the user doesn't have collectors yet, don't bother with housing corrections (yes this will exclude O.G. downsize, tough)
-    var housingGain = baseHousing >= 1 ? (1 + moreHousing/baseHousing) : 1;
+    //   (tauntimp correction uses coefC & termR calculated in readInput(), based on target zone)
+    var tauntCorrectedHousingBase = baseHousing * props.coefC - props.termR;
+    var tauntCorrectedHousingNext = (baseHousing + moreHousing) * props.coefC - props.termR;
+    var housingGain = tauntCorrectedHousingNext / tauntCorrectedHousingBase;
+    if (!(housingGain > 1)) housingGain = 1;
     Vres *= housingGain;
     Vp *= (props.specialChallenge == 'trappa') ? 1 : housingGain; // Trappa housing doesn't help buy more coords
     collectors += housingGain;
