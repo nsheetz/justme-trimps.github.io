@@ -2350,6 +2350,7 @@ function clearAndAutobuyPerks() {
             while (buyPerk('Carpentry',1));
             inputs['carpentry'].value = perks.Carpentry.level;
             evaluatePerks();
+            exportPerks();
         } else { autobuyPerks(); }
     }
 }
