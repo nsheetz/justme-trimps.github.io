@@ -2405,15 +2405,31 @@ function autobuyPerks() {
         GRcount++;
         GRgain = GRgainNext;
         GRgainNext = GUgain(GUavail,GVcount,GRcount+1,false);
-    }
+    }        
     // final recommendation
-    var GUtext = "GU Strategy (ALPHA FEATURE): " + (GVcount > 0 ? (GVcount + " GVs, then ") : "");
+    var GUtext = "GU Strategy (ALPHA FEATURE):\n\xa0\xa0" + (GVcount > 0 ? (GVcount + " GVs, then ") : "");
     var GRpct = (GRcount + GVcount) * (GRcount + GVcount + 1) / 2 - GVcount * (GVcount+1) / 2;
     GBcount = GUavail - GVcount - GRcount;
     var GBpct = 3 * (GUavail * (GUavail+1) / 2 - (GRcount + GVcount) * (GRcount + GVcount + 1) / 2);
     if (GRcount > 0) GUtext += GRcount + " GRs (" + GRpct + "%), then ";
     GUtext += GBcount + " GBs (" + GBpct + "%)";
-    guElem.innerText = GUtext;
+    // if there aren't enough GBs to cover all the non-free GUs, present an alternate automate-able strategy
+    if (GBcount > 0 && GBcount < Math.floor(props.targetZone/25)) {
+        GBcount = 0;
+        var GBgain = GUgain(GUavail,GVcount,GBcount,true);
+        var GBgainNext = GUgain(GUavail,GVcount,GBcount+1,true);
+        while (GBcount < (GUavail - GVcount) && GBgain < GBgainNext) {
+            GBcount++;
+            GBgain = GBgainNext;
+            GBgainNext = GUgain(GUavail,GVcount,GBcount+1,true);
+        }
+        GUtext += "\n\xa0\xa0or " + (GVcount > 0 ? (GVcount + " GVs, then ") : "");
+        GRcount = GUavail - GVcount - GBcount;
+        GBpct = 3 * ((GBcount + GVcount) * (GBcount + GVcount + 1) / 2 - GVcount * (GVcount+1) / 2);
+        GRpct = GUavail * (GUavail+1) / 2 - (GBcount + GVcount) * (GBcount + GVcount + 1) / 2;
+        GUtext += GBcount + " GBs (" + GBpct + "%), then " + GRcount + " GRs (" + GRpct + "%)";
+    }
+    guElem.innerText = GUtext;   
     props.showGUs = true;
     evaluatePerks();
     console.log("Total Radon for perks: " + props.perksRadon + ", Total Radon Spent: " + props.radonSpent);
