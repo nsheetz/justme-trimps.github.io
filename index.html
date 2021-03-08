@@ -2434,6 +2434,7 @@ function autobuyPerks() {
     props.showGUs = true;
     evaluatePerks();
     console.log("Total Radon for perks: " + props.perksRadon + ", Total Radon Spent: " + props.radonSpent);
+    exportPerks();
 }
 
 // if we have N GUs total and M GUs of the given type (from isGB) bought, what's the total weighted value of our GUs?
