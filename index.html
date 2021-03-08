@@ -893,6 +893,7 @@ var saveTextArea = document.getElementById('save-text-area');
 var restoreSave = function() {
     var trimpsSave = JSON.parse(window.localStorage.getItem("trimpsSave"));
     saveTextArea.value = trimpsSave.save;
+    loadSave();
 }
 
 var presetElem = document.getElementById('preset-select');
