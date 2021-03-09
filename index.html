@@ -686,7 +686,7 @@ const auxInputList = [
     {   keyName: "radonPerRun",
         divId: 'radon-perrun',
         bg: "bg-danger",
-        label: "Radon Gain per Run (if Rn weight > 0)",
+        label: "Rn Gain per Farming Run (if Rn weight > 0)",
         title: "Typical Radon gains in a farming run. Needed for Observation (until your trinkets are capped). Can be extracted from your save if you paste a save from the end of a U2 farming run. Doesn't need to be exact but a pretty good estimate is recommended. Only used when Rn weight > 0.",
         type: "floatext",
         value: "",
@@ -1050,9 +1050,16 @@ var loadSave = function() {
             setAuxInput("housingCount",cols);
             
             var rawRnRun = game.resources.radon.owned;
+            // if Rn/run is locked, believe it, and force the old history (lets the user manually correct an error)
+            if (auxInputs.radonPerRun.checkbox.checked) {
+                var history = new Array(rnTerms);
+                var rPrVal = parseFloat(auxInputs.radonPerRun.input.value);
+                for (var i=0; i<rnTerms; i++) history[i] = rPrVal;
+                window.localStorage.setItem("rPrHistory",JSON.stringify(history));
+            }
             // don't let non-farming runs affect Rn/run (and guess anything < 5% of the input value must not be a farming run)
-            // also for easier testing (and to prevent long term problems with bad user input), assume an input greater than lifetime radon is not something the user wants semi-permanently locked
-            if (   rawRnRun > parseFloat(auxInputs.radonPerRun.input.value) / 20 
+            // also for easier testing (and to prevent long term problems with bad user input), assume an input greater than lifetime radon is not something the user wants semi-permanently locked 
+            else if (   rawRnRun > parseFloat(auxInputs.radonPerRun.input.value) / 20 
                 || parseFloat(auxInputs.radonPerRun.input.value) >= game.global.totalRadonEarned && rawRnRun > game.global.totalRadonEarned/1e6) {
                 var history = new Array(rnTerms);
                 // maintain a history of the last 10 farming runs' Rn gain, and evaluate an exponentially weighted moving average over this history
