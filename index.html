@@ -1033,8 +1033,9 @@ var loadSave = function() {
             // get count of best housing building (don't bother optimizing lower than gateways, the 2nd-order adjustments won't matter enough to bother)
             var cols = game.buildings.Collector.owned || 0;
             setAuxInput("housingCount",cols);
-                    
-            setAuxInput("radonPerRun",game.resources.radon.owned);
+            
+            // limit reduction of Rn/run to 10% - best hack i've come up with for preventing save-load from battle spec completely fucking up this critically important field
+            setAuxInput("radonPerRun",Math.max(auxInputs.radonPerRun.input.value * 0.9,game.resources.radon.owned));
         }
                 
         var haveHubs = !game.buildings.Hub.locked;
