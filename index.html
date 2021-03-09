@@ -356,6 +356,21 @@ const logEnemyAttackScaling = Math.log(Math.sqrt(3.27) * 1.15 * 1.32);
 // This can and should be a user input if and when we make such things hide-able.
 const vmRadFrac = 0.6;
 
+// exponentially weighted moving average parameters for Rn/run
+const rnAlpha = 0.3;
+const rnTerms = 10;
+var rnMAWeights = new Array(rnTerms);
+rnMAWeights[0] = rnAlpha;
+var rnMAWeightSum = rnAlpha;
+for (var i=1; i<rnTerms; i++) {
+    rnMAWeights[i] = rnMAWeights[i-1] * (1-rnAlpha);
+    rnMAWeightSum += rnMAWeights[i];
+}
+// correct weights to sum to 1 with limited # of terms
+for (var i=0; i<rnTerms; i++) {
+    rnMAWeights[i] /= rnMAWeightSum;
+}
+
 var DEBUGITER = 0;
 var DEBUGITER2 = 0;
 
@@ -1034,8 +1049,33 @@ var loadSave = function() {
             var cols = game.buildings.Collector.owned || 0;
             setAuxInput("housingCount",cols);
             
-            // limit reduction of Rn/run to 10% - best hack i've come up with for preventing save-load from battle spec completely fucking up this critically important field
-            setAuxInput("radonPerRun",Math.max(auxInputs.radonPerRun.input.value * 0.9,game.resources.radon.owned));
+            var rawRnRun = game.resources.radon.owned;
+            // don't let non-farming runs affect Rn/run (and guess anything < 5% of the input value must not be a farming run)
+            // also for easier testing (and to prevent long term problems with bad user input), assume an input greater than lifetime radon is not something the user wants semi-permanently locked
+            if (   rawRnRun > auxInputs.radonPerRun.input.value / 20 
+                || auxInputs.radonPerRun.input.value >= game.global.totalRadonEarned && rawRnRun > game.global.totalRadonEarned/1e6) {
+                var history = new Array(rnTerms);
+                // maintain a history of the last 10 farming runs' Rn gain, and evaluate an exponentially weighted moving average over this history
+                if (window.localStorage.getItem("rPrHistory")) {
+                    history = JSON.parse(window.localStorage.getItem("rPrHistory"));
+                } else if (rawRnRun < game.global.totalRadonEarned / 1000) {
+                    // if a new user of the calculator happens to be starting from a battle spec save, give them a not completely stupid Rn/run value
+                    //  -> This is likely to be inaccurate and give shitty results for a few runs, but it's better than accepting some comparatively minuscule value incorrectly.
+                    rawRnRun = game.global.totalRadonEarned / 1000;
+                }
+                for (var i=rnTerms-1; i>0; i--) {
+                    // any uninitialized value just gets the current Rn/run (should only happen once per user's localStorage)
+                    if (!(history[i] > 0)) history[i] = rawRnRun;
+                    history[i] = history[i-1];
+                }
+                history[0] = rawRnRun;
+                var ewma = 0;
+                for (var i=0; i<rnTerms; i++) {
+                    ewma += history[i] * rnMAWeights[i];
+                }
+                window.localStorage.setItem("rPrHistory",JSON.stringify(history));
+                setAuxInput("radonPerRun",ewma);
+            }
         }
                 
         var haveHubs = !game.buildings.Hub.locked;
