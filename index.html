@@ -326,7 +326,7 @@ input[type=checkbox], input[type=radio] {
                         <option value="trappa" title="Be sure to enter an 'Hours of trapping' value below to help value Bait! Use this setting either when portalling into Trappa (if you can't get enough Carpentry for a meaningful amount of starting population), or after portalling into the map pop setting. Your currently entered Carpentry value (or the one from a freshly loaded save) will be used to calculate starting population. coordLimited=1 is assumed.">Trappa^3 (final spec)</option>
                         <option value="downsize" title="This setting optimizes for each housing building giving only 1 Trimp. coordLimited=1 is assumed as the minimum (but a larger value to overweight population will be respected).">Downsize/^3</option>
                         <option value="duel" title="This setting optimizes for less than 100% CC in Duel. It's a very minor effect that only matters for Criticality so feel free to skip this setting if you like.">Duel/^3</option>
-                        <option value="exterm" title="This setting loads suggested weights for Exterminate, and optimizes Frenzy to minimize downtime when one-shotting.">Exterminate (undying+oneshot Frenzy)</option>
+                        <option value="exterm" title="This setting loads suggested weights for Exterminate, and optimizes Frenzy to maximize expected uptime for each proc (under the assumption that once Frenzy expires your army dies).">Exterminate (undying+oneshot Frenzy)</option>
                         <option value="resplus" title="Optimize for max resource gains from +maps. Only use this if you are farming maps above your current zone and care ONLY about total resource gains. All user entered weights are ignored in favor of resource gains. Pushing perks are still valued for increasing the level of map you can farm.">Resources (+maps)</option>
                         <option value="resminus" title="Optimize for max resource gains from -maps. Only use this if you are farming maps at or below your current zone and care ONLY about total resource gains. All user entered weights are ignored in favor of resource gains. Pushing perks are still valued for increasing the level of map you can farm.">Resources (-maps)</option>
                     </optgroup>
@@ -1682,19 +1682,34 @@ const frenzyHits = 5; // optimize for 5 hit deaths
 const frenzyDeathTime = 0.4 + 0.258 * frenzyHits // get off N hits then die, optimizing for Hyperspeed 1
 const frenzyHitTime = frenzyDeathTime/frenzyHits; // get off N hits then die
 function getFrenzyAvgAtk(level) {
+    var frenzyProcChance = perks.Frenzy.procEffect * level;
     // wait time in seconds
-    var frenzyProcWaitTime = frenzyHitTime / (perks.Frenzy.procEffect * level);
+    var frenzyProcWaitTime = frenzyHitTime / frenzyProcChance;
     // frenzy uptime for each proc
     var frenzyUptimePerProc = frenzyDeathTime * Math.log(perks.Frenzy.timeEffect * level / frenzyDeathTime + 1) / Math.log(2);
     // uptime fraction
     var frenzyUptimeFrac = frenzyUptimePerProc / (frenzyProcWaitTime + frenzyUptimePerProc);
     if (props.specialChallenge == 'exterm') {
-        // optimize for pure undying uptime at one-shot (400ms/hit for HS1)
+        if (level == 0) return 1e-100; // by this special calculation frenzy has 0 value at 0, so avoid division by 0
+        // optimize for undying uptime per proc at one-shot (400ms/hit for HS1)
         var frenzyBaseUptime = 5 * level;
         // probability that every hit in the half-uptime refresh window fails to refresh
-        var frenzyNoRefreshProb = Math.pow((1 - 0.001 * level),frenzyBaseUptime/2/0.4);
-        // return REDUCTION IN DOWNTIME (assuming any downtime == death for the hard part of exterm)
-        return 1/(1 - frenzyBaseUptime / (frenzyBaseUptime + frenzyNoRefreshProb * frenzyProcWaitTime));
+        var frenzyHalfDurationHits = frenzyBaseUptime / 2 / 0.4;
+        var frenzyNoRefreshProb = Math.pow((1 - frenzyProcChance),frenzyHalfDurationHits);
+        // expected hits to refresh each proc, conditioned on refresh occurring before expiration
+        var Pm1 = 1 - frenzyProcChance;
+        var Hm1 = frenzyHalfDurationHits - 1;
+        var hitsToRefresh = frenzyHalfDurationHits
+                            + Pm1 * (1 - (Hm1*frenzyProcChance + 1)*Math.pow(Pm1,Hm1))
+                              / (frenzyProcChance * (1 - Math.pow(Pm1,frenzyHalfDurationHits)))
+                            ;
+        // expected uptime per proc, saturated at 15 zones of undying one-shot (to avoid just counting every level of frenzy better than the last forever, as uptime goes from a year to a year and a half or whatever)
+        var frenzyUptimePerProc = Math.min(1500*0.4,frenzyUptimePerProc = frenzyBaseUptime + hitsToRefresh*0.4*(1 - frenzyNoRefreshProb)/frenzyNoRefreshProb);
+        // return attack times expected total undying oneshot uptime per proc
+        // -> if frenzy expires, you're dead. we want to maximize how long we stay alive per army, but also account for the attack boost.
+        // The RHS is based on an infinite series sum across all possible number of refreshes, assuming the average refresh time per refresh,
+        //   plus a guarantee that you'll survive the base uptime per refresh (at undying oneshot).
+        return (1 + perks.Frenzy.effect * level) * frenzyUptimePerProc;
     }
     // average attack per hit accounting for uptime fraction
     var frenzyAvgAtk = 1 + frenzyUptimeFrac * perks.Frenzy.effect * level;
