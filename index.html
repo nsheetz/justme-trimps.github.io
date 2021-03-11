@@ -326,7 +326,6 @@ input[type=checkbox], input[type=radio] {
                         <option value="trappa" title="Be sure to enter an 'Hours of trapping' value below to help value Bait! Use this setting either when portalling into Trappa (if you can't get enough Carpentry for a meaningful amount of starting population), or after portalling into the map pop setting. Your currently entered Carpentry value (or the one from a freshly loaded save) will be used to calculate starting population. coordLimited=1 is assumed.">Trappa^3 (final spec)</option>
                         <option value="downsize" title="This setting optimizes for each housing building giving only 1 Trimp. coordLimited=1 is assumed as the minimum (but a larger value to overweight population will be respected).">Downsize/^3</option>
                         <option value="duel" title="This setting optimizes for less than 100% CC in Duel. It's a very minor effect that only matters for Criticality so feel free to skip this setting if you like.">Duel/^3</option>
-                        <option value="exterm" title="This setting loads suggested weights for Exterminate, and optimizes Frenzy to maximize expected uptime for each proc (under the assumption that once Frenzy expires your army dies).">Exterminate (undying+oneshot Frenzy)</option>
                         <option value="resplus" title="Optimize for max resource gains from +maps. Only use this if you are farming maps above your current zone and care ONLY about total resource gains. All user entered weights are ignored in favor of resource gains. Pushing perks are still valued for increasing the level of map you can farm.">Resources (+maps)</option>
                         <option value="resminus" title="Optimize for max resource gains from -maps. Only use this if you are farming maps at or below your current zone and care ONLY about total resource gains. All user entered weights are ignored in favor of resource gains. Pushing perks are still valued for increasing the level of map you can farm.">Resources (-maps)</option>
                     </optgroup>
@@ -934,8 +933,6 @@ var fillPreset = function() {
         weights = [1,1,0];
     } else if (preset == 'duel') {
         weights = [1,0.2,0];
-    } else if (preset == 'exterm') {
-        weights = [1,0.5,0];
     }
     presetSpecialOpt(); // set special optimizations
     if (!auxInputs['clearWeight'].checkbox.checked) auxInputs['clearWeight'].input.value = weights[0];
@@ -983,9 +980,6 @@ function presetSpecialOpt() {
     }
     if (preset == 'resminus') {
         props.specialChallenge = 'resminus';
-    }
-    if (preset == 'exterm') {
-        props.specialChallenge = 'exterm';
     }
     checkHideUnused();
 }
@@ -1287,8 +1281,6 @@ function readInputs() {
         props.specialChallenge = 'resplus';
     } else if (preset == 'resminus') {
         props.specialChallenge = 'resminus';
-    } else if (preset == 'exterm') {
-        props.specialChallenge = 'exterm';
     } else props.specialChallenge = null;
     
     // calculate coefficients for tauntimp housing correction
@@ -1692,8 +1684,12 @@ function getFrenzyAvgAtk(level) {
     var frenzyProcWaitTime = frenzyHitTime / frenzyProcChance;
     // frenzy uptime for each proc
     var frenzyUptimePerProc = frenzyDeathTime * Math.log(perks.Frenzy.timeEffect * level / frenzyDeathTime + 1) / Math.log(2);
-    // uptime fraction
+    // uptime fraction for weighting the attack bonus
     var frenzyUptimeFrac = frenzyUptimePerProc / (frenzyProcWaitTime + frenzyUptimePerProc);
+    // exterm setting had presumed you needed to keep frenzy up as long as possible - but that was a fuckin lie. exterminate at marginal stats is NOT about how long you can keep frenzy up at a time, it's about
+    //   max survivability so you can kill the next bug at max equality when you inevitably die (you'll have more than enough frenzy naturally, if you have any hope of completing the challenge).
+    // tenacity WILL carry you if you can kill a bug with max equality, and that's really all there is to it. a normal 1:1:0 push spec would be much better than overweighting frenzy and underweighting hp/eq.
+    /*
     if (props.specialChallenge == 'exterm') {
         if (level == 0) return 1e-100; // by this special calculation frenzy has 0 value at 0, so avoid division by 0
         // optimize for undying uptime per proc at one-shot (400ms/hit for HS1)
@@ -1716,9 +1712,9 @@ function getFrenzyAvgAtk(level) {
         //   plus a guarantee that you'll survive the base uptime per refresh (at undying oneshot).
         return (1 + perks.Frenzy.effect * level) * frenzyUptimePerProc;
     }
+    */
     // average attack per hit accounting for uptime fraction
     var frenzyAvgAtk = 1 + frenzyUptimeFrac * perks.Frenzy.effect * level;
-    // for exterminate, optimize frenzy for pure uptime
     return frenzyAvgAtk;
 }
 
