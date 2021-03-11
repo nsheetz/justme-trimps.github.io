@@ -2379,7 +2379,7 @@ function legalizeAux(forceFields=false) {
         if (forceFields) {
             auxInputs[key].input.classList.remove('bg-warning');
             if (type === 'floatext') {
-                auxInputs[key].input.value = Number(props[key]).toExponential(4);
+                auxInputs[key].input.value = parseFloat(Number(props[key]).toExponential(4)).toExponential();
             } else {
                 auxInputs[key].input.value = props[key];
             }
