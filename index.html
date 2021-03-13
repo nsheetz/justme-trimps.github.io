@@ -842,7 +842,7 @@ for (var i=0; i<auxInputList.length; i++) {
     var labelDivName = 'label-' + baseDivName;
     
     var tmpRow = document.createElement('div');
-    tmpRow.setAttribute('class','row' + (iObj.spacer ? ' mt-1 mb-1' : ''));
+    tmpRow.setAttribute('class','row' + (iObj.spacer ? ' mt-2' : ''));
     var step = (iObj.type == 'float') ? ' step="any" ' : "";
     var minMaxSrc = (iObj.min === null ? "" : ' min="' + iObj.min + '" ') + (iObj.max === null ? "" : ' max="' + iObj.max + '" ');
     var labelBg = iObj.hasOwnProperty("bg")  ? (" " + iObj.bg + " ") : ""; 
