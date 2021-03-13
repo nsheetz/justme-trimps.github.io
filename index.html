@@ -1726,10 +1726,8 @@ var clearClasses = function() {
     }
 }
 
-// color perk rows by efficiency, and flag the most efficient perk
-function efficiencyColorAndFlag() {
-    var eList = [];
-    var pList = [];
+// flag the most efficient perk
+function efficiencyFlag(eList=[],pList=[]) {
     var bestEff = 0;
     var bestAffordableEff = 0;
     props.bestPerk = ""; // don't flag a perk if we don't find an affordable one!
@@ -1757,6 +1755,14 @@ function efficiencyColorAndFlag() {
             }
         }
     }
+    return bestEff;
+}
+
+// color perk rows by efficiency, and flag the most efficient perk
+function efficiencyColorAndFlag() {
+    var eList = [];
+    var pList = [];
+    var bestEff = efficiencyFlag(eList,pList);
     for (var i=0; i < eList.length; i++) {
         var opacity = Math.max(eList[i]/bestEff,0.15) / (props.darkMode ? 2 : 1);
         if (props.specialChallenge == 'trappacarp') {
@@ -1913,6 +1919,29 @@ var evaluatePerks = function(debug=false) {
         
     if (!saveLoaded) return;
     
+    // reset row colors (and any other property removal we might wish to do later in development & maintenance)
+    clearClasses();
+    
+    // calculate the efficiency of each perk
+    getPerkEfficiencies();
+    
+    // color perks by raw efficiency, and store the most efficient perk name in props.bestPerk
+    efficiencyColorAndFlag();
+    
+    var totalCost = getTotalPerksCost();
+        
+    document.getElementById('total-radon-cost').innerText = (totalCost > 10000) ? totalCost.toExponential(3) : Math.round(totalCost);
+    
+    document.getElementById('input-export').value = "";
+    
+    checkHideUnused();
+    
+    if (debug) {
+        //console.log("evaluatePerks(): generic debug message");
+    }
+}
+
+function getPerkEfficiencies() {    
     // TODO: most perks don't change other perks' efficiencies (given our assumptions of local flatness)
     //  So move the efficiency calculations to functions owned by each perk, and only update efficiency when actually
     //  buying a perk. Notable exception for Observation (and carefully look for other exceptions), which will require
@@ -2079,24 +2108,6 @@ var evaluatePerks = function(debug=false) {
                     )/getPerkCost("Observation",2);
     } else {
         perks.Observation.efficiency2 = 0;
-    }
-    
-    // reset row colors (and any other property removal we might wish to do later in development & maintenance)
-    clearClasses();
-    
-    // color perks by raw efficiency, and store the most efficient perk name in props.bestPerk
-    efficiencyColorAndFlag();
-    
-    var totalCost = getTotalPerksCost();
-        
-    document.getElementById('total-radon-cost').innerText = (totalCost > 10000) ? totalCost.toExponential(3) : Math.round(totalCost);
-    
-    document.getElementById('input-export').value = "";
-    
-    checkHideUnused();
-    
-    if (debug) {
-        //console.log("evaluatePerks(): generic debug message");
     }
 }
 
@@ -2336,7 +2347,6 @@ for (var i = inputElements.length - 1; i >=0; i--) {
           } else {
             row.setAttribute('class', row.getAttribute('class').replace(greyName, '') + ' ' + greyName);
           }
-          evaluatePerks();
         })
     }
 }
@@ -2505,7 +2515,8 @@ function autobuyPerks() {
             return;
         }
         inputs[bestName.toLowerCase()].value = bestObj.level;
-        evaluatePerks();
+        getPerkEfficiencies();
+        efficiencyFlag();
     }
     // use trumps as dump perk
     if (!perks.Trumps.levLocked) {
@@ -2613,6 +2624,7 @@ if (window.localStorage.getItem("saveAux")) {
 switchShowLevelLocks();
 switchDarkMode();
 checkHideUnused();
+evaluatePerks();
 // order of perks
 // buy 2nd, 3rd...
 
