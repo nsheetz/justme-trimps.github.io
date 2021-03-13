@@ -1407,36 +1407,43 @@ function getObservationGains(levels) {
     var obsLevel = perks.Observation.level; // this gets referred to a lot, shortening the reference
     
     // Get expected trinket count at end of next run with the old Obs level
-    var shinies = props.trinkets + shinyCollect(obsLevel,props.targetZone);
-    shinies = Math.min(shinies, obsLevel * 1000);
-    
-    //console.log("obs shinies: " + shinies);
+    var currentCollect = shinyCollect(obsLevel,props.targetZone);
+    var shinies = props.trinkets + currentCollect;
+    shinies = Math.min(shinies, obsLevel * 1000); // still need to re-bound in case we dropped an Obs level and have super-capped trinkets.
     
     // Get expected trinket count at end of next run with the new Obs level
-    var shiniesNext = props.trinkets + shinyCollect(obsLevel+levels,props.targetZone);
+    var nextCollect = shinyCollect(obsLevel+levels,props.targetZone);
+    var shiniesNext = props.trinkets + nextCollect;
     if (obsLevel == 0) shiniesNext += 10; // 10 free trinkets for first Obs level
     shiniesNext = Math.min(shiniesNext, (obsLevel+levels)*1000);
-    
-    //console.log("obs shiniesNext: " + shiniesNext);
     
     // Calculate the direct gain in powerlevel at end of next run. Note this is the total powerlevel gain
     //   INCLUDING power immediately gained due to marginal trinket drops. This is because the Rn-like value
     //   of trinkets is valued as if those trinkets had no effect until the subsequent run (as true Rn
     //   gains on the next run would not have an effect within the same run).
     var directGain = (100 + shiniesNext * (obsLevel+levels))/(100 + shinies * obsLevel);
-    
-    //console.log("obs direct gain: " + directGain);
-    
-    // TODO: FIXME: we don't want to value marginal trinket droprate above our current cap
+    // upper bound on direct gain at re-capped trinkets:
+    //   Obs value WITH droprate included can never exceed this value WITHOUT droprate included.
+    var maxDirectGain = (100 + (obsLevel+levels)*(obsLevel+levels)*1000)/(100 + obsLevel*shinies);
     
     // Calculate the marginal gain in trinket power next run specifically due to the increased drop rate.
-    //   Note the baseline includes the increased per-trinket value. We want to isolate the trinket growth gain from the
-    //   direct powerlevel gain.
-    var moreTrinkets = shiniesNext - shinies;
+    //   We must consider ONLY the actual increase in trinkets on the save caused by the new Obs level(s).
+    //   e.g. if you're at 12.5k and obs 12, we should only count the actual trinkets dropped next run at Obs 13,
+    //   not the 500 trinkets that you already have on your save that only become unlocked this run (which is already
+    //   accounted in the direct gain and does NOT represent an increase in drops).
+    var moreTrinkets;
+    if (props.trinkets >= (obsLevel+levels) * 1000) {
+        // Case 1: we're already capped even at the new obs level. No drop value.
+        moreTrinkets = 0;
+    } else if (props.trinkets >= obsLevel * 1000) {
+        // Case 2: we're already capped at the old obs level. Drop value is the actual drops gained this run.
+        moreTrinkets = Math.max(0,shiniesNext - props.trinkets);
+    } else {
+        // Case 3: we're not already capped. Drop value is the actual difference in gains between the two considered Obs levels.
+        moreTrinkets = shiniesNext - shinies;
+    }
     
-    //console.log("obs moreTrinkets: " + moreTrinkets);
-    
-    return [directGain,moreTrinkets];
+    return [directGain,moreTrinkets,maxDirectGain];
 }
 
 
@@ -2052,15 +2059,22 @@ var evaluatePerks = function(debug=false) {
     
     // Observation:
     //  See getObservationGains for more details on valuation.
-    // NOTE we check for +1 and +2 levels, as +2 levels can be more efficient due to the extra free trinket drop.                       
-    var [obsDirectGain,obsMoreTrinkets] = getObservationGains(1);
-    perks.Observation.efficiency = getLogWeightedValue(obsDirectGain,obsDirectGain,1,obsDirectGain,1,1,1,obsMoreTrinkets,1)/getPerkCost("Observation",1);
+    // NOTE we check for +1 and +2 levels, as +2 levels can be more efficient due to the extra free trinket drop.  
+    // Max possible gain is what you'd get from instantly trinket-capping the new Obs level, so upper bound by that.
+    var [obsDirectGain,obsMoreTrinkets,obsMaxDirectGain] = getObservationGains(1);
+    perks.Observation.efficiency =
+        Math.min(   getLogWeightedValue(obsDirectGain,obsDirectGain,1,obsDirectGain,1,1,1,obsMoreTrinkets,1)
+                   ,getLogWeightedValue(obsMaxDirectGain,obsMaxDirectGain,1,obsMaxDirectGain,1,1,1,0,1)
+                )/getPerkCost("Observation",1);
     
     // No point checking for 2-level efficiency if we can't afford 2 levels.
     // (And more to the point, it breaks the way we flag the best perk if we give non-zero efficiency for the 2-level version....)
     if (couldBuyPerk("Observation",false,2)) {
-        var [obsDirectGain2,obsMoreTrinkets2] = getObservationGains(2);
-        perks.Observation.efficiency2 = getLogWeightedValue(obsDirectGain2,obsDirectGain2,1,obsDirectGain2,1,1,1,obsMoreTrinkets2,2)/getPerkCost("Observation",2);
+        var [obsDirectGain2,obsMoreTrinkets2,obsMaxDirectGain2] = getObservationGains(2);
+        perks.Observation.efficiency2 = 
+            Math.min(   getLogWeightedValue(obsDirectGain2,obsDirectGain2,1,obsDirectGain2,1,1,1,obsMoreTrinkets2,2)
+                       ,getLogWeightedValue(obsMaxDirectGain2,obsMaxDirectGain2,1,obsMaxDirectGain2,1,1,1,0,2)
+                    )/getPerkCost("Observation",2);
     } else {
         perks.Observation.efficiency2 = 0;
     }
