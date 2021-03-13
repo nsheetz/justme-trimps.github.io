@@ -1423,8 +1423,12 @@ function getObservationGains(levels) {
     //   gains on the next run would not have an effect within the same run).
     var directGain = (100 + shiniesNext * (obsLevel+levels))/(100 + shinies * obsLevel);
     // upper bound on direct gain at re-capped trinkets:
-    //   Obs value WITH droprate included can never exceed this value WITHOUT droprate included.
-    var maxDirectGain = (100 + (obsLevel+levels)*(obsLevel+levels)*1000)/(100 + obsLevel*shinies);
+    //   Obs value WITH droprate included can never exceed this value WITHOUT droprate included, if we're approaching
+    //   our current trinket cap. No limit to droprate value if we are not approaching our cap.
+    var maxDirectGain = Infinity;
+    if (shinies >= obsLevel * 1000) {
+        maxDirectGain = (100 + (obsLevel+levels)*(obsLevel+levels)*1000)/(100 + obsLevel*shinies);
+    }
     
     // Calculate the marginal gain in trinket power next run specifically due to the increased drop rate.
     //   We must consider ONLY the actual increase in trinkets on the save caused by the new Obs level(s).
@@ -2064,7 +2068,7 @@ var evaluatePerks = function(debug=false) {
     var [obsDirectGain,obsMoreTrinkets,obsMaxDirectGain] = getObservationGains(1);
     perks.Observation.efficiency =
         Math.min(   getLogWeightedValue(obsDirectGain,obsDirectGain,1,obsDirectGain,1,1,1,obsMoreTrinkets,1)
-                   ,getLogWeightedValue(obsMaxDirectGain,obsMaxDirectGain,1,obsMaxDirectGain,1,1,1,0,1)
+                   ,obsMaxDirectGain < Infinity ? getLogWeightedValue(obsMaxDirectGain,obsMaxDirectGain,1,obsMaxDirectGain,1,1,1,0,1) : Infinity
                 )/getPerkCost("Observation",1);
     
     // No point checking for 2-level efficiency if we can't afford 2 levels.
@@ -2073,7 +2077,7 @@ var evaluatePerks = function(debug=false) {
         var [obsDirectGain2,obsMoreTrinkets2,obsMaxDirectGain2] = getObservationGains(2);
         perks.Observation.efficiency2 = 
             Math.min(   getLogWeightedValue(obsDirectGain2,obsDirectGain2,1,obsDirectGain2,1,1,1,obsMoreTrinkets2,2)
-                       ,getLogWeightedValue(obsMaxDirectGain2,obsMaxDirectGain2,1,obsMaxDirectGain2,1,1,1,0,2)
+                       ,obsMaxDirectGain2 < Infinity ? getLogWeightedValue(obsMaxDirectGain2,obsMaxDirectGain2,1,obsMaxDirectGain2,1,1,1,0,2) : Infinity
                     )/getPerkCost("Observation",2);
     } else {
         perks.Observation.efficiency2 = 0;
