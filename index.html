@@ -1096,7 +1096,7 @@ var loadSave = function() {
             }
         }
                 
-        var haveHubs = !game.buildings.Hub.locked;
+        var haveHubs = game.global.exterminateDone;
         if (!auxInputs["housingCount"].checkbox.checked) hubEl.checked = haveHubs;
 
         // remaining fields are "safe" to load from a U1 save because they are persistent regardless of universe
@@ -2161,8 +2161,8 @@ function checkHideUnused() {
     colLab = document.getElementById('label-housing-count');
     hubLab = document.getElementById('label-hub-enabled');
     hubBox = document.getElementById('input-hub-enabled').parentElement;
-    if (    props.hideUnused && game !== null && !game.buildings.Hub.locked && props.hubEnabled
-        ||  props.hideLocked && (game === null || game.buildings.Hub.locked && !props.hubEnabled)) {
+    if (    props.hideUnused && game !== null && game.global.exterminateDone && props.hubEnabled
+        ||  props.hideLocked && (game === null || !game.global.exterminateDone && !props.hubEnabled)) {
         hubLab.style.display = "none";
         hubBox.style.display = "none";
         colLab.classList.remove('col-sm-3');
