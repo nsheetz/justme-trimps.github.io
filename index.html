@@ -418,6 +418,7 @@ function initPerks() {
         showLevelLocks: false,
         darkMode: false,
         baitDump: false, // secret setting to dump remaining Rn into bait after all other perks
+        autoFill: false, // fill the perk string on autobuy (but don't copy it)
         specialChallenge: null, // does the dropdown specify a special challenge?
         // scaling^log(resource boost) = atk or hp boost
         equipScaling: {
@@ -1014,8 +1015,10 @@ var loadSave = function() {
         
         // set perk object to default values
         var bdTmp = props.baitDump;
+        var afTmp = props.autoFill;
         initPerks();
         props.baitDump = bdTmp;
+        props.autoFill = afTmp;
         props.darkMode = inputs['dark-mode'].checked;
         
         // read save into input perk fields
@@ -1902,6 +1905,7 @@ var evaluatePerks = function(debug=false) {
     saveAux.hideLocked = inputs['hide-locked'].checked;
     saveAux.preset = presetElem.value;
     saveAux.baitDump = props.baitDump;
+    saveAux.autoFill = props.autoFill;
     if (saveAux.showLevelLocks) {
         for (var [perkName,perkObj] of Object.entries(perks)) {
             saveAux[perkName + 'Lock'] = inputs[perkName.toLowerCase() + '-noopt'].checked;
@@ -2407,7 +2411,7 @@ var lockAuxEl = document.getElementById('input-lock-aux');
 lockAuxEl.onchange = checkAllAux;
 hubEl.onchange = evaluatePerks;
 
-function exportPerks() {
+function exportPerkString() {
     var exportedPerks = {};
 
     for (var [key, value] of Object.entries(perks)) {
@@ -2420,6 +2424,10 @@ function exportPerks() {
     input.value = LZString.compressToBase64(exportedPerks);
     input.focus();
     input.select();
+}
+
+function exportPerks() {
+    exportPerkString();
     document.execCommand('copy');
 }
 
@@ -2438,7 +2446,7 @@ function clearAndAutobuyPerks() {
             while (buyPerk('Carpentry',1));
             inputs['carpentry'].value = perks.Carpentry.level;
             evaluatePerks();
-            exportPerks();
+            if (props.autoFill) exportPerkString();
         } else { autobuyPerks(); }
     }
 }
@@ -2522,8 +2530,8 @@ function autobuyPerks() {
     guElem.innerText = GUtext;   
     props.showGUs = true;
     evaluatePerks();
+    if (props.autoFill) exportPerkString();
     console.log("Total Radon for perks: " + props.perksRadon + ", Total Radon Spent: " + props.radonSpent);
-    exportPerks();
 }
 
 // if we have N GUs total and M GUs of the given type (from isGB) bought, what's the total weighted value of our GUs?
@@ -2559,6 +2567,7 @@ if (window.localStorage.getItem("saveAux")) {
         presetSpecialOpt();
     }
     if (saveAux.baitDump != null) props.baitDump = saveAux.baitDump;
+    if (saveAux.autoFill != null) props.autoFill = saveAux.autoFill;
     if (saveAux.showLevelLocks != null) {
         inputs['show-level-locks'].checked = saveAux.showLevelLocks;
         if (saveAux.showLevelLocks) {
