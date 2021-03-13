@@ -322,12 +322,12 @@ input[type=checkbox], input[type=radio] {
                         <option value="push">Push/C^3/Mayhem</option>
                     </optgroup>
                     <optgroup label="Special presets (optimize for unique rules/requirements, and fill suggested weights)">
-                        <option value="trappacarp" title="Use this setting to max Carpentry when portalling into Trappa, if you can get enough starting population this way to be significant compared to how much you can trap.">Trappa/^3 (max pop starting spec)</option>
-                        <option value="trappa" title="Be sure to enter an 'Hours of trapping' value below to help value Bait! Use this setting either when portalling into Trappa (if you can't get enough Carpentry for a meaningful amount of starting population), or after portalling into the map pop setting. Your currently entered Carpentry value (or the one from a freshly loaded save) will be used to calculate starting population. coordLimited=1 is assumed.">Trappa^3 (final spec)</option>
+                        <option value="trappa" title="Be sure to enter an 'Hours of trapping' value below to help value Bait! Use this setting either when portalling into Trappa, or after portalling with the Max Carpentry setting. coordLimited=1 is assumed.">Trappa^3</option>
                         <option value="downsize" title="This setting optimizes for each housing building giving only 1 Trimp. coordLimited=1 is assumed as the minimum (but a larger value to overweight population will be respected).">Downsize/^3</option>
                         <option value="duel" title="This setting optimizes for less than 100% CC in Duel. It's a very minor effect that only matters for Criticality so feel free to skip this setting if you like.">Duel/^3</option>
                         <option value="resplus" title="Optimize for max resource gains from +maps. Only use this if you are farming maps above your current zone and care ONLY about total resource gains. All user entered weights are ignored in favor of resource gains. Pushing perks are still valued for increasing the level of map you can farm.">Resources (+maps)</option>
                         <option value="resminus" title="Optimize for max resource gains from -maps. Only use this if you are farming maps at or below your current zone and care ONLY about total resource gains. All user entered weights are ignored in favor of resource gains. Pushing perks are still valued for increasing the level of map you can farm.">Resources (-maps)</option>
+                        <option value="trappacarp" title="Use this setting to max Carpentry when portalling into Trappa, if you can get enough starting population this way to be significant compared to how much you can trap.">Max Carpentry (May be useful for deep endgame Trappa)</option>
                     </optgroup>
                 </select>
             </div>
@@ -420,6 +420,8 @@ function initPerks() {
         baitDump: false, // secret setting to dump remaining Rn into bait after all other perks
         autoFill: false, // fill the perk string on autobuy (but don't copy it)
         specialChallenge: null, // does the dropdown specify a special challenge?
+        trappaStartPop: 1, // avoid NaNs before calculating perks
+        potency: 0.0085, // breed speed base
         // scaling^log(resource boost) = atk or hp boost
         equipScaling: {
             attack: equipScalingPrestige.attack,
@@ -560,7 +562,7 @@ function initPerks() {
             efficiency: 0,
         },
         Pheromones: {
-            optimize: false, // TODO: SHOULD we optimize this? might need to in endgame
+            optimize: false,
             locked: true,
             levLocked: false,
             level: 0,
@@ -950,23 +952,7 @@ function presetSpecialOpt() {
     if (preset == 'trappa') {
         props.specialChallenge = 'trappa';
         perks.Bait.optimize = true;
-        // This function is called when changing to the Trappa setting, or when loading a save.
-        // Preset change case 1: User loaded a save from a previous run, then directly changed the preset to Trappa.
-        //   This is fine. Presumably the carp level in the save is within a small handful of levels of what they'll
-        //   have at the start of their Trappa run, so this estimate should be pretty good.
-        // Preset change case 2: User already used the 'trappacarp' optimization and then changed the preset.
-        //   This is also good. No need to load another save as the optimized max-carp level will apply to their
-        //   starting population, as desired.
-        // Save load case 1: Same as preset change case 1, but with the setting changed before loading the save.
-        //   Still good.
-        // Save load case 2: User loaded a save after portalling (with or without the trappacarp setting).
-        //   All good, as their carp level in the loaded save will accurately reflect starting pop.
-        // It has been suggested to simply assume all Rn is spent on carp, but I don't like this, as the above should
-        //   cover all realistic use cases without needing to make an assumption, even if "case 1" may be inaccurate
-        //   by a carp level or three (which won't have any disastrous effect on the valuation of Bait). Whereas the
-        //   assumption may be completely wrong (if someone chooses not to use their respec to max starting pop) leading
-        //   Bait to be drastically undervalued.
-        props.trappaStartPop = 10 * Math.pow(1.1,inputs['carpentry'].value);
+        perks.Pheromones.optimize = false;
     } else {
         perks.Bait.optimize = false;
     }
@@ -2033,7 +2019,19 @@ var evaluatePerks = function(debug=false) {
     var ratGain = (1 - storeTaxNext) / (1 - storeTax);
     perks.Packrat.efficiency = getLogWeightedValue(1,1,1,ratGain,1,1)/getPerkCost("Packrat",1);
     
-    // Pheromones TODO (or not)
+    // Pheromones
+    //   Count 3-tick breeding as 100% uptime, and weight for comparative uptime at target zone
+    if (props.specialChallenge == 'trappa') {
+        // no breeding is the challenge.
+        perks.Pheromones.efficiency = 0;
+    } else {
+        var breedSpeed = 1 + props.potency * (1 + perks.Pheromones.level * perks.Pheromones.effect);
+        var breedUptime = 3/Math.max(3,Math.log(2)/Math.log(breedSpeed));
+        var breedSpeedNext = 1 + props.potency * (1 + (perks.Pheromones.level+1) * perks.Pheromones.effect);
+        var breedUptimeNext = 3/Math.max(3,Math.log(2)/Math.log(breedSpeedNext));
+        var breedGain = breedUptimeNext / breedUptime;
+        perks.Pheromones.efficiency = getLogWeightedValue(breedGain,1,1,1,1,1)/getPerkCost("Pheromones",1);
+    }
     
     // Power:
     //   attack gain
@@ -2453,12 +2451,14 @@ function exportPerks() {
 // zero out perk inputs and autobuy
 function clearAndAutobuyPerks() {
     if (props.perksRadon > 0) {
+        perks.Pheromones.optimize = (game.global.highestRadonLevelCleared >= 59) && (props.specialChallenge != 'trappa');
         for (var [key, value] of Object.entries(perks)) {
             if (typeof(value) !== "object" || !value.hasOwnProperty("optimize") || !value.optimize || value.levLocked) continue; // iterating over the perks, ignoring aux values and non-optimized perks
             inputs[key.toLowerCase()].value = 0;
         }
         // zero out bait after Trappa unlock, unless in trappa preset
         if (game.global.highestRadonLevelCleared >= 59 && !perks.Bait.levLocked) inputs["bait"].value = 0;
+        if (game.global.highestRadonLevelCleared >= 59 && !perks.Pheromones.levLocked) inputs["pheromones"].value = 0;
         if (!perks.Trumps.levLocked) inputs['trumps'].value = 0; // zero out trumps, it will be used as a dump perk even outside of downsize
         // for max carp, just max out carp!
         if (props.specialChallenge == 'trappacarp') {
@@ -2482,8 +2482,16 @@ function autobuyPerks() {
     }
     // optimize Bait for Trappa
     perks.Bait.optimize = (props.specialChallenge == 'trappa');
+    perks.Pheromones.optimize = (game.global.highestRadonLevelCleared >= 59) && (props.specialChallenge != 'trappa');
+    if (props.specialChallenge == 'trappa') {
+        var maxCarpLevels = Math.log(props.perksRadon/perks.Carpentry.priceBase * (perks.Carpentry.priceFact-1)+1)/Math.log(perks.Carpentry.priceFact);
+        props.trappaStartPop = 10 * Math.pow(1.1,maxCarpLevels);
+    }
     // optimize Trumps for Downsize
     perks.Trumps.optimize = (props.specialChallenge == 'downsize');
+    // get potency mod from target zone (div by 10 to get per-tick potency which is what's actually used in-game)
+    props.potency = 0.00085 * Math.pow(1.1, Math.floor(props.targetZone/5)) 
+                    * Math.pow(1.003,props.targetZone * (props.scruffyLevel >= 9 ? 3.5 : 3) * (3.4/3));
     while (props.bestPerk !== "") {
         var bestName = props.bestPerk;
         var bestObj = perks[bestName];
@@ -2503,6 +2511,11 @@ function autobuyPerks() {
     if (!perks.Trumps.levLocked) {
         while (buyPerk("Trumps",1));
         inputs['trumps'].value = perks.Trumps.level;
+    }
+    // and Pheromones! (but not in Trappa, for minimum confusion, and not before Trappa unlock)
+    if (!perks.Pheromones.levLocked && props.specialChallenge != 'trappa' && game.global.highestRadonLevelCleared >= 59) {
+        while (buyPerk("Pheromones",1));
+        inputs['pheromones'].value = perks.Pheromones.level;
     }
     // secret setting to dump remaining Rn into bait for feeeeeee
     if (props.baitDump) {
