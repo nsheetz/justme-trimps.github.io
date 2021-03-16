@@ -942,6 +942,7 @@ var fillPreset = function() {
     if (!auxInputs['survivalWeight'].checkbox.checked) auxInputs['survivalWeight'].input.value = weights[1];
     if (!auxInputs['radonWeight'].checkbox.checked) auxInputs['radonWeight'].input.value = weights[2];
     evaluatePerks();
+    checkHideUnused();
 }
 
 function presetSpecialOpt() {
