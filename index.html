@@ -1401,7 +1401,7 @@ function getObservationGains(levels) {
     // Get expected trinket count at end of next run with the new Obs level
     var nextCollect = shinyCollect(obsLevel+levels,props.targetZone);
     var shiniesNext = props.trinkets + nextCollect;
-    if (obsLevel == 0) shiniesNext += 10; // 10 free trinkets for first Obs level
+    if (props.trinkets == 0) shiniesNext += 10; // 10 free trinkets for first Obs level
     shiniesNext = Math.min(shiniesNext, (obsLevel+levels)*1000);
     
     // Calculate the direct gain in powerlevel at end of next run. Note this is the total powerlevel gain
