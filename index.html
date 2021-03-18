@@ -317,7 +317,8 @@ input[type=checkbox], input[type=radio] {
             <div class="col-sm-4">
                 <select name="preset" id="preset-select" onchange="fillPreset()">
                     <optgroup label="Basic presets (fill suggested weights)">
-                        <option value="ezfarm" title="Use if you can easily complete your radon challenge quickly with no golden battle. Pushing perks will still be valued for gains to S3 and other growth mechanisms.">Easy Radon challenge</option>
+                        <option value="ezfarmGB" title="Use if you can easily complete your radon challenge quickly with no golden battle, and you use Gamma Burst at the end of your afterpush. Pushing perks will still be valued for gains to S3 and other growth mechanisms.">Easy Radon challenge (GB used in afterpush)</option>
+                        <option value "ezfarm1S" title="Use if you can easily complete your radon challenge quickly with no golden battle, and you end your afterpush without often using Gamma Burst on your last cleared zone. Pushing perks will still be valued for gains to S3 and other growth mechanisms.">Easy Radon challenge (afterpush while one-shot)</option>
                         <option value="tufarm" title="Use if you need some extra pushing power to complete your radon challenge, especially if you still need golden battle. This will almost always be the right setting when you first start a new radon challenge.">Difficult Radon challenge</option>
                         <option value="push">Push/C^3/Mayhem</option>
                     </optgroup>
@@ -924,7 +925,7 @@ var presetElem = document.getElementById('preset-select');
 var fillPreset = function() {
     var preset = presetElem.value;
     var weights = [0,0,0];
-    if (preset == 'ezfarm') {
+    if (preset == 'ezfarm1S' || preset == 'ezfarmGB') {
         weights = [0,0,1];
     } else if (preset == 'tufarm') {
         weights = [1,0.5,10]; // with GU recommendations, we want a big Rn weight
@@ -2019,19 +2020,12 @@ function getPerkEfficiencies() {
     //   attack boost when frenzy is active
     // Frenzy should be based on 5-hit deaths iff relying on GB for at least one zone of the run is good.
     //    We presume this is always true if you have any pushing weight.
-    //    With no pushing weight, we presume it's FALSE (optimizing for 100 hits instead) unless a 3-minute zone would yield enough radon/trinket gains to be good, which roughly corresponds to when GB is useful.
-    var frenzyHits = 100;
-    if (props.clearWeight > 0) {
+    //    With no pushing weight, we presume it's FALSE (optimizing for 300 hits instead) unless a 3-minute zone would yield enough radon/trinket gains to be good, which roughly corresponds to when GB is useful.
+    var frenzyHits = 300;
+    var isResFarm = props.specialChallenge == 'resplus' || props.specialChallenge == 'resminus';
+    var isGBFarm = presetElem.value == 'ezfarmGB';
+    if (!isResFarm && props.clearWeight > 0 || isGBFarm) {
         frenzyHits = 5;
-    } else if (props.specialChallenge != 'resplus' && props.specialChallenge != 'resminus') {  
-        // rough estimate of radon-equivalent gain per zone
-        var radonPerZone =    props.radonPerTrinket * obsDropRate(perks.Observation.level,props.targetZone) / 100
-                            + props.radonPerRun * 0.03;
-        // rough estimate of run length
-        var guestimateRunLength = props.targetZone * 60;
-        if (radonPerZone / (props.radonPerRun + props.trinketRadonPerRun) * guestimateRunLength >= 180) {
-            frenzyHits = 5;
-        }
     }
     var frenzyAvgAtk = getFrenzyAvgAtk(perks.Frenzy.level,frenzyHits);
     var frenzyAvgAtkNext = getFrenzyAvgAtk(perks.Frenzy.level+1,frenzyHits);
