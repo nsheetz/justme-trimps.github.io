@@ -1675,11 +1675,10 @@ function shinyCollect(level,zone) {
 }
 
 // Calculate avg atk with frenzy, accounting for uptime.
-//   Optimizing for the difficult part of a run (5 hit deaths, no possibility of refreshing the effect)
-const frenzyHits = 5; // optimize for 5 hit deaths
-const frenzyDeathTime = 0.4 + 0.258 * frenzyHits // get off N hits then die, optimizing for Hyperspeed 1
-const frenzyHitTime = frenzyDeathTime/frenzyHits; // get off N hits then die
-function getFrenzyAvgAtk(level) {
+//   Optimizing for a given hit count (in practice maybe just 5 and 100, where 100 gives a pretty good approximation of deathless)
+function getFrenzyAvgAtk(level,frenzyHits) {
+    var frenzyDeathTime = 0.4 + 0.258 * frenzyHits // get off N hits then die, optimizing for Hyperspeed 1
+    var frenzyHitTime = frenzyDeathTime/frenzyHits; // get off N hits then die
     var frenzyProcChance = perks.Frenzy.procEffect * level;
     // wait time in seconds
     var frenzyProcWaitTime = frenzyHitTime / frenzyProcChance;
@@ -2017,9 +2016,25 @@ function getPerkEfficiencies() {
     perks.Equality.efficiency = getLogWeightedValue(1,1,1,1,1,perks.Equality.effect)/getPerkCost("Equality",1);
     
     // Frenzy
-    //   attack boost when frenzy is active (pro-rated by uptime "when the run gets hard" (5 hit deaths))
-    var frenzyAvgAtk = getFrenzyAvgAtk(perks.Frenzy.level);
-    var frenzyAvgAtkNext = getFrenzyAvgAtk(perks.Frenzy.level+1);
+    //   attack boost when frenzy is active
+    // Frenzy should be based on 5-hit deaths iff relying on GB for at least one zone of the run is good.
+    //    We presume this is always true if you have any pushing weight.
+    //    With no pushing weight, we presume it's FALSE (optimizing for 100 hits instead) unless a 3-minute zone would yield enough radon/trinket gains to be good, which roughly corresponds to when GB is useful.
+    var frenzyHits = 100;
+    if (props.clearWeight > 0) {
+        frenzyHits = 5;
+    } else if (props.specialChallenge != 'resplus' && props.specialChallenge != 'resminus') {  
+        // rough estimate of radon-equivalent gain per zone
+        var radonPerZone =    props.radonPerTrinket * obsDropRate(perks.Observation.level,props.targetZone) / 100
+                            + props.radonPerRun * 0.03;
+        // rough estimate of run length
+        var guestimateRunLength = props.targetZone * 60;
+        if (radonPerZone / (props.radonPerRun + props.trinketRadonPerRun) * guestimateRunLength >= 180) {
+            frenzyHits = 5;
+        }
+    }
+    var frenzyAvgAtk = getFrenzyAvgAtk(perks.Frenzy.level,frenzyHits);
+    var frenzyAvgAtkNext = getFrenzyAvgAtk(perks.Frenzy.level+1,frenzyHits);
     var frenzyGain = frenzyAvgAtkNext / frenzyAvgAtk;
     perks.Frenzy.efficiency = getLogWeightedValue(frenzyGain,1,1,1,1,1)/getPerkCost("Frenzy",1);
     
