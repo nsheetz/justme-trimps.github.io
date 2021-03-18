@@ -318,7 +318,7 @@ input[type=checkbox], input[type=radio] {
                 <select name="preset" id="preset-select" onchange="fillPreset()">
                     <optgroup label="Basic presets (fill suggested weights)">
                         <option value="ezfarmGB" title="Use if you can easily complete your radon challenge quickly with no golden battle, and you use Gamma Burst at the end of your afterpush. Pushing perks will still be valued for gains to S3 and other growth mechanisms.">Easy Radon challenge (GB used in afterpush)</option>
-                        <option value "ezfarm1S" title="Use if you can easily complete your radon challenge quickly with no golden battle, and you end your afterpush without often using Gamma Burst on your last cleared zone. Pushing perks will still be valued for gains to S3 and other growth mechanisms.">Easy Radon challenge (afterpush while one-shot)</option>
+                        <option value="ezfarm1S" title="Use if you can easily complete your radon challenge quickly with no golden battle, and you end your afterpush without often using Gamma Burst on your last cleared zone. Pushing perks will still be valued for gains to S3 and other growth mechanisms.">Easy Radon challenge (afterpush while one-shot)</option>
                         <option value="tufarm" title="Use if you need some extra pushing power to complete your radon challenge, especially if you still need golden battle. This will almost always be the right setting when you first start a new radon challenge.">Difficult Radon challenge</option>
                         <option value="push">Push/C^3/Mayhem</option>
                     </optgroup>
@@ -2022,9 +2022,9 @@ function getPerkEfficiencies() {
     //    We presume this is always true if you have any pushing weight.
     //    With no pushing weight, we presume it's FALSE (optimizing for 300 hits instead) unless a 3-minute zone would yield enough radon/trinket gains to be good, which roughly corresponds to when GB is useful.
     var frenzyHits = 300;
-    var isResFarm = props.specialChallenge == 'resplus' || props.specialChallenge == 'resminus';
+    var isDeathless = props.specialChallenge == 'resplus' || props.specialChallenge == 'resminus' || props.specialChallenge == 'trappa';
     var isGBFarm = presetElem.value == 'ezfarmGB';
-    if (!isResFarm && props.clearWeight > 0 || isGBFarm) {
+    if (!isDeathless && props.clearWeight > 0 || isGBFarm) {
         frenzyHits = 5;
     }
     var frenzyAvgAtk = getFrenzyAvgAtk(perks.Frenzy.level,frenzyHits);
