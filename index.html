@@ -1800,8 +1800,7 @@ var switchTotalRadon = function() {
     } else {
         props.perksRadonFromSave = props.portalRadon;
     }
-    props.perksRadonFromSave *= (1 - Number.EPSILON); // slight decrease in available Rn (reducing by about 1/1e16) to prevent rounding errors producing an unusable perk setup
-
+    
     if (auxInputs.perksRadon.checkbox.checked) {
         // if the value is locked there are 3 possible cases:
         //  -> manually entered, and rawValue was stored by the event handler for the input field
