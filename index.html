@@ -957,6 +957,7 @@ function presetSpecialOpt() {
         perks.Pheromones.optimize = false;
     } else {
         perks.Bait.optimize = false;
+        if (game != null && game.global.highestRadonLevelCleared >= 59) perks.Pheromones.optimize = true;
     }
     if (preset == 'downsize') {
         props.specialChallenge = 'downsize';
@@ -1255,6 +1256,10 @@ function readInputs() {
     // S15 is a reduction in smithy cost scaling
     if (props.scruffyLevel >= 14) props.smithyScaling = 40;
     else props.smithyScaling = 50;
+    
+    // get potency mod from target zone (div by 10 to get per-tick potency which is what's actually used in-game)
+    props.potency = 0.00085 * Math.pow(1.1, Math.floor(props.targetZone/5)) 
+                    * Math.pow(1.003,props.targetZone * (props.scruffyLevel >= 9 ? 3.5 : 3) * (3.4/3));
     
     props.hideUnused = inputs['hide-unused-perks'].checked;
     props.showLevelLocks = inputs['show-level-locks'].checked;
@@ -2508,9 +2513,6 @@ function autobuyPerks() {
     }
     // optimize Trumps for Downsize
     perks.Trumps.optimize = (props.specialChallenge == 'downsize');
-    // get potency mod from target zone (div by 10 to get per-tick potency which is what's actually used in-game)
-    props.potency = 0.00085 * Math.pow(1.1, Math.floor(props.targetZone/5)) 
-                    * Math.pow(1.003,props.targetZone * (props.scruffyLevel >= 9 ? 3.5 : 3) * (3.4/3));
     while (props.bestPerk !== "") {
         var bestName = props.bestPerk;
         var bestObj = perks[bestName];
