@@ -1076,7 +1076,7 @@ var loadSave = function() {
                     ewma += history[i] * rnMAWeights[i];
                 }
                 window.localStorage.setItem("rPrHistory",JSON.stringify(history));
-                setAuxInput("radonPerRun",rawRnRun);
+                setAuxInput("radonPerRun",ewma);
             }
             if (parseFloat(auxInputs.radonPerRun.input.value) < game.global.totalRadonEarned / 1e6) {
                 // if a new user of the calculator happens to be starting from a battle spec or U1 save, give them a not completely stupid Rn/run value
