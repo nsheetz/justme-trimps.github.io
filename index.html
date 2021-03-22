@@ -2670,7 +2670,7 @@ function autobuyPerks() {
         var totGainPct = 0;
         var rnGainPerZone = 1;
         if (perks.Observation.level == 0 || props.s3Rn) {
-            var rnGainPerZone = (props.s3Rn || perks.Observation.level == 0) ? 1.03 : 1;
+            var rnGainPerZone = (props.scruffyLevel >= 3 && (props.s3Rn || perks.Observation.level == 0)) ? 1.03 : 1;
             rnGainPerZone *= 1 + vmRadFrac * ((props.targetZone + 1)/props.targetZone - 1);
             rnGainPct = (rnGainPerZone - 1)*100;
             totGainPct = rnGainPct;
