@@ -2636,8 +2636,9 @@ function autobuyPerks() {
     guElem.innerText = GUtext;   
     props.showGUs = true;
     // how many trinkets are you gaining per run?
+    var trinketsPerRun = 0;
     if (perks.Observation.level > 0) {
-        var trinketsPerRun = shinyCollect(perks.Observation.level,props.targetZone);
+        trinketsPerRun = shinyCollect(perks.Observation.level,props.targetZone);
         var TText = "Average trinkets/run: " + trinketsPerRun.toPrecision(3);
         TText += "\n\xa0\xa0(equivalent to about " + props.trinketRadonPerRun.toExponential(3) + " radon)";
         trinkElem.innerText = TText;
@@ -2661,11 +2662,12 @@ function autobuyPerks() {
         }
         if (perks.Observation.level > 0) {
             var trinketsPerZone = obsDropRate(perks.Observation.level,props.targetZone)/100;
+            trinketGainPct = trinketsPerZone / trinketsPerRun * 100;
             var totGainPerZone = (rnGainPerZone * props.radonPerRun + props.trinketRadonPerRun 
                                     + props.radonPerTrinket * trinketsPerZone
                                   ) / (props.radonPerRun + props.trinketRadonPerRun);
             totGainPct = (totGainPerZone - 1)*100;
-            ZText += " " + trinketsPerZone.toPrecision(3)  + " more trinkets this run.";
+            ZText += " " + trinketGainPct.toPrecision(3)  + "% more trinkets this run.";
         }
         ZText += " This should be worth extending the run length by about " + totGainPct.toPrecision(3) + "%.";
         zRecElem.innerText = ZText;
