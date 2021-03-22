@@ -400,7 +400,7 @@ function initPerks() {
         radonPerTrinket: 0, // the Rn-equivalent value of a marginal trinket
         trinketRadonPerRun: 0, // baseline total radon value of expected trinkets gained per run at current perks
         baselineTrinketsNext: 0, // end of next run expected trinket count at current Observation
-        //shieldCC: 0, // TODO: strictly, this matters. sort of. if it's <100% it affects the value of criticality. also in Duel. but we can ignore this for a start.
+        //shieldCC: 0, // TONOTDO: strictly, this matters. sort of. if it's <100% it affects the value of criticality. also in Duel. but we can ignore this for a start.
         shieldCD: 0,
         shieldPrismal: 0,
         smithyScaling: 50,
@@ -1574,7 +1574,6 @@ function iterateValueFeedback(valueArray) {
     }
     // VS1 gives additive 0.25% VM Rn per additional zone
     // TODO: vmRadFrac is a hacky constant for now, should probably be a user input after we clean up the volume of user inputs
-    //  (learn how to fold them into an element that can be clicked to expand/collapse?)
     if (s3RnFinal) {
         Vrad *= 1 + vmRadFrac * ((props.targetZone + pushZones)/props.targetZone - 1);
     }
@@ -2039,7 +2038,7 @@ function getPerkEfficiencies() {
     }
     
     // Criticality:
-    //   attack gain from crits (TODO: assumes 100% CC, might want a CC input for e.g. Duel)
+    //   attack gain from crits
     var CD = 1 + props.shieldCD/100 + perks.Criticality.level * perks.Criticality.effect;
     var CC = (props.specialChallenge == 'duel') ? 0.5 : 1; // derate crit chance for duel
     var critGain = ((1-CC) + CC * (CD + perks.Criticality.effect))/((1-CC) + CC*CD);
