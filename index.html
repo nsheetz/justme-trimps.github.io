@@ -281,10 +281,6 @@ input[type=checkbox], input[type=radio] {
             <label class="col-sm-6 col-form-label">Total radon cost </label>
             <div class="col-sm-5" id="total-radon-cost"></div>
         </div>
-        <div class="row mt-1 mb-1" style="display:none;">
-            <div class="col-sm-1"></div>
-            <div class="col-sm-11"><p id="gu-strategy">GU strategy (ALPHA FEATURE): </p></div>
-        </div>
         <div class="row mt-1 mb-1">
             <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-use-total" onclick="switchTotalRadon()" /></div>
             <label class="col-sm-11 col-form-label" id="label-use-total" for="input-use-total">Include Radon earned in current portal</label>
@@ -299,6 +295,15 @@ input[type=checkbox], input[type=radio] {
         <div class="row">
             <div class="col-sm-12"><input class="form-control" value="Import save to use autobuy and export" id="input-export" disabled /></div>
         </div>
+        <div class="row mt-3 mb-1" style="display:none;">
+            <p id="gu-strategy">Suggested GU strategy: </p>
+        </div>
+        <div class="row mt-1 mb-1" style="display:none;">
+            <p id="trinket-strategy"></p>
+        </div>
+        <div class="row mt-1 mb-1" style="display:none;">
+            <p id="zone-push-strategy"></p>
+        </div>
     </div>
     <div class="col-sm ml-1" id="aux-col">
         <div class="row">
@@ -312,14 +317,12 @@ input[type=checkbox], input[type=radio] {
             <div class="col-sm-4 bg-danger" style="text-align: center;">Load from U2 save<br>at end of run</div>
         </div>
         <div class="row mt-1 mb-1">
-            <div class="col-sm-2"></div>
             <div class="col-sm-2"><label for="preset-select">Presets:</label></div>
             <div class="col-sm-4">
                 <select name="preset" id="preset-select" onchange="fillPreset()">
                     <optgroup label="Basic presets (fill suggested weights)">
-                        <option value="ezfarmGB" title="Use if you can easily complete your radon challenge quickly with no golden battle, and you use Gamma Burst at the end of your afterpush. Pushing perks will still be valued for gains to S3 and other growth mechanisms.">Easy Radon challenge (GB used in afterpush)</option>
-                        <option value="ezfarm1S" title="Use if you can easily complete your radon challenge quickly with no golden battle, and you end your afterpush without often using Gamma Burst on your last cleared zone. Pushing perks will still be valued for gains to S3 and other growth mechanisms.">Easy Radon challenge (afterpush while one-shot)</option>
-                        <option value="tufarm" title="Use if you need some extra pushing power to complete your radon challenge, especially if you still need golden battle. This will almost always be the right setting when you first start a new radon challenge.">Difficult Radon challenge</option>
+                        <option value="ezfarm" title="Use if you can easily complete your radon challenge quickly with no golden battle. Pushing perks will still be valued for gains to S3 (if checked below) and other growth mechanisms.">Easy Radon challenge</option>
+                        <option value="tufarm" title="Use if you need some extra pushing power to complete your radon challenge, especially if you still want golden battle. This will almost always be the right setting when you first start a new radon challenge.">Difficult Radon challenge</option>
                         <option value="push">Push/C^3/Mayhem</option>
                     </optgroup>
                     <optgroup label="Special presets (optimize for unique rules/requirements, and fill suggested weights)">
@@ -332,6 +335,12 @@ input[type=checkbox], input[type=radio] {
                     </optgroup>
                 </select>
             </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-gb-afterpush" /></div>
+            <label class="col-sm-5 col-form-label" id="label-gb-afterpush" for="input-gb-afterpush">GB used in afterpush </label>
+            <div class="col-sm-1"><input type="checkbox" checked="checked" class="form-check-input" id="input-s3-rn" /></div>
+            <label class="col-sm-5 col-form-label" id="label-s3-rn" for="input-s3-rn">Include S3 for Rn weighting </label>
         </div>
         <div class="row">
             <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-lock-aux" /></div>
@@ -418,6 +427,8 @@ function initPerks() {
         hideLocked: true,
         showLevelLocks: false,
         darkMode: false,
+        gbAfterpush: false, // is GB used in the afterpush?
+        s3Rn: true, // should S3 (and VS1) be counted as boosting Rn? (selectable by user, could un-select if the next run will be non-farming)
         baitDump: false, // secret setting to dump remaining Rn into bait after all other perks
         autoFill: false, // fill the perk string on autobuy (but don't copy it)
         specialChallenge: null, // does the dropdown specify a special challenge?
@@ -925,7 +936,7 @@ var presetElem = document.getElementById('preset-select');
 var fillPreset = function() {
     var preset = presetElem.value;
     var weights = [0,0,0];
-    if (preset == 'ezfarm1S' || preset == 'ezfarmGB') {
+    if (preset == 'ezfarm') {
         weights = [0,0,1];
     } else if (preset == 'tufarm') {
         weights = [1,0.5,10]; // with GU recommendations, we want a big Rn weight
@@ -1224,7 +1235,16 @@ function readInputs() {
     props.hideLocked = inputs['hide-locked'].checked
 
     // legalize aux inputs, forcing legal values back into fields as necessary
+    // AND stuff the legalized aux values into the props structure
     legalizeAux(true);
+    
+    // is GB used in the afterpush from farming?
+    props.gbAfterpush = inputs['gb-afterpush'].checked;
+    
+    // should S3 & VS1 be counted for Rn gains? (i.e. are we chain farming?)
+    // -> note at Obs 0 this will be assumed by the value calculation regardless of checked or not if clear weight is 0, else
+    //      pushing perks would get no value whatsoever.
+    props.s3Rn = inputs['s3-rn'].checked;
     
     // are hubs enabled?
     props.hubEnabled = hubEl.checked;
@@ -1546,12 +1566,18 @@ function iterateValueFeedback(valueArray) {
     // coords give 25% atk/hp per zone IF NOT COORD LIMITED
     Va *= Math.pow(1.25,pushZones*(1-Math.min(1,coordAdjust)));
     Vh *= Math.pow(1.25,pushZones*(1-Math.min(1,coordAdjust)));
+    // count S3 for Rn weighting if selected by the user, or if at Obs 0 with no clear weight (which would give no value to pushing perks at all without S3/VS1)
+    var s3RnFinal = props.s3Rn || (props.clearWeight == 0 && perks.Observation.level == 0);
     // Scruffy level 3 gives compounding 3% Rn per additional zone
-    if (props.scruffyLevel >= 3) Vrad *= Math.pow(1.03,pushZones);
+    if (props.scruffyLevel >= 3 && s3RnFinal) {
+        Vrad *= Math.pow(1.03,pushZones);
+    }
     // VS1 gives additive 0.25% VM Rn per additional zone
     // TODO: vmRadFrac is a hacky constant for now, should probably be a user input after we clean up the volume of user inputs
     //  (learn how to fold them into an element that can be clicked to expand/collapse?)
-    Vrad *= 1 + vmRadFrac * ((props.targetZone + pushZones)/props.targetZone - 1);
+    if (s3RnFinal) {
+        Vrad *= 1 + vmRadFrac * ((props.targetZone + pushZones)/props.targetZone - 1);
+    }
     // trinket gain: use a fixed drop rate based on target zone, which should be fine assuming the user has entered
     //   a sensible value and we're only optimizing at the margins of a fractional zone (or maybe 1-2 zones)
     moreTrinkets = pushZones * trinketRate;
@@ -1913,6 +1939,8 @@ var evaluatePerks = function(debug=false) {
     saveAux.darkMode = inputs['dark-mode'].checked;
     saveAux.hideLocked = inputs['hide-locked'].checked;
     saveAux.preset = presetElem.value;
+    saveAux.gbAfterpush = inputs['gb-afterpush'].checked;
+    saveAux.s3Rn = inputs['s3-rn'].checked;
     saveAux.baitDump = props.baitDump;
     saveAux.autoFill = props.autoFill;
     if (saveAux.showLevelLocks) {
@@ -2027,8 +2055,7 @@ function getPerkEfficiencies() {
     //    With no pushing weight, we presume it's FALSE (optimizing for 300 hits instead) unless a 3-minute zone would yield enough radon/trinket gains to be good, which roughly corresponds to when GB is useful.
     var frenzyHits = 300;
     var isDeathless = props.specialChallenge == 'resplus' || props.specialChallenge == 'resminus' || props.specialChallenge == 'trappa';
-    var isGBFarm = presetElem.value == 'ezfarmGB';
-    if (!isDeathless && props.clearWeight > 0 || isGBFarm) {
+    if (!isDeathless && props.clearWeight > 0 || props.gbAfterpush) {
         frenzyHits = 5;
     }
     var frenzyAvgAtk = getFrenzyAvgAtk(perks.Frenzy.level,frenzyHits);
@@ -2145,6 +2172,14 @@ function checkHideUnused() {
     var tmpRow = guElem.parentElement;
     if (props.showGUs) tmpRow.style.display = "";
     else tmpRow.style.display = "none";
+    // same for trinket gains
+    tmpRow = trinkElem.parentElement;
+    if (props.showGUs) tmpRow.style.display = "";
+    else tmpRow.style.display = "none";
+    // same for zone pushing strategy, but also don't show it unless radon weight is > 0
+    tmpRow = zRecElem.parentElement;
+    if (props.showGUs && props.radonWeight > 0) tmpRow.style.display = "";
+    else tmpRow.style.display = "none";
     
     // max or locked tenacity: no need for tenacity time
     var tmpRow = auxInputs.tenacityTime.input.parentElement.parentElement
@@ -2218,6 +2253,17 @@ function checkHideUnused() {
         hubBox.style.display = "";
         colLab.classList.remove('col-sm-7');
         colLab.classList.add('col-sm-3');
+    }
+    
+    // hide setting to ignore S3 when Obs is locked: it's ignored at Obs 0 anyway (unless clear weight is > 0 but in that case it probably never has a noticeable effect anyway, and might as well not burden the pre-Obs user with another meaningless setting)
+    var s3Box = inputs['s3-rn'].parentElement;
+    var s3Lab = document.getElementById('label-s3-rn');
+    if (perks.Observation.locked) {
+        s3Box.style.display = "none";
+        s3Lab.style.display = "none";
+    } else {
+        s3Box.style.display = "";
+        s3Lab.style.display = "";
     }
     
     // hide locked & maxed perks
@@ -2368,6 +2414,10 @@ inputs['dark-mode'] = document.getElementById('input-dark-mode');
 inputs['dark-mode'].onchange = switchDarkMode;
 inputs['hide-locked'] = document.getElementById('input-hide-locked');
 inputs['hide-locked'].onchange = switchHideUnused;
+inputs['gb-afterpush'] = document.getElementById('input-gb-afterpush');
+inputs['gb-afterpush'].onchange = evaluatePerks;
+inputs['s3-rn'] = document.getElementById('input-s3-rn');
+inputs['s3-rn'].onchange = evaluatePerks;
 
 // only color bad input fields
 var colorLegalizeAux = function(evt) {
@@ -2421,6 +2471,7 @@ function legalizeAux(forceFields=false) {
             auxInputs[key].input.value = max;
             if (type === 'floatext') auxInputs[key].rawValue = max;
         }
+        // actually set the corresponding props field to the legalized value
         props[key] = legalizeInput(val,def);
         if (forceFields) {
             auxInputs[key].input.classList.remove('bg-warning');
@@ -2495,6 +2546,8 @@ function clearAndAutobuyPerks() {
 }
 
 var guElem = document.getElementById('gu-strategy');
+var trinkElem = document.getElementById('trinket-strategy');
+var zRecElem = document.getElementById('zone-push-strategy');
 
 // autobuy from current input perk levels
 function autobuyPerks() {
@@ -2559,7 +2612,7 @@ function autobuyPerks() {
         GRgainNext = GUgain(GUavail,GVcount,GRcount+1,false);
     }        
     // final recommendation
-    var GUtext = "GU Strategy (ALPHA FEATURE):\n\xa0\xa0" + (GVcount > 0 ? (GVcount + " GVs, then ") : "");
+    var GUtext = "Suggested GU Strategy:\n\xa0\xa0" + (GVcount > 0 ? (GVcount + " GVs, then ") : "");
     var GRpct = (GRcount + GVcount) * (GRcount + GVcount + 1) / 2 - GVcount * (GVcount+1) / 2;
     GBcount = GUavail - GVcount - GRcount;
     var GBpct = 3 * (GUavail * (GUavail+1) / 2 - (GRcount + GVcount) * (GRcount + GVcount + 1) / 2);
@@ -2583,6 +2636,41 @@ function autobuyPerks() {
     }
     guElem.innerText = GUtext;   
     props.showGUs = true;
+    // how many trinkets are you gaining per run?
+    if (perks.Observation.level > 0) {
+        var trinketsPerRun = shinyCollect(perks.Observation.level,props.targetZone);
+        var TText = "Average trinkets/run: " + trinketsPerRun.toPrecision(3);
+        TText += "\n\xa0\xa0(equivalent to about " + props.trinketRadonPerRun.toExponential(3) + " radon)";
+        trinkElem.innerText = TText;
+    }
+    // how much time should we spend going 1 more zone for radon/trinkets?
+    if (props.radonWeight > 0) {
+        var ZText = "One more afterpush zone will give about ";
+        var totGainPct = 0;
+        var rnGainPerZone = 1;
+        if (perks.Observation.level == 0 || props.s3Rn) {
+            var rnGainPerZone = (props.s3Rn || perks.Observation.level == 0) ? 1.03 : 1;
+            rnGainPerZone *= 1 + vmRadFrac * ((props.targetZone + 1)/props.targetZone - 1);
+            rnGainPct = (rnGainPerZone - 1)*100;
+            totGainPct = rnGainPct;
+            ZText += rnGainPct.toPrecision(3) + "% more radon next run";
+            if (perks.Observation.level > 0) {
+                ZText += " and";
+            } else {
+                ZText += ".";
+            }
+        }
+        if (perks.Observation.level > 0) {
+            var trinketsPerZone = obsDropRate(perks.Observation.level,props.targetZone)/100;
+            var totGainPerZone = (rnGainPerZone * props.radonPerRun + props.trinketRadonPerRun 
+                                    + props.radonPerTrinket * trinketsPerZone
+                                  ) / (props.radonPerRun + props.trinketRadonPerRun);
+            totGainPct = (totGainPerZone - 1)*100;
+            ZText += " " + trinketsPerZone.toPrecision(3)  + " more trinkets this run.";
+        }
+        ZText += " This should be worth extending the run length by about " + totGainPct.toPrecision(3) + "%.";
+        zRecElem.innerText = ZText;
+    }
     evaluatePerks();
     if (props.autoFill) exportPerkString();
     console.log("Total Radon for perks: " + props.perksRadon + ", Total Radon Spent: " + props.radonSpent);
@@ -2620,6 +2708,8 @@ if (window.localStorage.getItem("saveAux")) {
         presetElem.value = saveAux.preset;
         presetSpecialOpt();
     }
+    if (saveAux.gbAfterpush != null) inputs['gb-afterpush'].checked = saveAux.gbAfterpush;
+    if (saveAux.s3Rn != null) inputs['s3-rn'].checked = saveAux.s3Rn;
     if (saveAux.baitDump != null) props.baitDump = saveAux.baitDump;
     if (saveAux.autoFill != null) props.autoFill = saveAux.autoFill;
     if (saveAux.showLevelLocks != null) {
