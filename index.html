@@ -937,11 +937,11 @@ var fillPreset = function() {
     var preset = presetElem.value;
     var weights = [0,0,0];
     if (preset == 'ezfarm') {
-        weights = [0,0,1];
+        weights = (props.ezWeights == null) ? [0,0,1] : props.ezWeights;
     } else if (preset == 'tufarm') {
-        weights = [1,0.5,10]; // with GU recommendations, we want a big Rn weight
+        weights = (props.tuWeights == null) ? [1,0.5,15] : props.tuWeights; // with GU recommendations, we want a big Rn weight
     } else if (preset == 'push') {
-        weights = [1,1,0];
+        weights = (props.pushWeights == null) ? [1,1,0]: props.pushWeights;
     } else if (preset == 'trappa') {
         weights = [1,1.5,0];
     } else if (preset == 'downsize') {
@@ -1016,9 +1016,15 @@ var loadSave = function() {
         // set perk object to default values
         var bdTmp = props.baitDump;
         var afTmp = props.autoFill;
+        var ezTmp = props.ezWeights;
+        var tuTmp = props.tuWeights;
+        var puTmp = props.pushWeights;
         initPerks();
         props.baitDump = bdTmp;
         props.autoFill = afTmp;
+        props.ezWeights = ezTmp;
+        props.tuWeights = tuTmp;
+        props.pushWeights = puTmp;
         props.darkMode = inputs['dark-mode'].checked;
         
         // read save into input perk fields
@@ -1298,6 +1304,15 @@ function readInputs() {
     } else if (preset == 'resminus') {
         props.specialChallenge = 'resminus';
     } else props.specialChallenge = null;
+    
+    // store weights under the current preset for Rn/Push weights
+    if (preset == 'ezfarm') {
+        props.ezWeights = [props.clearWeight,props.survivalWeight,props.radonWeight];
+    } else if (preset == 'tufarm') {
+        props.tuWeights = [props.clearWeight,props.survivalWeight,props.radonWeight];
+    } else if (preset == 'push') {
+        props.pushWeights = [props.clearWeight,props.survivalWeight,props.radonWeight];
+    }
     
     // calculate coefficients for tauntimp housing correction
     var housingTypes = {
@@ -1940,6 +1955,9 @@ var evaluatePerks = function(debug=false) {
     saveAux.preset = presetElem.value;
     saveAux.gbAfterpush = inputs['gb-afterpush'].checked;
     saveAux.s3Rn = inputs['s3-rn'].checked;
+    saveAux.ezWeights = props.ezWeights;
+    saveAux.tuWeights = props.tuWeights;
+    saveAux.pushWeights = props.pushWeights;
     saveAux.baitDump = props.baitDump;
     saveAux.autoFill = props.autoFill;
     if (saveAux.showLevelLocks) {
@@ -2711,6 +2729,9 @@ if (window.localStorage.getItem("saveAux")) {
     }
     if (saveAux.gbAfterpush != null) inputs['gb-afterpush'].checked = saveAux.gbAfterpush;
     if (saveAux.s3Rn != null) inputs['s3-rn'].checked = saveAux.s3Rn;
+    if (saveAux.ezWeights != null) props.ezWeights = saveAux.ezWeights;
+    if (saveAux.tuWeights != null) props.tuWeights = saveAux.tuWeights;
+    if (saveAux.pushWeights != null) props.pushWeights = saveAux.pushWeights;
     if (saveAux.baitDump != null) props.baitDump = saveAux.baitDump;
     if (saveAux.autoFill != null) props.autoFill = saveAux.autoFill;
     if (saveAux.showLevelLocks != null) {
