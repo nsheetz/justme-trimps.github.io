@@ -2194,11 +2194,11 @@ function checkHideUnused() {
     else tmpRow.style.display = "none";
     // same for trinket gains
     tmpRow = trinkElem.parentElement;
-    if (props.showGUs) tmpRow.style.display = "";
+    if (props.showGUs && perks.Observation.level > 0) tmpRow.style.display = "";
     else tmpRow.style.display = "none";
-    // same for zone pushing strategy, but also don't show it unless radon weight is > 0
+    // same for zone pushing strategy
     tmpRow = zRecElem.parentElement;
-    if (props.showGUs && props.radonWeight > 0) tmpRow.style.display = "";
+    if (props.showGUs) tmpRow.style.display = "";
     else tmpRow.style.display = "none";
     
     // max or locked tenacity: no need for tenacity time
@@ -2665,34 +2665,37 @@ function autobuyPerks() {
         trinkElem.innerText = TText;
     }
     // how much time should we spend going 1 more zone for radon/trinkets?
-    if (props.radonWeight > 0) {
-        var ZText = "One more afterpush zone will give about ";
-        var totGainPct = 0;
-        var rnGainPerZone = 1;
-        if (perks.Observation.level == 0 || props.s3Rn) {
-            var rnGainPerZone = (props.scruffyLevel >= 3 && (props.s3Rn || perks.Observation.level == 0)) ? 1.03 : 1;
-            rnGainPerZone *= 1 + vmRadFrac * ((props.targetZone + 1)/props.targetZone - 1);
-            rnGainPct = (rnGainPerZone - 1)*100;
-            totGainPct = rnGainPct;
-            ZText += rnGainPct.toPrecision(3) + "% more radon next run";
-            if (perks.Observation.level > 0) {
-                ZText += " and";
-            } else {
-                ZText += ".";
-            }
-        }
-        if (perks.Observation.level > 0) {
-            var trinketsPerZone = obsDropRate(perks.Observation.level,props.targetZone)/100;
-            trinketGainPct = trinketsPerZone / trinketsPerRun * 100;
-            var totGainPerZone = (rnGainPerZone * props.radonPerRun + props.trinketRadonPerRun 
-                                    + props.radonPerTrinket * trinketsPerZone
-                                  ) / (props.radonPerRun + props.trinketRadonPerRun);
-            totGainPct = (totGainPerZone - 1)*100;
-            ZText += " " + trinketGainPct.toPrecision(3)  + "% more trinkets this run.";
-        }
-        ZText += " This should be worth extending the run length by about " + totGainPct.toPrecision(3) + "%.";
-        zRecElem.innerText = ZText;
+    var trinketsPerZone = 0;
+    if (perks.Observation.level > 0) {
+        trinketsPerZone = obsDropRate(perks.Observation.level,props.targetZone)/100;
+        trinketGainPct = trinketsPerZone / trinketsPerRun * 100;
     }
+    //if (props.radonWeight > 0) {
+    var ZText = "Pushing one more zone would give about ";
+    var totGainPct = 0;
+    var rnGainPerZone = 1;
+    if (perks.Observation.level == 0 || props.s3Rn) {
+        var rnGainPerZone = (props.scruffyLevel >= 3 && (props.s3Rn || perks.Observation.level == 0)) ? 1.03 : 1;
+        rnGainPerZone *= 1 + vmRadFrac * ((props.targetZone + 1)/props.targetZone - 1);
+        rnGainPct = (rnGainPerZone - 1)*100;
+        totGainPct = rnGainPct;
+        ZText += rnGainPct.toPrecision(3) + "% more radon next run";
+        if (perks.Observation.level > 0) {
+            ZText += " and";
+        } else {
+            ZText += ".";
+        }
+    }
+    if (perks.Observation.level > 0) {
+        var totGainPerZone = (rnGainPerZone * props.radonPerRun + props.trinketRadonPerRun 
+                                + props.radonPerTrinket * trinketsPerZone
+                              ) / (props.radonPerRun + props.trinketRadonPerRun);
+        totGainPct = (totGainPerZone - 1)*100;
+        ZText += " " + trinketGainPct.toPrecision(3)  + "% more trinkets this run.";
+    }
+    ZText += "\n\nIf the next run will be a radon challenge, it's worth extending the current run's total length by about " + totGainPct.toPrecision(3) + "% to push one more zone.";
+    zRecElem.innerText = ZText;
+    //}
     evaluatePerks();
     if (props.autoFill) exportPerkString();
     console.log("Total Radon for perks: " + props.perksRadon + ", Total Radon Spent: " + props.radonSpent);
