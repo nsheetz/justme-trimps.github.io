@@ -2693,18 +2693,15 @@ function autobuyPerks() {
     //if (props.radonWeight > 0) {
     var ZText = "Pushing one more zone would give about ";
     var totGainPct = 0;
-    var rnGainPerZone = 1;
-    if (perks.Observation.level == 0 || props.s3Rn) {
-        var rnGainPerZone = (props.scruffyLevel >= 3 && (props.s3Rn || perks.Observation.level == 0)) ? 1.03 : 1;
-        rnGainPerZone *= 1 + vmRadFrac * ((props.targetZone + 1)/props.targetZone - 1);
-        rnGainPct = (rnGainPerZone - 1)*100;
-        totGainPct = rnGainPct;
-        ZText += rnGainPct.toPrecision(3) + "% more radon next run";
-        if (perks.Observation.level > 0) {
-            ZText += " and";
-        } else {
-            ZText += ".";
-        }
+    var rnGainPerZone = (props.scruffyLevel >= 3) ? 1.03 : 1;
+    rnGainPerZone *= 1 + vmRadFrac * ((props.targetZone + 1)/props.targetZone - 1);
+    rnGainPct = (rnGainPerZone - 1)*100;
+    totGainPct = rnGainPct;
+    ZText += rnGainPct.toPrecision(3) + "% more radon next run";
+    if (perks.Observation.level > 0) {
+        ZText += " and";
+    } else {
+        ZText += ".";
     }
     if (perks.Observation.level > 0) {
         var totGainPerZone = (rnGainPerZone * props.radonPerRun + props.trinketRadonPerRun 
@@ -2713,7 +2710,7 @@ function autobuyPerks() {
         totGainPct = (totGainPerZone - 1)*100;
         ZText += " " + trinketGainPct.toPrecision(3)  + "% more trinkets this run.";
     }
-    ZText += "\n\nIf the next run will be a radon challenge, it's worth extending the current run's total length by about " + totGainPct.toPrecision(3) + "% to push one more zone.";
+    ZText += "\n\nIf the next run will be a radon challenge, pushing one more zone is worth extending the current run by about " + totGainPct.toPrecision(3) + "% of the run time of a typical farming run.";
     zRecElem.innerText = ZText;
     //}
     evaluatePerks();
