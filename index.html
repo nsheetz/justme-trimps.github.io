@@ -2704,13 +2704,18 @@ function autobuyPerks() {
         ZText += ".";
     }
     if (perks.Observation.level > 0) {
+        if (!props.s3Rn) rnGainPerZone = 1; // don't count S3 in total pushing gain if the user doesn't want it counted!
         var totGainPerZone = (rnGainPerZone * props.radonPerRun + props.trinketRadonPerRun 
                                 + props.radonPerTrinket * trinketsPerZone
                               ) / (props.radonPerRun + props.trinketRadonPerRun);
         totGainPct = (totGainPerZone - 1)*100;
         ZText += " " + trinketGainPct.toPrecision(3)  + "% more trinkets this run.";
     }
-    ZText += "\n\nIf the next run will be a radon challenge, pushing one more zone is worth extending the current run by about " + totGainPct.toPrecision(3) + "% of the run time of a typical farming run.";
+    if (perks.Observation.level == 0 || props.s3Rn) {
+        ZText += "\n\nIf the next run will be a radon challenge, pushing one more zone is worth extending the current run by about " + totGainPct.toPrecision(3) + "% of the run time for a typical farming run.";
+    } else if (props.radonWeight > 0) {
+        ZText += "\n\nConsidering only the immediate trinket gains, pushing one more zone is worth extending the current run by about " + totGainPct.toPrecision(3) + "% of the current run time.";
+    }
     zRecElem.innerText = ZText;
     //}
     evaluatePerks();
