@@ -1538,7 +1538,7 @@ function iterateValueFeedback(valueArray) {
     var tauntCorrectedHousingBase = baseHousing * props.coefC - props.termR;
     var tauntCorrectedHousingNext = (baseHousing + moreHousing) * props.coefC - props.termR;
     var housingGain = tauntCorrectedHousingNext / tauntCorrectedHousingBase;
-    if (!(housingGain > 1)) housingGain = 1;
+    if (!(housingGain > 1) || tauntCorrectedHousingBase <= 0) housingGain = 1;
     if (props.specialChallenge == 'downsize') {
         // 2 territory bonuses per zone, each bonus is 5 + trumps level
         var trumPop = 2 * props.targetZone * (5 + perks.Trumps.level);
