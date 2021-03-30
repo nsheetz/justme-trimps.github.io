@@ -344,8 +344,10 @@ input[type=checkbox], input[type=radio] {
             <label class="col-sm-5 col-form-label" id="label-s3-rn" for="input-s3-rn">Include S3 for Rn weighting </label>
         </div>
         <div class="row">
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-lock-some" /></div>
+            <label class="col-sm-5 col-form-label" id="label-lock-aux" for="input-lock-some">Lock "red" inputs </label>
             <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-lock-aux" /></div>
-            <label class="col-sm-11 col-form-label" id="label-lock-aux" for="input-lock-aux">Lock/unlock all misc inputs (prevents overwrite by your save) </label>
+            <label class="col-sm-5 col-form-label" id="label-lock-aux" for="input-lock-aux">Lock all misc inputs </label>
         </div>
     </div>
   </div>
@@ -897,6 +899,7 @@ var colorCheckboxRows = function() {
         if (typeof(input.getAttribute('type')) != "undefined" && input.getAttribute('type') == "checkbox") {
             if (   input.getAttribute('id') == 'input-use-total'
                 || input.getAttribute('id') == 'input-lock-aux'
+                || input.getAttribute('id') == 'input-lock-some'
                 || input.getAttribute('id') == 'input-hide-unused-perks'
                 || input.getAttribute('id') == 'input-show-level-locks'
                 || input.getAttribute('id') == 'input-dark-mode'
@@ -1967,6 +1970,7 @@ var evaluatePerks = function(debug=false) {
     }
     saveAux.hubEnabled = hubEl.checked;
     saveAux.lockAll = lockAuxEl.checked;
+    saveAux.lockSome = lockSomeEl.checked;
     saveAux.inputTotal = inputs['use-total'].checked;
     saveAux.hideUnused = inputs['hide-unused-perks'].checked;
     saveAux.showLevelLocks = inputs['show-level-locks'].checked;
@@ -2532,15 +2536,25 @@ for (var [key,iObj] of Object.entries(auxInputs)) {
     iObj.checkbox.onchange = parseAndEvaluate;
 }
 
-var checkAllAux = function() {
-    for (var [key,iObj] of Object.entries(auxInputs)) {
-        iObj.checkbox.checked = lockAuxEl.checked;
+// checkAll = false means check only the "red" inputs
+var checkAllAux = function(checkAll=true) {
+    for (var auxObj of auxInputList) {
+        var iObj = auxInputs[auxObj.keyName];
+        if (checkAll) {
+            iObj.checkbox.checked = lockAuxEl.checked;
+        } else if (auxObj.bg == "bg-danger") {
+            iObj.checkbox.checked = lockSomeEl.checked;
+        }
     }
     evaluatePerks();
 }
+var checkSomeAux = function() { checkAllAux(false); }
 var lockAuxEl = document.getElementById('input-lock-aux');
 lockAuxEl.onchange = checkAllAux;
 hubEl.onchange = evaluatePerks;
+var lockSomeEl = document.getElementById('input-lock-some');
+lockSomeEl.onchange = checkSomeAux;
+
 
 function exportPerkString() {
     var exportedPerks = {};
@@ -2744,6 +2758,7 @@ if (window.localStorage.getItem("saveAux")) {
     }   
     if (saveAux.hubEnabled != null) hubEl.checked = saveAux.hubEnabled;
     if (saveAux.lockAll != null) lockAuxEl.checked = saveAux.lockAll;
+    if (saveAux.lockSome != null) lockSomeEl.checked = saveAux.lockSome;
     if (saveAux.inputTotal != null) inputs['use-total'].checked = saveAux.inputTotal;
     if (saveAux.hideUnused != null) inputs['hide-unused-perks'].checked = saveAux.hideUnused;
     if (saveAux.darkMode != null) {
