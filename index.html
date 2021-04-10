@@ -1076,6 +1076,8 @@ var loadSave = function() {
             // get count of best housing building (don't bother optimizing lower than gateways, the 2nd-order adjustments won't matter enough to bother)
             var cols = game.buildings.Collector.owned || 0;
             setAuxInput("housingCount",cols);               
+        } else {
+            setAuxInput("targetZone",Math.max(1,game.global.lastRadonPortal-1));
         }
         
         var rawRnRun = game.resources.radon.owned;
