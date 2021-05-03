@@ -1607,7 +1607,8 @@ function iterateValueFeedback(valueArray) {
     Va *= Math.pow(1.25,pushZones*(1-Math.min(1,coordAdjust)));
     Vh *= Math.pow(1.25,pushZones*(1-Math.min(1,coordAdjust)));
     // count S3 for Rn weighting if selected by the user, or if at Obs 0 with no clear weight (which would give no value to pushing perks at all without S3/VS1)
-    var s3RnFinal = props.s3Rn || (props.clearWeight == 0 && perks.Observation.level == 0);
+    //   -> or no clear weight and trinkets capped
+    var s3RnFinal = props.s3Rn || (props.clearWeight == 0 && (perks.Observation.level == 0 || props.trinkets >= (perks.Observation.level * 1000)));
     // Scruffy level 3 gives compounding 3% Rn per additional zone
     if (props.scruffyLevel >= 3 && s3RnFinal) {
         Vrad *= Math.pow(1.03,pushZones);
