@@ -2732,7 +2732,7 @@ function autobuyPerks() {
     }
     // recommendation info for the next trinket cache
     if (perks.Observation.level > 0) {
-        var nextCacheZone = Math.ceil(props.targetZone / 25) * 25;
+        var nextCacheZone = Math.ceil((props.targetZone+2) / 25) * 25 - 1;
         var nextCacheRnGain = 1 + vmRadFrac * (nextCacheZone / props.targetZone - 1);
         nextCacheRnGain *= (props.scruffyLevel >= 3) ? Math.pow(1.03,nextCacheZone - props.targetZone) : 1;
         var nextCacheTrinkets = shinyCollectLoop(perks.Observation.level,nextCacheZone) - shinyCollectLoop(perks.Observation.level,props.targetZone);
@@ -2741,7 +2741,7 @@ function autobuyPerks() {
                                     + props.radonPerTrinket * nextCacheTrinkets
                                 ) / (props.radonPerRun + props.trinketRadonPerRun);
         var cacheGainPct = (nextCacheTotGain - 1)*100;
-        ZText += "\n\nPushing to the next trinket cache at zone " + nextCacheZone + " would give "
+        ZText += "\n\nPushing to the next trinket cache by clearing zone " + nextCacheZone + " would give "
                  + nextCacheTrinkets.toPrecision(3)
                  + " more trinkets (in addition to any Radon gains if you have S3 selected),"
                  + " which would be worth extending the run by about " + cacheGainPct.toPrecision(3)
