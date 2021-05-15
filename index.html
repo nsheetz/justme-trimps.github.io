@@ -221,6 +221,13 @@ input[type=checkbox], input[type=radio] {
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" max="100" style="margin-bottom:0.1rem;" id="input-prismal" /></div>
         </div>
         <div class="row">
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-championism-enabled" /></div>
+            <label class="col-sm-5 col-form-label" id="label-championism" for="input-championism">Championism </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-championism-noopt" for="input-championism-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-championism-noopt" /></div>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" style="margin-bottom:0.1rem;" id="input-championism" /></div>
+        </div>
+        <div class="row">
             <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-frenzy-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-frenzy" for="input-frenzy">Frenzy </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-frenzy-noopt" for="input-frenzy-noopt">lock level: </label>
@@ -326,6 +333,7 @@ input[type=checkbox], input[type=radio] {
                         <option value="push">Push/C^3/Mayhem</option>
                     </optgroup>
                     <optgroup label="Special presets (optimize for unique rules/requirements, and fill suggested weights)">
+                        <option value="alchemy" title="Use this setting to optimize for trinket drop rate with finding potions. If you won't buy finding potions or don't care about trinket drops you can use a basic preset instead.">Alchemy</option>
                         <option value="trappa" title="Be sure to enter an 'Hours of trapping' value below to help value Bait! Use this setting either when portalling into Trappa, or after portalling with the Max Carpentry setting. coordLimited=1 is assumed.">Trappa^3</option>
                         <option value="downsize" title="This setting optimizes for each housing building giving only 1 Trimp. coordLimited=1 is assumed as the minimum (but a larger value to overweight population will be respected).">Downsize/^3</option>
                         <option value="berserk" title="This setting marks Frenzy as worthless.">Berserk/^3</option>
@@ -411,11 +419,15 @@ function initPerks() {
         trinkets: 0,
         housingCount: 0,
         hubEnabled: 0,
+        collectHubs: 1,
         meteorologists: 0,
         showGUs: false,  // show GU strategy (after optimization)
-        tenacityTime: 0, // minutes of tenacity to optimize for
+        canGUString: false, // does the user have GU strings unlocked?
+        tenacityTime: 10, // minutes of tenacity to optimize for (hardcoded to 10mins - this is not relevant for long and the input box added clutter and resulted in a lot of questions)
         coordLimited: 0, // 0-1 value of "how coord limited" we are
         trapHrs: 5, // hours of trapping
+        findPots: 0, // finding potions purchased in alchemy
+        shinyTable: [0], // memoization table for trinket drops
         clearWeight: 1,
         survivalWeight: 1,
         radonWeight: 1,
@@ -432,6 +444,7 @@ function initPerks() {
         darkMode: false,
         ezWeights: null,
         tuWeights: null,
+        alchWeights: null,
         pushWeights: null,
         gbAfterpush: false, // is GB used in the afterpush?
         s3Rn: true, // should S3 (and VS1) be counted as boosting Rn? (selectable by user, could un-select if the next run will be non-farming)
@@ -503,6 +516,16 @@ function initPerks() {
             priceBase: 1,
             priceFact: 1.5,
             effect: 1/0.9,
+            efficiency: 0,
+        },
+        Championism: {
+            optimize: true,
+            locked: true,
+            levLocked: false,
+            level: 0,
+            priceBase: 1e9,
+            priceFact: 5,
+            effect: 0, // defined on save-load based on SA progress
             efficiency: 0,
         },
         Frenzy: {
@@ -723,6 +746,16 @@ const auxInputList = [
         value: 5,
         min: 0,
         max: null, },
+    {   keyName: "findPots",
+        divId: 'finding-potions',
+        bg: 'bg-warning',
+        spacer: true,
+        label: "Finding potions purchased",
+        title: "How many finding potions will you buy? For simplicity we assume these are all purchased by z100.",
+        type: "float",
+        value: 0,
+        min: 0,
+        max: null, },
     {   keyName: "coordLimited",
         divId: 'coord-limited',
         bg: "bg-success",
@@ -733,15 +766,6 @@ const auxInputList = [
         value: 0,
         min: 0,
         max: null, },
-    {   keyName: "tenacityTime",
-        divId: 'tenacity-time',
-        bg: "bg-success",
-        label: "Minutes of tenacity to optimize",
-        title: "How many minutes of tenacity time would you like to optimize for? This is only meaningful if you haven't maxed Tenacity yet. A value of 0 still places significant weight on Tenacity.",
-        type: "int",
-        value: 0,
-        min: 0,
-        max: 120, },
     {   keyName: "weaponLevels",
         divId: 'weapon-levels',
         spacer: true,
@@ -788,35 +812,6 @@ const auxInputList = [
         value: 0,
         min: 0,
         max: null, },
-    {   keyName: "antennae",
-        divId: 'antenna-count',
-        bg: "bg-primary",
-        label: "Antennas",
-        space: true,
-        title: "Antennas purchased. Affects how Meteorologist gains from more food are valued.",
-        type: "int",
-        value: 0,
-        min: 0,
-        max: null, },
-    {   keyName: "shieldCD",
-        divId: 'crit-damage',
-        bg: "bg-primary",
-        label: "Heirloom Crit Damage",
-        spacer: true,
-        title: "Crit damage stat on heirloom shield, in percent (do not divide by 100)",
-        type: "float",
-        value: 0,
-        min: 0,
-        max: null, },
-    {   keyName: "shieldPrismal",
-        divId: 'prismal-shield',
-        bg: "bg-primary",
-        label: "Heirloom Prismatic Shield",
-        title: "Prismatic Shield stat on heirloom shield, in percent (do not divide by 100)",
-        type: "float",
-        value: 0,
-        min: 0,
-        max: null, },
     {   keyName: "perksRadon",
         divId: 'perks-radon',
         bg: "bg-primary",
@@ -826,15 +821,6 @@ const auxInputList = [
         value: 0,
         min: 0,
         max: null, },
-    {   keyName: "scruffyLevel",
-        divId: 'scruffy-level',
-        bg: "bg-primary",
-        label: "Scruffy Level",
-        title: "Scruffy Level: Affects perks whose value changes due to Scruffy abilities, like Prismal.",
-        type: "int",
-        value: 0,
-        min: 0,
-        max: 20, },
     {   keyName: "trinkets",
         divId: 'rune-trinkets',
         bg: "bg-primary",
@@ -867,19 +853,10 @@ for (var i=0; i<auxInputList.length; i++) {
     var minMaxSrc = (iObj.min === null ? "" : ' min="' + iObj.min + '" ') + (iObj.max === null ? "" : ' max="' + iObj.max + '" ');
     var labelBg = iObj.hasOwnProperty("bg")  ? (" " + iObj.bg + " ") : ""; 
     var type = (iObj.type == 'floatext') ? 'text' : 'number';
-    if (key == "housingCount") {
-        tmpRow.innerHTML = '<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="' + checkboxDivName + 
-            '" /></div><label class="col-sm-3 col-form-label bg-primary" style="text-align:right;" id="label-hub-enabled" for="input-hub-enabled">Hub unlocked:</label>' +
-            '<div class="col-sm-1 bg-primary"><input type="checkbox" class="form-check-input" style="margin-left:0.2rem; margin-top:0.7rem" id="input-hub-enabled" /></div>' +
-            '<label class="col-sm-3 col-form-label' + labelBg + '" id="' + labelDivName + '" for="' + inputDivName + '">' + iObj.label +
-            ' </label><div class="col-sm-4"><input class="form-control" value="' + iObj.value + '" title="' + iObj.title + 
-            '" type="' + type + '" ' + step + minMaxSrc + 'id="' + inputDivName + '" name="' + key + '"/></div>'
-    } else {
-        tmpRow.innerHTML = '<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="' + checkboxDivName + 
-            '" /></div><label class="col-sm-7 col-form-label' + labelBg + '" id="' + labelDivName + '" for="' + inputDivName + '">' + iObj.label +
-            ' </label><div class="col-sm-4"><input class="form-control" value="' + iObj.value + '" title="' + iObj.title + 
-            '" type="' + type + '" ' + step + minMaxSrc + 'id="' + inputDivName + '" name="' + key + '" /></div>';
-    }
+    tmpRow.innerHTML = '<div class="col-sm-1"><input type="checkbox" class="form-check-input" id="' + checkboxDivName + 
+        '" /></div><label class="col-sm-7 col-form-label' + labelBg + '" id="' + labelDivName + '" for="' + inputDivName + '">' + iObj.label +
+        ' </label><div class="col-sm-4"><input class="form-control" value="' + iObj.value + '" title="' + iObj.title + 
+        '" type="' + type + '" ' + step + minMaxSrc + 'id="' + inputDivName + '" name="' + key + '" /></div>';
     auxColumnElement.insertBefore(tmpRow,null); // insert at end of the aux column
     
     // insert into auxInputs object for easy reference later
@@ -888,8 +865,6 @@ for (var i=0; i<auxInputList.length; i++) {
         checkbox: document.getElementById(checkboxDivName),
     };
 }
-
-var hubEl = document.getElementById('input-hub-enabled');
 
 var colorCheckboxRows = function() {
     var inputElements = document.getElementById('perks-col').getElementsByTagName("INPUT");
@@ -949,6 +924,8 @@ var fillPreset = function() {
         weights = (props.tuWeights == null) ? [1,0.5,15] : props.tuWeights; // with GU recommendations, we want a big Rn weight
     } else if (preset == 'push') {
         weights = (props.pushWeights == null) ? [1,1,0]: props.pushWeights;
+    } else if (preset == 'alchemy') {
+        weights = (props.alchWeights == null) ? [1,0.5,15] : props.alchWeights;
     } else if (preset == 'trappa') {
         weights = [1,1.5,0];
     } else if (preset == 'downsize') {
@@ -967,7 +944,10 @@ var fillPreset = function() {
 }
 
 function presetSpecialOpt() {
-    preset = presetElem.value;
+    var preset = presetElem.value;
+    if (preset == 'alchemy') {
+        props.specialChallenge = 'alchemy';
+    }
     if (preset == 'trappacarp') {
         props.specialChallenge = 'trappacarp';
     }
@@ -1033,12 +1013,14 @@ var loadSave = function() {
         var afTmp = props.autoFill;
         var ezTmp = props.ezWeights;
         var tuTmp = props.tuWeights;
+        var alTmp = props.alchWeights;
         var puTmp = props.pushWeights;
         initPerks();
         props.baitDump = bdTmp;
         props.autoFill = afTmp;
         props.ezWeights = ezTmp;
         props.tuWeights = tuTmp;
+        props.alchWeights = alTmp;
         props.pushWeights = puTmp;
         props.darkMode = inputs['dark-mode'].checked;
         
@@ -1122,12 +1104,23 @@ var loadSave = function() {
             }
         }
                 
-        var haveHubs = game.global.exterminateDone;
-        if (!auxInputs["housingCount"].checkbox.checked) hubEl.checked = haveHubs;
 
         // remaining fields are "safe" to load from a U1 save because they are persistent regardless of universe
 
-        setAuxInput("antennae",game.buildings.Antenna.owned || 0);
+        props.hubEnabled = game.global.exterminateDone;
+        props.antennae = game.buildings.Antenna.owned;
+        props.canGUString = game.global.canGuString;
+
+        // Championism effect is 1% plus 0.5% per SA level cleared
+        var champSAMult = (game.global.autoBattleData.maxEnemyLevel - 1) || 0;
+        perks.Championism.effect = 1.01 + 0.005 * champSAMult;
+        
+        // property will not be defined in the save if not owned, convert undefined to false
+        var haveCollectology = game.global.autoBattleData.oneTimers.Collectology || false;
+        props.collectHubs = !haveCollectology ? 1 : (2 + Math.floor((game.global.autoBattleData.maxEnemyLevel - 1) / 30));
+        
+        // calculate Scruffy level (adapted from Fluffy.getLevel() in the game source code)
+        props.scruffyLevel = Math.floor(Math.log(((game.global.fluffyExp2 / 1000) * 3) + 1) / Math.log(4));
         
         var shield = null;
         if (game.global.universe == 2)
@@ -1139,14 +1132,10 @@ var loadSave = function() {
             var critDamageMod = shield.mods.find(function (el) { return el[0] == "critDamage"; });
             var prismalMod = shield.mods.find(function (el) { return el[0] == "prismatic"; });
             
-            if (critDamageMod)  { setAuxInput("shieldCD",Math.round(critDamageMod[1] / 10)); }  else { setAuxInput("shieldCD",0); }
-            if (prismalMod)     { setAuxInput("shieldPrismal",Math.round(prismalMod[1])); }     else { setAuxInput("shieldPrismal",0); }
+            if (critDamageMod)  { props.shieldCD = Math.round(critDamageMod[1] / 10); }  else { props.shieldCD = 0; }
+            if (prismalMod)     { props.shieldPrismal = Math.round(prismalMod[1]); }     else { props.shieldPrismal = 0; }
             props.hazzie = shield.rarity >= 10;
         }
-        
-
-        // calculate Scruffy level (adapted from Fluffy.getLevel() in the game source code)
-        setAuxInput("scruffyLevel",Math.floor(Math.log(((game.global.fluffyExp2 / 1000) * 3) + 1) / Math.log(4)));
         
         // SHINIES
         setAuxInput("trinkets",game.portal.Observation.trinkets);
@@ -1254,6 +1243,9 @@ function readInputs() {
     }
     props.radonSpent = getTotalPerksCost();
     
+    // reset the memoization results for the shinyTable, in case the target zone changed
+    props.shinyTable = [0]; // 0 obs = 0 trinkets
+    
     props.darkMode = inputs['dark-mode'].checked;
     props.hideLocked = inputs['hide-locked'].checked
 
@@ -1268,9 +1260,6 @@ function readInputs() {
     // -> note at Obs 0 this will be assumed by the value calculation regardless of checked or not if clear weight is 0, else
     //      pushing perks would get no value whatsoever.
     props.s3Rn = inputs['s3-rn'].checked;
-    
-    // are hubs enabled?
-    props.hubEnabled = hubEl.checked;
     
     // Accuracy doesn't matter prior to Obs, but 0 will give no value to radon gains so >0 is needed.
     props.radonPerRun = Math.max(1,props.radonPerRun);
@@ -1308,7 +1297,9 @@ function readInputs() {
     props.showLevelLocks = inputs['show-level-locks'].checked;
     
     var preset = presetElem.value;
-    if (preset == 'trappacarp') {
+    if (preset == 'alchemy') {
+        props.specialChallenge = 'alchemy';
+    } else if (preset == 'trappacarp') {
         props.specialChallenge = 'trappacarp';
     } else if (preset == 'trappa') {
         props.specialChallenge = 'trappa';
@@ -1331,6 +1322,8 @@ function readInputs() {
         props.tuWeights = [props.clearWeight,props.survivalWeight,props.radonWeight];
     } else if (preset == 'push') {
         props.pushWeights = [props.clearWeight,props.survivalWeight,props.radonWeight];
+    } else if (preset == 'alchemy') {
+        props.alchWeights = [props.clearWeight,props.survivalWeight,props.radonWeight];
     }
     
     // calculate coefficients for tauntimp housing correction
@@ -1353,9 +1346,10 @@ function readInputs() {
         var scaleZones = props.targetZone - startZone;
         var houseRate = Math.log(1.25)/Math.log(scaling);
         var taunTemp = Math.pow(tauntRate,scaleZones);
-        var tauntRm1 = tauntRate - 1
-        coefC += (taunTemp-1)/tauntRm1;
-        termR += tauntRate * houseRate * (taunTemp * (scaleZones*tauntRm1 - 1) + 1) / (tauntRm1*tauntRm1);
+        var tauntRm1 = tauntRate - 1;
+        var factor = (key == "collector") ? props.collectHubs : 1;
+        coefC += factor * (taunTemp-1)/tauntRm1;
+        termR += factor * tauntRate * houseRate * (taunTemp * (scaleZones*tauntRm1 - 1) + 1) / (tauntRm1*tauntRm1);
         typeCount++;
     }
     props.coefC = coefC / typeCount;
@@ -1397,7 +1391,7 @@ function getTrinketValues(  motivCost,powCost,toughCost ) {
     
     // Get the expected Rt at the end of the next run with the current Obs level.
     var shinies = 0;
-    var shinies = props.trinkets + shinyCollect(perks.Observation.level,props.targetZone);
+    var shinies = props.trinkets + shinyCollect(perks.Observation.level);
     if (props.trinkets == 0) {
         shinies += 10; // first Obs level gives 10 trinkets
     }
@@ -1454,12 +1448,12 @@ function getObservationGains(levels) {
     var obsLevel = perks.Observation.level; // this gets referred to a lot, shortening the reference
     
     // Get expected trinket count at end of next run with the old Obs level
-    var currentCollect = shinyCollect(obsLevel,props.targetZone);
+    var currentCollect = shinyCollect(obsLevel);
     var shinies = props.trinkets + currentCollect;
     shinies = Math.min(shinies, obsLevel * 1000); // still need to re-bound in case we dropped an Obs level and have super-capped trinkets.
     
     // Get expected trinket count at end of next run with the new Obs level
-    var nextCollect = shinyCollect(obsLevel+levels,props.targetZone);
+    var nextCollect = shinyCollect(obsLevel+levels);
     var shiniesNext = props.trinkets + nextCollect;
     if (props.trinkets == 0) shiniesNext += 10; // 10 free trinkets for first Obs level
     shiniesNext = Math.min(shiniesNext, (obsLevel+levels)*1000);
@@ -1535,8 +1529,9 @@ function iterateValueFeedback(valueArray) {
     var baseHousing = collectors;
     // for downsize we make the same adjustments as for hubs, just saying "all housing buildings have the same value"
     if (hubEnabled || props.specialChallenge == 'downsize') {
+        moreHousing *= props.collectHubs;
         moreHousing += 5*Math.log(Vres/VresDone)/Math.log(1.2); // 5 housing types below Gateway need wood, roughly 1.2 avg scaling (Gateway doesn't scale)
-        baseHousing *= 7; // estimate all housing types have the same number as Collectors (close enough for gain factor w.r.t. the small feedback effects here)
+        baseHousing *= 6 + props.collectHubs; // estimate all housing types have the same number as Collectors (close enough for gain factor w.r.t. the small feedback effects here)
     }
     // if the user doesn't have collectors yet, don't bother with housing corrections (yes this will exclude O.G. downsize, tough)
     //   (tauntimp correction uses coefC & termR calculated in readInput(), based on target zone)
@@ -1713,7 +1708,10 @@ function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve=1,Vp=1,moreTrinkets=0,extr
 function obsDropRate(level,zone) {
     if (zone < 101) return 0;
     if (zone > 200) zone = 200;
-    return ((1 + ((level - 1) / 2)) * Math.pow(1.03, (zone - 100)));
+    var base = ((1 + ((level - 1) / 2)) * Math.pow(1.03, (zone - 100)));
+    if (props.specialChallenge == 'alchemy' && zone <= 156) {
+        return 100 - (100 - base) * Math.pow(0.99,props.findPots);
+    } else return base;
 }
 
 // how many trinkets do we expect to get by clearing the target zone?
@@ -1730,7 +1728,17 @@ function shinyCollectLoop(level,zone) {
     return shinies;
 }
 
-function shinyCollect(level,zone) {
+// zone == targetZone, memoized by a lookup table calculated by shinyCollectLoop
+function shinyCollect(level) {
+    if (typeof props.shinyTable[level] == 'undefined') {
+        props.shinyTable[level] = shinyCollectLoop(level,props.targetZone);
+    }
+    return props.shinyTable[level];
+}
+
+// deprecated, used prior to alchemy and finding potions
+/*
+function shinyCollectOld(level,zone) {
     var shinies = 0;
     if (zone < 100) return 0;
     var excess = 0;
@@ -1745,6 +1753,7 @@ function shinyCollect(level,zone) {
     var freeShinies = Math.floor((zone+1-100)/25) * Math.floor(level/2);
     return scalingShinies + excessShinies + freeShinies;
 }
+*/
 
 // Calculate avg atk with frenzy, accounting for uptime.
 //   Optimizing for a given hit count (in practice maybe just 5 and 100, where 100 gives a pretty good approximation of deathless)
@@ -1971,7 +1980,6 @@ var evaluatePerks = function(debug=false) {
         }
         saveAux[key + "Checkbox"] = inputObj.checkbox.checked;
     }
-    saveAux.hubEnabled = hubEl.checked;
     saveAux.lockAll = lockAuxEl.checked;
     saveAux.lockSome = lockSomeEl.checked;
     saveAux.inputTotal = inputs['use-total'].checked;
@@ -1984,6 +1992,7 @@ var evaluatePerks = function(debug=false) {
     saveAux.s3Rn = inputs['s3-rn'].checked;
     saveAux.ezWeights = props.ezWeights;
     saveAux.tuWeights = props.tuWeights;
+    saveAux.alchWeights = props.alchWeights;
     saveAux.pushWeights = props.pushWeights;
     saveAux.baitDump = props.baitDump;
     saveAux.autoFill = props.autoFill;
@@ -2075,7 +2084,7 @@ function getPerkEfficiencies() {
     //   population in downsize
     if (props.specialChallenge == 'downsize' && !perks.Trumps.levLocked) {
         // estimate same number of each housing building, should be "good enough"
-        var buildPop = (props.hubEnabled ? 8 : 7) * props.housingCount;
+        var buildPop = (props.hubEnabled ? (13 + props.collectHubs) : 7) * props.housingCount;
         // 2 territory bonuses per zone, each bonus is 5 + trumps level
         var baseTrumPop = 2 * props.targetZone * (5 + perks.Trumps.level);
         var trumPop = (buildPop + baseTrumPop + 2*props.targetZone)/(buildPop + baseTrumPop);
@@ -2091,6 +2100,9 @@ function getPerkEfficiencies() {
     
     // Equality:
     perks.Equality.efficiency = getLogWeightedValue(1,1,1,1,1,perks.Equality.effect)/getPerkCost("Equality",1);
+    
+    // Championism:
+    perks.Championism.efficiency = getLogWeightedValue(perks.Championism.effect,perks.Championism.effect,1,1,1,1)/getPerkCost("Championism",1);
     
     // Frenzy
     //   attack boost when frenzy is active
@@ -2159,6 +2171,7 @@ function getPerkEfficiencies() {
     var basePrismal = props.shieldPrismal + 100;
     if (props.scruffyLevel >= 1) basePrismal += 25;
     if (props.scruffyLevel >= 10) prismLayers = 2;
+    if (props.scruffyLevel >= 16) prismLayers = 3;
     var prismHP = 1 + (basePrismal/100 + perks.Prismal.level * perks.Prismal.effect)*prismLayers;
     var prismGain = (prismHP + perks.Prismal.effect * prismLayers) / prismHP;
     perks.Prismal.efficiency = getLogWeightedValue(1,prismGain,1,1,1,1)/getPerkCost("Prismal",1);
@@ -2227,11 +2240,6 @@ function checkHideUnused() {
     if (props.showGUs) tmpRow.style.display = "";
     else tmpRow.style.display = "none";
     
-    // max or locked tenacity: no need for tenacity time
-    var tmpRow = auxInputs.tenacityTime.input.parentElement.parentElement
-    if (perks.Tenacity.locked || props.hideUnused && (perks.Tenacity.level >= perks.Tenacity.max)) {
-        tmpRow.style.display = "none";
-    } else tmpRow.style.display = "";
     // locked observation: no need for trinkets or Rn per run
     var tmpRow = auxInputs.radonPerRun.input.parentElement.parentElement;
     var tmpRow2 = auxInputs.trinkets.input.parentElement.parentElement;
@@ -2242,13 +2250,6 @@ function checkHideUnused() {
         tmpRow.style.display = "";
         tmpRow.style.display = "";
     }
-    // antennas locked and hide inputs: don't show antennas (want to be able to force these on for testing)
-    tmpRow = auxInputs.antennae.input.parentElement.parentElement;
-    // don't hide unless we actually have 0 antennae entered! user may be testing a nonzero value ever if they're locked.
-    if (    props.hideUnused && game !== null && game.buildings.Antenna.locked && props.antennae == 0
-        ||  props.hideLocked && (game === null || game.buildings.Antenna.locked && props.antennae == 0)) {
-        tmpRow.style.display = "none";
-    } else tmpRow.style.display = "";
     // mets locked and hide inputs: don't show mets
     tmpRow = auxInputs.meteorologists.input.parentElement.parentElement;
     // don't hide unless we actually have 0 mets entered! user may be testing a nonzero value even though they're locked.
@@ -2270,36 +2271,12 @@ function checkHideUnused() {
     if (perks.Greed.locked || props.hideUnused && (props.tributes >= 1250 && (!auxInputs.tributes.checkbox.checked || perks.Greed.level >= perks.Greed.max))) {
         tmpRow.style.display = "none";
     } else tmpRow.style.display = "";
-    // prismal shield only relevant until prismal is maxed, and should be hidden when prismal is locked
-    tmpRow = auxInputs.shieldPrismal.input.parentElement.parentElement;
-    if (    props.hideUnused && (perks.Prismal.level >= perks.Prismal.max || perks.Prismal.locked)
-        ||  props.hideLocked && (game === null || perks.Prismal.locked)) {
-        tmpRow.style.display = "none";
-    } else tmpRow.style.display = "";
     // if collectors are locked don't show the collector/housing row
     tmpRow = auxInputs.housingCount.input.parentElement.parentElement;
     if (    props.hideUnused && game !== null && game.buildings.Collector.locked && props.housingCount == 0
         ||  props.hideLocked && (game === null || game.buildings.Collector.locked && props.housingCount == 0)) {
         tmpRow.style.display = "none";
     } else tmpRow.style.display = "";
-    // if maxed fields are hidden: hide hubs once unlocked
-    // if spoilers are hidden: hide hubs if not unlocked
-    // So basically hide them hubs unless someone really wants to see the field.
-    colLab = document.getElementById('label-housing-count');
-    hubLab = document.getElementById('label-hub-enabled');
-    hubBox = document.getElementById('input-hub-enabled').parentElement;
-    if (    props.hideUnused && game !== null && game.global.exterminateDone && props.hubEnabled
-        ||  props.hideLocked && (game === null || !game.global.exterminateDone && !props.hubEnabled)) {
-        hubLab.style.display = "none";
-        hubBox.style.display = "none";
-        colLab.classList.remove('col-sm-3');
-        colLab.classList.add('col-sm-7');
-    } else {
-        hubLab.style.display = "";
-        hubBox.style.display = "";
-        colLab.classList.remove('col-sm-7');
-        colLab.classList.add('col-sm-3');
-    }
     
     // hide setting to ignore S3 when Obs is locked: it's ignored at Obs 0 anyway (unless clear weight is > 0 but in that case it probably never has a noticeable effect anyway, and might as well not burden the pre-Obs user with another meaningless setting)
     var s3Box = inputs['s3-rn'].parentElement;
@@ -2335,6 +2312,14 @@ function checkHideUnused() {
     } else {
         coordRow.style.display = "";
         trapRow.style.display = "none";
+    }
+    
+    // show findPots setting only in alchemy
+    var findRow = auxInputs.findPots.input.parentElement.parentElement;
+    if (props.specialChallenge == 'alchemy') {
+        findRow.style.display = "";
+    } else {
+        findRow.style.display = "none";
     }
 }
 
@@ -2554,7 +2539,6 @@ var checkAllAux = function(checkAll=true) {
 var checkSomeAux = function() { checkAllAux(false); }
 var lockAuxEl = document.getElementById('input-lock-aux');
 lockAuxEl.onchange = checkAllAux;
-hubEl.onchange = evaluatePerks;
 var lockSomeEl = document.getElementById('input-lock-some');
 lockSomeEl.onchange = checkSomeAux;
 
@@ -2657,7 +2641,11 @@ function autobuyPerks() {
     // recommend golden upgrades:
     //   -if hazardous heirloom, buy GV first
     //   -start buying GRs. when the next GR no longer increases total weighted value, stop.
-    var GUavail = Math.floor(props.targetZone / 25) + 16 + Math.floor((game.global.achievementBonus - 10000)/2000);
+    var GUavail =   Math.floor(props.targetZone / 25) 
+                  + 16 
+                  + Math.floor((Math.min(50000,game.global.achievementBonus) - 10000)/2000)
+                  + Math.floor((Math.max(0,game.global.achievementBonus - 50000)/10000))
+                  ;
     var GVcount = (props.hazzie && props.radonWeight > 0) ? 8 : 0;
     var GRcount = 0;
     var GRgain = GUgain(GUavail,GVcount,GRcount,false);
@@ -2675,8 +2663,17 @@ function autobuyPerks() {
     var GBpct = 3 * (GUavail * (GUavail+1) / 2 - (GRcount + GVcount) * (GRcount + GVcount + 1) / 2);
     if (GRcount > 0) GUtext += GRcount + " GRs (" + GRpct + "%), then ";
     GUtext += GBcount + " GBs (" + GBpct + "%)";
+    if (props.canGUString) {
+        var vComma = ((GRcount > 0) || (GBcount > 0)) ? "," : "";
+        var rComma = GBcount > 0 ? "," : "";
+        GUtext += "\n\xa0\xa0GU String: "
+                  + (GVcount > 0 ? (GVcount + "v" + vComma) : "")
+                  + (GRcount > 0 ? (GRcount + "r" + rComma) : "")
+                  + (GBcount > 0 ? (GBcount + "b") : "")
+                  ;
+    }
     // if there aren't enough GBs to cover all the non-free GUs, present an alternate automate-able strategy
-    if (GBcount > 0 && GBcount < Math.floor(props.targetZone/25)) {
+    else if (GBcount > 0 && GBcount < Math.floor(props.targetZone/25)) {
         GBcount = 0;
         var GBgain = GUgain(GUavail,GVcount,GBcount,true);
         var GBgainNext = GUgain(GUavail,GVcount,GBcount+1,true);
@@ -2696,7 +2693,7 @@ function autobuyPerks() {
     // how many trinkets are you gaining per run?
     var trinketsPerRun = 0;
     if (perks.Observation.level > 0) {
-        trinketsPerRun = shinyCollect(perks.Observation.level,props.targetZone);
+        trinketsPerRun = shinyCollect(perks.Observation.level);
         var TText = "Average trinkets/run: " + trinketsPerRun.toPrecision(3);
         TText += "\n\xa0\xa0(equivalent to about " + props.trinketRadonPerRun.toExponential(3) + " radon)";
         trinkElem.innerText = TText;
@@ -2733,6 +2730,23 @@ function autobuyPerks() {
     } else if (props.radonWeight > 0) {
         ZText += "\n\nConsidering only the immediate trinket gains, pushing one more zone is worth extending the current run by about " + totGainPct.toPrecision(3) + "% of the current run time.";
     }
+    // recommendation info for the next trinket cache
+    if (perks.Observation.level > 0) {
+        var nextCacheZone = Math.ceil(props.targetZone / 25) * 25;
+        var nextCacheRnGain = 1 + vmRadFrac * (nextCacheZone / props.targetZone - 1);
+        nextCacheRnGain *= (props.scruffyLevel >= 3) ? Math.pow(1.03,nextCacheZone - props.targetZone) : 1;
+        var nextCacheTrinkets = shinyCollectLoop(perks.Observation.level,nextCacheZone) - shinyCollectLoop(perks.Observation.level,props.targetZone);
+        if (!props.s3Rn) nextCacheRnGain = 1;
+        var nextCacheTotGain = (nextCacheRnGain * props.radonPerRun + props.trinketRadonPerRun
+                                    + props.radonPerTrinket * nextCacheTrinkets
+                                ) / (props.radonPerRun + props.trinketRadonPerRun);
+        var cacheGainPct = (nextCacheTotGain - 1)*100;
+        ZText += "\n\nPushing to the next trinket cache at zone " + nextCacheZone + " would give "
+                 + nextCacheTrinkets.toPrecision(3)
+                 + " more trinkets (in addition to any Radon gains if you have S3 selected),"
+                 + " which would be worth extending the run by about " + cacheGainPct.toPrecision(3)
+                 + "% of the current run time.";
+    }
     zRecElem.innerText = ZText;
     //}
     evaluatePerks();
@@ -2758,8 +2772,7 @@ if (window.localStorage.getItem("saveAux")) {
             if (inputObj.input.type === 'text') auxInputs[key].rawValue = saveAux[key + "Input"];
             inputObj.checkbox.checked = saveAux[key + "Checkbox"];
         }
-    }   
-    if (saveAux.hubEnabled != null) hubEl.checked = saveAux.hubEnabled;
+    }
     if (saveAux.lockAll != null) lockAuxEl.checked = saveAux.lockAll;
     if (saveAux.lockSome != null) lockSomeEl.checked = saveAux.lockSome;
     if (saveAux.inputTotal != null) inputs['use-total'].checked = saveAux.inputTotal;
@@ -2777,6 +2790,7 @@ if (window.localStorage.getItem("saveAux")) {
     if (saveAux.s3Rn != null) inputs['s3-rn'].checked = saveAux.s3Rn;
     if (saveAux.ezWeights != null) props.ezWeights = saveAux.ezWeights;
     if (saveAux.tuWeights != null) props.tuWeights = saveAux.tuWeights;
+    if (saveAux.alchWeights != null) props.alchWeights = saveAux.alchWeights;
     if (saveAux.pushWeights != null) props.pushWeights = saveAux.pushWeights;
     if (saveAux.baitDump != null) props.baitDump = saveAux.baitDump;
     if (saveAux.autoFill != null) props.autoFill = saveAux.autoFill;
