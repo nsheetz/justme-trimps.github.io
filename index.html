@@ -925,7 +925,7 @@ var fillPreset = function() {
     } else if (preset == 'push') {
         weights = (props.pushWeights == null) ? [1,1,0]: props.pushWeights;
     } else if (preset == 'alchemy') {
-        weights = (props.alchWeights == null) ? [1,0.5,15] : props.alchWeights;
+        weights = (props.alchWeights == null) ? [1,0.01,10] : props.alchWeights;
     } else if (preset == 'trappa') {
         weights = [1,1.5,0];
     } else if (preset == 'downsize') {
