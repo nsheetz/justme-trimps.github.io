@@ -1611,7 +1611,7 @@ function iterateValueFeedback(valueArray) {
     // VS1 gives additive 0.25% VM Rn per additional zone
     // TODO: vmRadFrac is a hacky constant for now, should probably be a user input after we clean up the volume of user inputs
     if (s3RnFinal) {
-        Vrad *= 1 + vmRadFrac * ((props.targetZone + pushZones)/props.targetZone - 1);
+        Vrad *= 1 + vmRadFrac * pushZones / (400 + props.targetZone);
     }
     // trinket gain: use a fixed drop rate based on target zone, which should be fine assuming the user has entered
     //   a sensible value and we're only optimizing at the margins of a fractional zone (or maybe 1-2 zones)
@@ -2708,7 +2708,7 @@ function autobuyPerks() {
     var ZText = "Pushing one more zone would give about ";
     var totGainPct = 0;
     var rnGainPerZone = (props.scruffyLevel >= 3) ? 1.03 : 1;
-    rnGainPerZone *= 1 + vmRadFrac * ((props.targetZone + 1)/props.targetZone - 1);
+    rnGainPerZone *= 1 + vmRadFrac / (400 + props.targetZone);
     rnGainPct = (rnGainPerZone - 1)*100;
     totGainPct = rnGainPct;
     ZText += rnGainPct.toPrecision(3) + "% more radon next run";
@@ -2733,7 +2733,7 @@ function autobuyPerks() {
     // recommendation info for the next trinket cache
     if (perks.Observation.level > 0) {
         var nextCacheZone = Math.ceil((props.targetZone+2) / 25) * 25 - 1;
-        var nextCacheRnGain = 1 + vmRadFrac * (nextCacheZone / props.targetZone - 1);
+        var nextCacheRnGain = 1 + vmRadFrac * (nextCacheZone - props.targetZone)/(400 + props.targetZone);
         nextCacheRnGain *= (props.scruffyLevel >= 3) ? Math.pow(1.03,nextCacheZone - props.targetZone) : 1;
         var nextCacheTrinkets = shinyCollectLoop(perks.Observation.level,nextCacheZone) - shinyCollectLoop(perks.Observation.level,props.targetZone);
         if (!props.s3Rn) nextCacheRnGain = 1;
