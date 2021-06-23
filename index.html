@@ -1132,13 +1132,15 @@ var loadSave = function() {
         props.armySize = game.resources.trimps.maxSoldiers;
         props.currentWorld = game.global.world;
 
+        // SA cleared level
+        var SAlevel = (game.global.autoBattleData.maxEnemyLevel - 1) || 0;
+        
         // Championism effect is 1% plus 0.5% per SA level cleared
-        var champSAMult = (game.global.autoBattleData.maxEnemyLevel - 1) || 0;
-        perks.Championism.effect = 1.01 + 0.005 * champSAMult;
+        perks.Championism.effect = 1.01 + 0.005 * SAlevel;
         
         // property will not be defined in the save if not owned, convert undefined to false
         var haveCollectology = game.global.autoBattleData.oneTimers.Collectology || false;
-        props.collectHubs = !haveCollectology ? 1 : (2 + Math.floor((game.global.autoBattleData.maxEnemyLevel - 1) / 30));
+        props.collectHubs = !haveCollectology ? 1 : (2 + Math.floor(SAlevel / 30));
         
         // calculate Scruffy level (adapted from Fluffy.getLevel() in the game source code)
         props.scruffyLevel = Math.floor(Math.log(((game.global.fluffyExp2 / 1000) * 3) + 1) / Math.log(4));
@@ -1157,6 +1159,10 @@ var loadSave = function() {
             if (prismalMod)     { props.shieldPrismal = Math.round(prismalMod[1]); }     else { props.shieldPrismal = 0; }
             props.hazzie = shield.rarity >= 10;
         }
+        
+        // Suprism gives 3% prismal shield per SA level
+        var haveSuprism = game.global.autoBattleData.oneTimers.Suprism || false;
+        if (haveSuprism) props.shieldPrismal += 3 * SAlevel;
         
         // SHINIES
         setAuxInput("trinkets",game.portal.Observation.trinkets);
