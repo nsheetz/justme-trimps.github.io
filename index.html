@@ -338,6 +338,8 @@ input[type=checkbox], input[type=radio] {
                         <option value="downsize" title="This setting optimizes for each housing building giving only 1 Trimp. coordLimited=1 is assumed as the minimum (but a larger value to overweight population will be respected).">Downsize/^3</option>
                         <option value="berserk" title="This setting marks Frenzy as worthless.">Berserk/^3</option>
                         <option value="duel" title="This setting optimizes for less than 100% CC in Duel. It's a very minor effect that only matters for Criticality so feel free to skip this setting if you like.">Duel/^3</option>
+                        <option value="equip" title="Optimize purely for equipment purchasing power, including zone progression to get more speedbooks. Useful as an initial spec to maximize prestiges that can be afforded before respeccing to Combat spec. All entered weights are ignored, but the Coord-limited setting is respected.">Equipment farming</option>
+                        <option value="combat" title="As a respec ONLY, optimize for maximum combat stats given current equipment and population. You MUST import a save at the point where you want to respec to get accurate results. Radon weight is ignored, but atk/hp vs. equality weights are respected. Coord-limited value is ignored, using the imported save to determine how many Carp levels are needed to buy all coords.">Combat-only respec</option>
                         <option value="resplus" title="Optimize for max resource gains from +maps. Only use this if you are farming maps above your current zone and care ONLY about total resource gains. All user entered weights are ignored in favor of resource gains. Pushing perks are still valued for increasing the level of map you can farm.">Resources (+maps)</option>
                         <option value="resminus" title="Optimize for max resource gains from -maps. Only use this if you are farming maps at or below your current zone and care ONLY about total resource gains. All user entered weights are ignored in favor of resource gains. Pushing perks are still valued for increasing the level of map you can farm.">Resources (-maps)</option>
                         <option value="trappacarp" title="Use this setting to max Carpentry when portalling into Trappa, if you can get enough starting population this way to be significant compared to how much you can trap.">Max Carpentry (May be useful for deep endgame Trappa)</option>
@@ -453,6 +455,11 @@ function initPerks() {
         specialChallenge: null, // does the dropdown specify a special challenge?
         trappaStartPop: 1, // avoid NaNs before calculating perks
         potency: 0.0085, // breed speed base
+        maxTrimps: 0, // max trimps BEFORE carp bonus in current save
+        coordsBought: 0, // coords bought in current save
+        armySize: 0, // army size in current save
+        currentWorld: 0, // world zone of current save
+        carpNeeded: 0, // carp levels needed to afford all coords at target zone (based on current save)
         // scaling^log(resource boost) = atk or hp boost
         equipScaling: {
             attack: equipScalingPrestige.attack,
@@ -934,6 +941,8 @@ var fillPreset = function() {
         weights = [1,0.2,0];
     } else if (preset == 'berserk') {
         weights = [1,0.5,0];
+    } else if (preset == 'combat') {
+        weights = [1,0.1,0];
     }
     presetSpecialOpt(); // set special optimizations
     if (!auxInputs['clearWeight'].checkbox.checked) auxInputs['clearWeight'].input.value = weights[0];
@@ -970,6 +979,12 @@ function presetSpecialOpt() {
         perks.Frenzy.optimize = false;
     } else {
         perks.Frenzy.optimize = true;
+    }
+    if (preset == 'equip') {
+        props.specialChallenge = 'equip';
+    }
+    if (preset == 'combat') {
+        props.specialChallenge = 'combat';
     }
     if (preset == 'resplus') {
         props.specialChallenge = 'resplus';
@@ -1110,6 +1125,12 @@ var loadSave = function() {
         props.hubEnabled = game.global.exterminateDone;
         props.antennae = game.buildings.Antenna.owned;
         props.canGUString = game.global.canGuString;
+        
+        // initially used only for combat respec preset which REQUIRES an import at the point of respec, and not displayed anywhere
+        props.maxTrimps = game.resources.trimps.max;
+        props.coordsBought = game.upgrades.Coordination.done;
+        props.armySize = game.resources.trimps.maxSoldiers;
+        props.currentWorld = game.global.world;
 
         // Championism effect is 1% plus 0.5% per SA level cleared
         var champSAMult = (game.global.autoBattleData.maxEnemyLevel - 1) || 0;
@@ -1289,6 +1310,11 @@ function readInputs() {
     if (props.scruffyLevel >= 14) props.smithyScaling = 40;
     else props.smithyScaling = 50;
     
+    // used for combat respec to determine exactly how much carp is needed to afford all coords (given we require an appropriate save for this preset)
+    var popNeededForCoords = Math.pow(1.25, Math.max(0,props.targetZone - props.coordsBought - 1)) * props.armySize;
+    var tauntCorrectedMaxTrimps = props.maxTrimps * Math.pow(1.003,(props.scruffyLevel >= 9 ? 3.5 : 3) * (3.4/3) * (props.targetZone - props.currentWorld));
+    props.carpNeeded = Math.log(popNeededForCoords / tauntCorrectedMaxTrimps)/Math.log(1.1);
+    
     // get potency mod from target zone (div by 10 to get per-tick potency which is what's actually used in-game)
     props.potency = 0.00085 * Math.pow(1.1, Math.floor(props.targetZone/5)) 
                     * Math.pow(1.003,props.targetZone * (props.scruffyLevel >= 9 ? 3.5 : 3) * (3.4/3));
@@ -1309,6 +1335,10 @@ function readInputs() {
         props.specialChallenge = 'duel';
     } else if (preset == 'berserk') {
         props.specialChallenge = 'berserk';
+    } else if (preset == 'equip') {
+        props.specialChallenge = 'equip';
+    } else if (preset == 'combat') {
+        props.specialChallenge = 'combat';
     } else if (preset == 'resplus') {
         props.specialChallenge = 'resplus';
     } else if (preset == 'resminus') {
@@ -1546,18 +1576,25 @@ function iterateValueFeedback(valueArray) {
         housingGain = 1 + (housingGain - 1) * baseHousing  / (baseHousing + trumPop);
     }
     Vres *= housingGain;
-    Vp *= (props.specialChallenge == 'trappa') ? 1 : housingGain; // Trappa housing doesn't help buy more coords
+    Vp *= ((props.specialChallenge == 'trappa') || (props.specialChallenge == 'combat'))
+                ? 1 : housingGain; // Trappa housing doesn't help buy more coords. Combat respec assumes we're done buying housing.
     collectors += housingGain;
     
     // use equip scaling to convert resource value to atk/hp value
     var VmAdjusted = Vm*Vres/(VmDone*VresDone);
-    Va *= Math.pow(props.equipScaling.attack,Math.log(VmAdjusted));
-    Vh *= Math.pow(props.equipScaling.health,Math.log(VmAdjusted));
+    // combat spec assumes no more equipment buying
+    if (!(props.specialChallenge == 'combat')) {
+        Va *= Math.pow(props.equipScaling.attack,Math.log(VmAdjusted));
+        Vh *= Math.pow(props.equipScaling.health,Math.log(VmAdjusted));
+    }
     
-    // account for smithies: 1.25x atk/hp per 50x resources
+    // account for smithies: 1.25x atk/hp per 50x resources (40x with S14)
     var smithyGain = Math.pow(1.25,Math.log(Vres/VresDone)/Math.log(props.smithyScaling));
-    Va *= smithyGain;
-    Vh *= smithyGain;
+    // combat spec assumes no more smithy buying
+    if (!(props.specialChallenge == 'combat')) {
+        Va *= smithyGain;
+        Vh *= smithyGain;
+    }
     
     // if coord limited, account for population gain to coords
     var coordAdjust = props.coordLimited;
@@ -1567,6 +1604,9 @@ function iterateValueFeedback(valueArray) {
     } else if (props.specialChallenge == 'trappa') {
         // Trappa is always coord limited, and the input field is hidden (replaced by the trapping hours field)
         coordAdjust = 1;
+    } else if (props.specialChallenge == 'combat') {
+        // combat respec reads the actual population/coordinations from the save to determine how many levels of Carp are needed
+        coordAdjust = (perks.Carpentry.level < props.carpNeeded) ? 1 : 0;
     }
     var coordGain = Math.pow(1.25,Math.log(Vp/VpDone)/Math.log(1.25) * coordAdjust);
     Va *= coordGain;
@@ -1584,7 +1624,7 @@ function iterateValueFeedback(valueArray) {
     var metMineGain = props.antennae >= 15 ? (1 + metProdNext*metRes)/(1 + metProd*metRes) : 1;
     Vrad *= metRadGain;
     Vf *= metFoodGain;
-    Vh *= metHPGain;
+    if (!(props.specialChallenge == 'combat')) Vh *= metHPGain;
     Vm *= metMineGain;
     mets += moreMets;
 
@@ -1678,6 +1718,7 @@ function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve=1,Vp=1,moreTrinkets=0,extr
     
     Va = valueArray[0];
     Vh = valueArray[1];
+    Vm = valueArray[2];
     Vres = valueArray[4];
     Vrad = valueArray[5];
     Ve = valueArray[7];
@@ -1689,6 +1730,8 @@ function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve=1,Vp=1,moreTrinkets=0,extr
     var Vgrowth = (Vrad * props.radonPerRun + props.trinketRadonPerRun 
                     + props.radonPerTrinket * moreTrinkets
                     ) / (props.radonPerRun + props.trinketRadonPerRun);
+                    
+    if (props.specialChallenge == 'combat') Vgrowth = 1; // ignore radon weight for combat spec
     
     // A perk's total weighted value is:
     //   Va^Wa * Vh^Wh * Ve^We * Vrad^Wr.
@@ -1698,6 +1741,9 @@ function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve=1,Vp=1,moreTrinkets=0,extr
     var res = Wa*Math.log(Va) + Wh*Math.log(Vh) + We*Math.log(Ve) + Wr*Math.log(Vgrowth);
     if (props.specialChallenge == 'resplus' || props.specialChallenge == 'resminus') {
         res = Math.log(Vres) + (1e-100)*Math.log(Ve); // hack to still use equality as a primary dump perk
+    }
+    if (props.specialChallenge == 'equip') {
+        res = Math.log(Vres*Vm) + (1e-100)*Math.log(Ve); // for equip farming, Artisanistry also counts
     }
     if (isNaN(res)) {
         console.log("ERROR: NaN result!")
