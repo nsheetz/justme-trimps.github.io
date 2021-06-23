@@ -2746,7 +2746,7 @@ function autobuyPerks() {
     }
     // how much time should we spend going 1 more zone for radon/trinkets?
     var trinketsPerZone = 0;
-    if (perks.Observation.level > 0) {
+    if (perks.Observation.level > 0 && props.trinkets < perks.Observation.level * 1000) {
         trinketsPerZone = obsDropRate(perks.Observation.level,props.targetZone)/100;
         trinketGainPct = trinketsPerZone / trinketsPerRun * 100;
     }
@@ -2758,12 +2758,12 @@ function autobuyPerks() {
     rnGainPct = (rnGainPerZone - 1)*100;
     totGainPct = rnGainPct;
     ZText += rnGainPct.toPrecision(3) + "% more radon next run";
-    if (perks.Observation.level > 0) {
+    if (trinketsPerZone > 0) {
         ZText += " and";
     } else {
         ZText += ".";
     }
-    if (perks.Observation.level > 0) {
+    if (trinketsPerZone > 0) {
         if (!props.s3Rn) rnGainPerZone = 1; // don't count S3 in total pushing gain if the user doesn't want it counted!
         var totGainPerZone = (rnGainPerZone * props.radonPerRun + props.trinketRadonPerRun 
                                 + props.radonPerTrinket * trinketsPerZone
@@ -2773,11 +2773,11 @@ function autobuyPerks() {
     }
     if (perks.Observation.level == 0 || props.s3Rn) {
         ZText += "\n\nIf the next run will be a radon challenge, pushing one more zone is worth extending the current run by about " + totGainPct.toPrecision(3) + "% of the run time of a typical farming run.";
-    } else if (props.radonWeight > 0) {
+    } else if (props.radonWeight > 0 && trinketsPerZone > 0) {
         ZText += "\n\nConsidering only the immediate trinket gains, pushing one more zone is worth extending the current run by about " + totGainPct.toPrecision(3) + "% of the current run time.";
     }
     // recommendation info for the next trinket cache
-    if (perks.Observation.level > 0) {
+    if (perks.Observation.level > 0 && trinketsPerZone > 0) {
         var nextCacheZone = Math.ceil((props.targetZone+2) / 25) * 25 - 1;
         var nextCacheRnGain = 1 + vmRadFrac * (nextCacheZone - props.targetZone)/(400 + props.targetZone);
         nextCacheRnGain *= (props.scruffyLevel >= 3) ? Math.pow(1.03,nextCacheZone - props.targetZone) : 1;
