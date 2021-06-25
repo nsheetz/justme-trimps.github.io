@@ -1317,7 +1317,7 @@ function readInputs() {
     else props.smithyScaling = 50;
     
     // used for combat respec to determine exactly how much carp is needed to afford all coords (given we require an appropriate save for this preset)
-    var popNeededForCoords = Math.pow(1.25, Math.max(0,props.targetZone - props.coordsBought - 1)) * props.armySize;
+    var popNeededForCoords = 3 * Math.pow(1.25, Math.max(0,props.targetZone - props.coordsBought - 1)) * props.armySize;
     var tauntCorrectedMaxTrimps = props.maxTrimps * Math.pow(1.003,(props.scruffyLevel >= 9 ? 3.5 : 3) * (3.4/3) * (props.targetZone - props.currentWorld));
     props.carpNeeded = Math.log(popNeededForCoords / tauntCorrectedMaxTrimps)/Math.log(1.1);
     
