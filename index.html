@@ -2624,6 +2624,11 @@ function clearAndAutobuyPerks() {
             if (typeof(value) !== "object" || !value.hasOwnProperty("optimize") || !value.optimize || value.levLocked) continue; // iterating over the perks, ignoring aux values and non-optimized perks
             inputs[key.toLowerCase()].value = 0;
         }
+        if (props.specialChallenge == 'combat') {
+            // must have enough carp to sustain current coordination
+            perks.Carpentry.level = Math.max(0,Math.ceil(Math.log(2.4 * props.armySize / props.maxTrimps)/Math.log(1.1)));
+            inputs['carpentry'].value = perks.Carpentry.level;
+        }
         // zero out bait after Trappa unlock, unless in trappa preset
         if (game.global.highestRadonLevelCleared >= 59 && !perks.Bait.levLocked) inputs["bait"].value = 0;
         if (game.global.highestRadonLevelCleared >= 59 && !perks.Pheromones.levLocked) inputs["pheromones"].value = 0;
