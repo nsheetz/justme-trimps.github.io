@@ -457,6 +457,7 @@ function initPerks() {
         potency: 0.0085, // breed speed base
         maxTrimps: 0, // max trimps BEFORE carp bonus in current save
         coordsBought: 0, // coords bought in current save
+        isTrappa: false, // is the imported save in trappa right now?
         armySize: 0, // army size in current save
         currentWorld: 0, // world zone of current save
         carpNeeded: 0, // carp levels needed to afford all coords at target zone (based on current save)
@@ -985,6 +986,10 @@ function presetSpecialOpt() {
     }
     if (preset == 'combat') {
         props.specialChallenge = 'combat';
+        if (props.isTrappa) {
+            perks.Bait.optimize = true;
+            perks.Pheromones.optimize = false;
+        }
     }
     if (preset == 'resplus') {
         props.specialChallenge = 'resplus';
@@ -1131,6 +1136,9 @@ var loadSave = function() {
         props.coordsBought = game.upgrades.Coordination.done;
         props.armySize = game.resources.trimps.maxSoldiers;
         props.currentWorld = game.global.world;
+            
+        // used for combat respec to apply special optimizations for trappa (no gain from health, full gain from equality)
+        props.isTrappa = game.global.challengeActive == "Trappapalooza";
 
         // SA cleared level
         var SAlevel = (game.global.autoBattleData.maxEnemyLevel - 1) || 0;
@@ -1318,7 +1326,8 @@ function readInputs() {
     
     // used for combat respec to determine exactly how much carp is needed to afford all coords (given we require an appropriate save for this preset)
     //   -> max army size before buying final coord is 1/3 of population
-    var popNeededForCoords = 3 * Math.pow(1.25, Math.max(0,props.targetZone - props.coordsBought)) * props.armySize;
+    var moreCoordsNeeded = Math.max(0,props.targetZone - props.coordsBought);
+    var popNeededForCoords = 3 * Math.pow(1.25, moreCoordsNeeded) * props.armySize;
     var tauntCorrectedMaxTrimps = props.maxTrimps * Math.pow(1.003,(props.scruffyLevel >= 9 ? 3.5 : 3) * (3.4/3) * (props.targetZone - props.currentWorld));
     props.carpNeeded = Math.log(popNeededForCoords / tauntCorrectedMaxTrimps)/Math.log(1.1);
     
@@ -1608,7 +1617,7 @@ function iterateValueFeedback(valueArray) {
     if (props.specialChallenge == 'downsize') {
         // assume coord limited in downsize (allowing the user to weight further toward pop if desired)
         coordAdjust = Math.max(coordAdjust,1);
-    } else if (props.specialChallenge == 'trappa') {
+    } else if (props.specialChallenge == 'trappa' || props.specialChallenge == 'combat' && props.isTrappa) {
         // Trappa is always coord limited, and the input field is hidden (replaced by the trapping hours field)
         coordAdjust = 1;
     } else if (props.specialChallenge == 'combat') {
@@ -1635,8 +1644,8 @@ function iterateValueFeedback(valueArray) {
     Vm *= metMineGain;
     mets += moreMets;
 
-    // Feedback from pushing power
-    var pushPower = Va * Vh / Vpushed;
+    // Feedback from pushing power (final trappa respec: health won't be applied after last army send, so don't count health)
+    var pushPower = Va * ((props.specialChallenge == 'combat' && props.isTrappa) ? 1 : Vh) / Vpushed;
     var pushZones = Math.log(pushPower) / props.logEnemyScaling;
     // speedbooks give 25% resources per zone
     if (props.specialChallenge == 'resplus') {
@@ -1689,7 +1698,7 @@ function iterateValueFeedback(valueArray) {
     //valueArray[12] = trinketRate;
     valueArray[13] = trinkets;
     //valueArray[14] = obsLevel;
-    valueArray[15] = Va * Vh;
+    valueArray[15] = Va * ((props.specialChallenge == 'combat' && props.isTrappa) ? 1 : Vh);
     valueArray[16] = Vm;
     valueArray[17] = Vf;
     valueArray[18] = Vres;
@@ -1702,7 +1711,8 @@ const iterateValueLoops = 3;
 function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve=1,Vp=1,moreTrinkets=0,extraObs=0) {
     
     var Wa = props.clearWeight; // attack weight
-    var Wh = props.clearWeight + props.survivalWeight; // health weight
+    // health is useless in final trappa respec after sending last army, since new perks won't be applied to current army's health
+    var Wh = (props.specialChallenge == 'combat' && props.isTrappa) ? 0 : props.clearWeight + props.survivalWeight; // health weight
     var We = Math.max(1e-100,props.survivalWeight); // equality weight: force >0 to use equality as a dump perk if the user sets 0 weight
     var Wr = props.radonWeight; // radon weight
 
@@ -2114,7 +2124,7 @@ function getPerkEfficiencies() {
     
     // Bait:
     //   population in Trappa, but derate resource gains like for Motivation
-    if (props.specialChallenge == 'trappa' && !perks.Bait.levLocked) {
+    if ((props.specialChallenge == 'trappa' || props.specialChallenge == 'combat' && props.isTrappa) && !perks.Bait.levLocked) {
         // 3600 seconds per hr, 10 ticks per second, 10x base trimps per tick (S0 ability)
         var baitTime = 3600*10*10 * props.trapHrs;
         var totalBaitPopBase = baitTime * (1 + perks.Bait.level);
@@ -2126,7 +2136,7 @@ function getPerkEfficiencies() {
     // Carpentry:
     //   population gain, also gives resources
     var carpPop = perks.Carpentry.effect;
-    if (props.specialChallenge == 'trappa') {
+    if (props.specialChallenge == 'trappa' || props.specialChallenge == 'combat' && props.isTrappa) {
         // In Trappa, carp gives more housing which gives more drops, but does not increase available Trimps
         perks.Carpentry.efficiency = getLogWeightedValue(1,1,1,carpPop,1,1,1)/getPerkCost("Carpentry",1);
     } else {
@@ -2164,7 +2174,7 @@ function getPerkEfficiencies() {
     //    With no pushing weight, we presume it's FALSE (optimizing for 300 hits instead) unless a 3-minute zone would yield enough radon/trinket gains to be good, which roughly corresponds to when GB is useful.
     if (props.specialChallenge != 'berserk') {
         var frenzyHits = 300;
-        var isDeathless = props.specialChallenge == 'resplus' || props.specialChallenge == 'resminus' || props.specialChallenge == 'trappa';
+        var isDeathless = props.specialChallenge == 'resplus' || props.specialChallenge == 'resminus' || props.specialChallenge == 'trappa' || props.specialChallenge == 'combat' && props.isTrappa;
         if (!isDeathless && props.clearWeight > 0 || props.gbAfterpush) {
             frenzyHits = 5;
         }
@@ -2202,7 +2212,7 @@ function getPerkEfficiencies() {
     
     // Pheromones
     //   Count 3-tick breeding as 100% uptime, and weight for comparative uptime at target zone
-    if (props.specialChallenge == 'trappa') {
+    if (props.specialChallenge == 'trappa' || props.specialChallenge == 'combat' && props.isTrappa) {
         // no breeding is the challenge.
         perks.Pheromones.efficiency = 0;
     } else {
@@ -2227,7 +2237,8 @@ function getPerkEfficiencies() {
     if (props.scruffyLevel >= 16) prismLayers = 3;
     var prismHP = 1 + (basePrismal/100 + perks.Prismal.level * perks.Prismal.effect)*prismLayers;
     var prismGain = (prismHP + perks.Prismal.effect * prismLayers) / prismHP;
-    perks.Prismal.efficiency = getLogWeightedValue(1,prismGain,1,1,1,1)/getPerkCost("Prismal",1);
+    // hack for trappa final respec: prismal DOES matter even though raw health doesn't, so pretend it's attack
+    perks.Prismal.efficiency = getLogWeightedValue(((props.specialChallenge == 'combat' && props.isTrappa) ? prismGain : 1),prismGain,1,1,1,1)/getPerkCost("Prismal",1);
     
     // Resilience:
     //   health gain (compounding)
@@ -2359,7 +2370,7 @@ function checkHideUnused() {
     // hide coordLimited setting in trappa vs. trapping hours setting in any other preset
     var coordRow = auxInputs.coordLimited.input.parentElement.parentElement;
     var trapRow = auxInputs.trapHrs.input.parentElement.parentElement;
-    if (props.specialChallenge == 'trappa') {
+    if (props.specialChallenge == 'trappa' || props.specialChallenge == 'combat' && props.isTrappa) {
         coordRow.style.display = "none";
         trapRow.style.display = "";
     } else {
@@ -2625,8 +2636,9 @@ function clearAndAutobuyPerks() {
             inputs[key.toLowerCase()].value = 0;
         }
         if (props.specialChallenge == 'combat') {
-            // must have enough carp to sustain current coordination
-            perks.Carpentry.level = Math.max(0,Math.ceil(Math.log(2.4 * props.armySize / props.maxTrimps)/Math.log(1.1)));
+            // must have enough carp to sustain current coordination - or very conservatively for trappa, 10 more coords after final army send (should still be negligible Rn spent on carp)
+            var wantedArmySize = (props.isTrappa ? Math.pow(1.25,10) : 1) * props.armySize
+            perks.Carpentry.level = Math.max(0,Math.ceil(Math.log(2.4 * wantedArmySize / props.maxTrimps)/Math.log(1.1)));
             inputs['carpentry'].value = perks.Carpentry.level;
         }
         // zero out bait after Trappa unlock, unless in trappa preset
@@ -2657,9 +2669,9 @@ function autobuyPerks() {
         return;
     }
     // optimize Bait for Trappa
-    perks.Bait.optimize = (props.specialChallenge == 'trappa');
-    perks.Pheromones.optimize = (game.global.highestRadonLevelCleared >= 59) && (props.specialChallenge != 'trappa');
-    if (props.specialChallenge == 'trappa') {
+    perks.Bait.optimize = (props.specialChallenge == 'trappa' || props.specialChallenge == 'combat' && props.isTrappa);
+    perks.Pheromones.optimize = (game.global.highestRadonLevelCleared >= 59) && (props.specialChallenge != 'trappa') && !(props.specialChallenge == 'combat' && props.isTrappa);
+    if (props.specialChallenge == 'trappa' || props.specialChallenge == 'combat' && props.isTrappa) {
         var maxCarpLevels = Math.log(props.perksRadon/perks.Carpentry.priceBase * (perks.Carpentry.priceFact-1)+1)/Math.log(perks.Carpentry.priceFact);
         props.trappaStartPop = 10 * Math.pow(1.1,maxCarpLevels);
     }
@@ -2682,12 +2694,12 @@ function autobuyPerks() {
         efficiencyFlag();
     }
     // use trumps as dump perk
-    if (!perks.Trumps.levLocked) {
+    if (!perks.Trumps.levLocked && !(props.specialChallenge == 'combat')) {
         while (buyPerk("Trumps",1));
         inputs['trumps'].value = perks.Trumps.level;
     }
     // and Pheromones! (but not in Trappa, for minimum confusion, and not before Trappa unlock)
-    if (!perks.Pheromones.levLocked && props.specialChallenge != 'trappa' && game.global.highestRadonLevelCleared >= 59) {
+    if (!perks.Pheromones.levLocked && props.specialChallenge != 'trappa' && !(props.specialChallenge == 'combat' && props.isTrappa) && game.global.highestRadonLevelCleared >= 59) {
         while (buyPerk("Pheromones",1));
         inputs['pheromones'].value = perks.Pheromones.level;
     }
