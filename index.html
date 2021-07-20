@@ -2635,7 +2635,7 @@ function clearAndAutobuyPerks() {
             if (typeof(value) !== "object" || !value.hasOwnProperty("optimize") || !value.optimize || value.levLocked) continue; // iterating over the perks, ignoring aux values and non-optimized perks
             inputs[key.toLowerCase()].value = 0;
         }
-        if (props.specialChallenge == 'combat') {
+        if (!perks.Carpentry.levLocked && props.specialChallenge == 'combat') {
             // must have enough carp to sustain current coordination - or very conservatively for trappa, 10 more coords after final army send (should still be negligible Rn spent on carp)
             var wantedArmySize = (props.isTrappa ? Math.pow(1.25,10) : 1) * props.armySize
             perks.Carpentry.level = Math.max(0,Math.ceil(Math.log(2.4 * wantedArmySize / props.maxTrimps)/Math.log(1.1)));
@@ -2671,7 +2671,7 @@ function autobuyPerks() {
     // optimize Bait for Trappa
     perks.Bait.optimize = (props.specialChallenge == 'trappa' || props.specialChallenge == 'combat' && props.isTrappa);
     perks.Pheromones.optimize = (game.global.highestRadonLevelCleared >= 59) && (props.specialChallenge != 'trappa') && !(props.specialChallenge == 'combat' && props.isTrappa);
-    if (props.specialChallenge == 'trappa' || props.specialChallenge == 'combat' && props.isTrappa) {
+    if (!perks.Carpentry.levLocked && (props.specialChallenge == 'trappa' || props.specialChallenge == 'combat' && props.isTrappa)) {
         var maxCarpLevels = Math.log(props.perksRadon/perks.Carpentry.priceBase * (perks.Carpentry.priceFact-1)+1)/Math.log(perks.Carpentry.priceFact);
         props.trappaStartPop = 10 * Math.pow(1.1,maxCarpLevels);
     }
