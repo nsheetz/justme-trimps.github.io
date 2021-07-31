@@ -325,7 +325,7 @@ input[type=checkbox], input[type=radio] {
         </div>
         <div class="row mt-1 mb-1">
             <div class="col-sm-2"><label for="preset-select">Presets:</label></div>
-            <div class="col-sm-4">
+            <div class="col-sm-10">
                 <select name="preset" id="preset-select" onchange="fillPreset()">
                     <optgroup label="Basic presets (fill suggested weights)">
                         <option value="ezfarm" title="Use if you can easily complete your radon challenge quickly with no golden battle. Pushing perks will still be valued for gains to S3 (if checked below) and other growth mechanisms.">Easy Radon challenge</option>
@@ -342,9 +342,10 @@ input[type=checkbox], input[type=radio] {
                         <option value="combat" title="As a respec ONLY, optimize for maximum combat stats given current equipment and population. You MUST import a save at the point where you want to respec to get accurate results. Radon weight is ignored, but atk/hp vs. equality weights are respected. Coord-limited value is ignored, using the imported save to determine how many Carp levels are needed to buy all coords. If you are in Trappa, the optimization assumes you have sent your last army so that health perks won't be applied - DO NOT USE in Trappa until after you send your last army.">Combat-only respec</option>
                         <option value="resplus" title="Optimize for max resource gains from +maps. Only use this if you are farming maps above your current zone and care ONLY about total resource gains. All user entered weights are ignored in favor of resource gains. Pushing perks are still valued for increasing the level of map you can farm.">Resources (+maps)</option>
                         <option value="resminus" title="Optimize for max resource gains from -maps. Only use this if you are farming maps at or below your current zone and care ONLY about total resource gains. All user entered weights are ignored in favor of resource gains. Pushing perks are still valued for increasing the level of map you can farm.">Resources (-maps)</option>
-                        <option value="trappacarp" title="Use this setting to max Carpentry when portalling into Trappa, if you can get enough starting population this way to be significant compared to how much you can trap.">Max Carpentry (May be useful for deep endgame Trappa)</option>
+                        <option value="trappacarp" title="Use this setting to max Carpentry when portalling into Trappa, if you can get enough starting population this way to be significant compared to how much you can trap.">Max Carpentry</option>
                     </optgroup>
-                </select>
+                </select>               
+                <button class="btn btn-primary" id="default-weight-button" title="Reset suggested preset weights to defaults" onclick="defaultWeights()">Default weights</button>
             </div>
         </div>
         <div class="row">
@@ -921,6 +922,16 @@ function restoreSaveText() {
 }
 
 var presetElem = document.getElementById('preset-select');
+
+// reset stored weights to defaults
+var defaultWeights = function() {
+    props.ezWeights = [0,0,1];
+    props.tuWeights = [1,0.5,15];
+    props.pushWeights = [1,1,0];
+    props.alchWeights = [1,0.01,10];
+    fillPreset();
+    evaluatePerks();
+}
 
 // fill preset weights from the dropdown menu and set special challenge
 var fillPreset = function() {
