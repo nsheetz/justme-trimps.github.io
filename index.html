@@ -2762,7 +2762,7 @@ function autobuyPerks() {
     props.showGUs = true;
     // how many trinkets are you gaining per run?
     var trinketsPerRun = 0;
-    if (perks.Observation.level > 0) {
+    if (perks.Observation.level > 0 && props.trinkets < perks.Observation.level * 1000) {
         trinketsPerRun = shinyCollect(perks.Observation.level);
         var TText = "Average trinkets/run: " + trinketsPerRun.toPrecision(3);
         TText += "\n\xa0\xa0(equivalent to about " + props.trinketRadonPerRun.toExponential(3) + " radon)";
