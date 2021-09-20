@@ -1752,7 +1752,8 @@ function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve=1,Vp=1,moreTrinkets=0,extr
     Ve = valueArray[7];
     Vtrink = valueArray[13];
     
-    moreTrinkets += Vtrink - props.baselineTrinketsNext;
+    // only count actual new trinket drops, not extra "apparent" trinkets from cap increase!
+    moreTrinkets += Math.max(0,Vtrink - Math.max(props.baselineTrinketsNext,props.trinkets));
     
     // calculate unified Rn-like growth gain:
     var Vgrowth = (Vrad * props.radonPerRun + props.trinketRadonPerRun 
