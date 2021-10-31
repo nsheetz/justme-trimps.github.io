@@ -459,6 +459,7 @@ function initPerks() {
         maxTrimps: 0, // max trimps BEFORE carp bonus in current save
         coordsBought: 0, // coords bought in current save
         isTrappa: false, // is the imported save in trappa right now?
+        isDownsize: false, // is the imported save in downsize right now?
         armySize: 0, // army size in current save
         currentWorld: 0, // world zone of current save
         carpNeeded: 0, // carp levels needed to afford all coords at target zone (based on current save)
@@ -1150,6 +1151,9 @@ var loadSave = function() {
             
         // used for combat respec to apply special optimizations for trappa (no gain from health, full gain from equality)
         props.isTrappa = game.global.challengeActive == "Trappapalooza";
+        
+        // used for combat reset to avoid reducing Carp, as the game uses a special calculation for Downsize population not accessible in the save object
+        props.isDownsize = game.global.challengeActive == "Downsize";
 
         // SA cleared level
         var SAlevel = (game.global.autoBattleData.maxEnemyLevel - 1) || 0;
@@ -2643,11 +2647,16 @@ function exportPerks() {
 function clearAndAutobuyPerks() {
     if (props.perksRadon > 0) {
         perks.Pheromones.optimize = (game.global.highestRadonLevelCleared >= 59) && (props.specialChallenge != 'trappa');
+        var origCarp = perks.Carpentry.level;
         for (var [key, value] of Object.entries(perks)) {
             if (typeof(value) !== "object" || !value.hasOwnProperty("optimize") || !value.optimize || value.levLocked) continue; // iterating over the perks, ignoring aux values and non-optimized perks
             inputs[key.toLowerCase()].value = 0;
         }
-        if (!perks.Carpentry.levLocked && props.specialChallenge == 'combat') {
+        if (props.isDownsize && props.specialChallenge == 'combat') {
+            // impractical to know actual housing in downsize, just don't reduce Carp level
+            perks.Carpentry.level = origCarp;
+            inputs['carpentry'].value = perks.Carpentry.level;
+        } else if (!perks.Carpentry.levLocked && props.specialChallenge == 'combat') {
             // must have enough carp to sustain current coordination - or very conservatively for trappa, 10 more coords after final army send (should still be negligible Rn spent on carp)
             var wantedArmySize = (props.isTrappa ? Math.pow(1.25,10) : 1) * props.armySize
             perks.Carpentry.level = Math.max(0,Math.ceil(Math.log(2.4 * wantedArmySize / props.maxTrimps)/Math.log(1.1)));
