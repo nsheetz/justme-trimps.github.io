@@ -1168,6 +1168,9 @@ var loadSave = function() {
         
         // Glass reward determines whether additional VM zones increase radon above 175
         props.glassDone = game.global.glassDone || false;
+        
+        // Mass Hysteria grants permanent Frenzy
+        props.permaFrenzy = game.global.autoBattleData.oneTimers.hasOwnProperty("Mass_Hysteria") && game.global.autoBattleData.oneTimers.Mass_Hysteria;
             
         // used for combat respec to apply special optimizations for trappa (no gain from health, full gain from equality)
         props.isTrappa = game.global.challengeActive == "Trappapalooza";
