@@ -328,7 +328,7 @@ input[type=checkbox], input[type=radio] {
             <div class="col-sm-10">
                 <select name="preset" id="preset-select" onchange="fillPreset()">
                     <optgroup label="Basic presets (fill suggested weights)">
-                        <option value="ezfarm" title="Use if you can easily complete your radon challenge quickly with no golden battle. Pushing perks will still be valued for gains to S3 (if checked below) and other growth mechanisms.">Easy Radon challenge</option>
+                        <option value="ezfarm" title="Use if you can easily complete your radon challenge quickly at the minimum requirements with no golden battle. Pushing perks will still be valued for gains to S3 (if checked below) and other growth mechanisms.">Easy Radon challenge</option>
                         <option value="tufarm" title="Use if you need some extra pushing power to complete your radon challenge, especially if you still want golden battle. This will almost always be the right setting when you first start a new radon challenge.">Difficult Radon challenge</option>
                         <option value="push">Push/C^3/Mayhem</option>
                     </optgroup>
@@ -451,6 +451,10 @@ function initPerks() {
         pushWeights: null,
         gbAfterpush: false, // is GB used in the afterpush?
         s3Rn: true, // should S3 (and VS1) be counted as boosting Rn? (selectable by user, could un-select if the next run will be non-farming)
+        glassDone: false, // do we have the glass reward?
+        glassRadon: false, // ...and does it get us more radon for more pushing power? (i.e. can we increase our VM zone within the current challenge)
+        scaffoldingBonus: 0, // scaffolding, SA reward that increases population
+        permaFrenzy: false, // Mass Hysteria, SA reward that makes frenzy permanent
         baitDump: false, // secret setting to dump remaining Rn into bait after all other perks
         autoFill: false, // fill the perk string on autobuy (but don't copy it)
         specialChallenge: null, // does the dropdown specify a special challenge?
@@ -706,6 +710,15 @@ const auxInputList = [
         label: "Target Zone to clear",
         bg: "bg-danger",
         title: "Target last zone to clear. This is only used for valuing radon and trinket gains based on last cleared zone, so there's no point picking a different zone - it won't affect the optimization process for pure pushing with no radon weight.",
+        type: "int",
+        value: 1,
+        min: 1,
+        max: null, },
+    {   keyName: "vmZone",
+        divId: 'vm-zone',
+        label: "VM Zone (for radon challenges)",
+        bg: "bg-danger",
+        title: "Target zone to run VMs. This is used for GU recommendations and valuing pushing stats based on the Glass reward (for radon challenges only). If your VM zone for a radon challenge is higher than the minimum completion zone, and you have the Glass reward, you can usually use 0-0-1 weights.",
         type: "int",
         value: 1,
         min: 1,
@@ -1137,17 +1150,24 @@ var loadSave = function() {
         }
                 
 
+        // initially used only for combat respec preset which REQUIRES an import at the point of respec, and not displayed anywhere
+        props.maxTrimps = game.resources.trimps.max;
+        props.coordsBought = game.upgrades.Coordination.done;
+        props.armySize = game.resources.trimps.maxSoldiers;
+        props.currentWorld = game.global.world;
+        
         // remaining fields are "safe" to load from a U1 save because they are persistent regardless of universe
 
         props.hubEnabled = game.global.exterminateDone;
         props.antennae = game.buildings.Antenna.owned;
         props.canGUString = game.global.canGuString;
         
-        // initially used only for combat respec preset which REQUIRES an import at the point of respec, and not displayed anywhere
-        props.maxTrimps = game.resources.trimps.max;
-        props.coordsBought = game.upgrades.Coordination.done;
-        props.armySize = game.resources.trimps.maxSoldiers;
-        props.currentWorld = game.global.world;
+        // scaffolding increases population (relevant for Trappa)
+        var scaffolds = game.global.autoBattleData.bonuses.hasOwnProperty("Scaffolding") ? (game.global.autoBattleData.bonuses.Scaffolding.level || 0) : 0;
+        props.scaffoldingBonus = 1 + (scaffolds * Math.pow(1.1,scaffolds - 1));
+        
+        // Glass reward determines whether additional VM zones increase radon above 175
+        props.glassDone = game.global.glassDone || false;
             
         // used for combat respec to apply special optimizations for trappa (no gain from health, full gain from equality)
         props.isTrappa = game.global.challengeActive == "Trappapalooza";
@@ -1352,6 +1372,10 @@ function readInputs() {
     
     props.hideUnused = inputs['hide-unused-perks'].checked;
     props.showLevelLocks = inputs['show-level-locks'].checked;
+    
+    // is our VM zone in the range for Hypo? then Glass can help us get more radon
+    // TODO: expand this to any future radon challenges
+    props.glassRadon = props.glassDone && (props.vmZone > 174 && props.vmZone < 200);
     
     var preset = presetElem.value;
     if (preset == 'alchemy') {
@@ -1672,6 +1696,12 @@ function iterateValueFeedback(valueArray) {
     // coords give 25% atk/hp per zone IF NOT COORD LIMITED
     Va *= Math.pow(1.25,pushZones*(1-Math.min(1,coordAdjust)));
     Vh *= Math.pow(1.25,pushZones*(1-Math.min(1,coordAdjust)));
+    
+    // Glass reward gives 10% radon per extra completion if we can increase our VM zone (determined in readInputs())
+    if (props.clearWeight >= 0 && props.glassRadon) {
+        Vrad *= Math.pow(1.1,pushZones);
+    }
+    
     // count S3 for Rn weighting if selected by the user, or if at Obs 0 with no clear weight (which would give no value to pushing perks at all without S3/VS1)
     //   -> or no clear weight and trinkets capped
     var s3RnFinal = props.s3Rn || (props.clearWeight == 0 && (perks.Observation.level == 0 || props.trinkets >= (perks.Observation.level * 1000)));
@@ -1873,6 +1903,10 @@ function getFrenzyAvgAtk(level,frenzyHits) {
         return (1 + perks.Frenzy.effect * level) * frenzyUptimePerProc;
     }
     */
+    // Mass Hysteria means frenzy is always up
+    if (props.permaFrenzy) {
+        frenzyUptimeFrac = 1;
+    }
     // average attack per hit accounting for uptime fraction
     var frenzyAvgAtk = 1 + frenzyUptimeFrac * perks.Frenzy.effect * level;
     return frenzyAvgAtk;
@@ -2118,7 +2152,14 @@ function getPerkEfficiencies() {
     //  Motivation
     var motiv = 1 + perks.Motivation.level * perks.Motivation.effect;
     var motivGain = (motiv + perks.Motivation.effect) / motiv;
-    if (props.specialChallenge == 'trappa') motivGain = Math.pow(motivGain,0.0001); // derate motivation in trappa (don't want to zero it out but it doesn't increase F/M/L meaningfully)
+    // trappa is heavily drop-based prior to 160, and mostly gathering based after 170
+    if (props.specialChallenge == 'trappa') {
+        if (props.targetZone < 162) {
+            motivGain = Math.pow(motivGain,0.0001); // derate motivation in trappa (don't want to zero it out but it doesn't increase F/M/L meaningfully)
+        } else if (props.targetZone < 172) {
+            motivGain = Math.pow(motivGain,0.5);
+        }
+    }
     var motivCost = getPerkCost("Motivation",1);
     // Power
     var pow = 1 + perks.Power.level * perks.Power.effect;
@@ -2694,7 +2735,7 @@ function autobuyPerks() {
     perks.Pheromones.optimize = (game.global.highestRadonLevelCleared >= 59) && (props.specialChallenge != 'trappa') && !(props.specialChallenge == 'combat' && props.isTrappa);
     if (!perks.Carpentry.levLocked && (props.specialChallenge == 'trappa' || props.specialChallenge == 'combat' && props.isTrappa)) {
         var maxCarpLevels = Math.log(props.perksRadon/perks.Carpentry.priceBase * (perks.Carpentry.priceFact-1)+1)/Math.log(perks.Carpentry.priceFact);
-        props.trappaStartPop = 10 * Math.pow(1.1,maxCarpLevels);
+        props.trappaStartPop = 10 * Math.pow(1.1,maxCarpLevels) * props.scaffoldingBonus;
     }
     // optimize Trumps for Downsize
     perks.Trumps.optimize = (props.specialChallenge == 'downsize');
@@ -2737,15 +2778,23 @@ function autobuyPerks() {
                   + Math.floor((Math.min(50000,game.global.achievementBonus) - 10000)/2000)
                   + Math.floor((Math.max(0,game.global.achievementBonus - 50000)/10000))
                   ;
+    // if VM zone is below target zone, don't take GR after VMs
+    // ---> And in fact, optimize as if the last GU before the VM zone is the last GU.
+    //      Past that point, we can trivially take GBs for remaining VMs.
+    var GRavail = props.vmZone < props.targetZone ?
+                    (GUavail - (Math.floor(props.targetZone / 25) - Math.floor(props.vmZone / 25)))
+                  : GUavail
+                  ;
     var GVcount = (props.hazzie && props.radonWeight > 0) ? 8 : 0;
     var GRcount = 0;
-    var GRgain = GUgain(GUavail,GVcount,GRcount,false);
-    var GRgainNext = GUgain(GUavail,GVcount,GRcount+1,false);
+    var GRgain = GUgain(GRavail,GVcount,GRcount,false);
+    var GRgainNext = GUgain(GRavail,GVcount,GRcount+1,false);
+    // don't take GR above the VM zone!
     // while the next GR improves the total weighted value, keep buying GR
-    while (GRcount < (GUavail - GVcount) && GRgain < GRgainNext) {
+    while (GRcount < (GRavail - GVcount) && GRgain < GRgainNext) {
         GRcount++;
         GRgain = GRgainNext;
-        GRgainNext = GUgain(GUavail,GVcount,GRcount+1,false);
+        GRgainNext = GUgain(GRavail,GVcount,GRcount+1,false);
     }        
     // final recommendation
     var GUtext = "Suggested GU Strategy:\n\xa0\xa0" + (GVcount > 0 ? (GVcount + " GVs, then ") : "");
