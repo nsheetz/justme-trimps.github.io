@@ -2421,6 +2421,7 @@ function checkHideUnused() {
                                         || !perkObj.optimize && !perkObj.hasOwnProperty("max"));
         hide |= props.hideLocked && (game === null || perkObj.locked);
         hide |= game && !game.portal.hasOwnProperty(perkName); // hide perks that don't exist in the game version the player is using (for adding new perks before they go on the live server)
+        hide |= perkName == "Masterfulness" && !game; // FIXME/TODO: this is a temp hack to ALWAYS hide the new test server perk as of 2021/12/01 so nobody gets spoiled on it before it goes live regardless of their checkboxes
         var inputRow = inputs[perkName.toLowerCase()].parentElement.parentElement;
         if (hide) {
             inputRow.style.display = "none";
