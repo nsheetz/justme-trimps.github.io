@@ -2420,6 +2420,7 @@ function checkHideUnused() {
         var hide = props.hideUnused && (   perkObj.locked || (perkObj.hasOwnProperty("max") && perkObj.level >= perkObj.max) 
                                         || !perkObj.optimize && !perkObj.hasOwnProperty("max"));
         hide |= props.hideLocked && (game === null || perkObj.locked);
+        hide |= game && !game.portal.hasOwnProperty(perkName); // hide perks that don't exist in the game version the player is using (for adding new perks before they go on the live server)
         var inputRow = inputs[perkName.toLowerCase()].parentElement.parentElement;
         if (hide) {
             inputRow.style.display = "none";
