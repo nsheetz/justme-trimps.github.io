@@ -137,6 +137,13 @@ input[type=checkbox], input[type=radio] {
             <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" style="margin-bottom:0.1rem;" id="input-resilience" /></div>
         </div>
         <div class="row">
+            <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-masterfulness-enabled" /></div>
+            <label class="col-sm-5 col-form-label" id="label-masterfulness" for="input-masterfulness">Masterfulness </label>
+            <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-masterfulness-noopt" for="input-masterfulness-noopt">lock level: </label>
+            <div class="col-sm-1"><input type="checkbox" style="display: none;" class="form-check-input" id="input-masterfulness-noopt" /></div>
+            <div class="col-sm-5"><input class="form-control" value="0" type="number" min="0" style="margin-bottom:0.1rem;" id="input-masterfulness" /></div>
+        </div>
+        <div class="row">
             <div class="col-sm-1"><input type="checkbox" class="form-check-input" id="input-greed-enabled" /></div>
             <label class="col-sm-5 col-form-label" id="label-greed" for="input-greed">Greed </label>
             <label class="col-sm-2 col-form-label" style="display: none; text-align: right;" id="label-greed-noopt" for="input-greed-noopt">lock level: </label>
@@ -666,6 +673,16 @@ function initPerks() {
             effect: 1.1,
             efficiency: 0,
         },
+        Masterfulness: {
+            optimize: true,
+            locked: true,
+            levLocked: false,
+            level: 0,
+            priceBase: 100e21,
+            priceFact: 100,
+            effect: 1,
+            efficiency: 0,
+        },
         Tenacity: {
             optimize: true,
             locked: true,
@@ -1074,12 +1091,18 @@ var loadSave = function() {
         // DO NOT update perk object levels yet
         for (var [key, value] of Object.entries(perks)) {
             if (typeof(value) !== "object" || !value.hasOwnProperty("optimize")) continue; // iterating over the perks, ignoring aux values
-            var portalPerk = portal[key];
-            var calcPerk = perks[key];
-            var level = portalPerk.radLevel;
-            inputs[key.toLowerCase()].value = level;
-            calcPerk.locked = portalPerk.radLocked;
-            inputs[key.toLowerCase() + "-enabled"].checked = !portalPerk.radLocked;
+            if (portal.hasOwnProperty(key)) {
+                var portalPerk = portal[key];
+                var calcPerk = perks[key];
+                var level = portalPerk.radLevel;
+                inputs[key.toLowerCase()].value = level;
+                calcPerk.locked = portalPerk.radLocked;
+                inputs[key.toLowerCase() + "-enabled"].checked = !portalPerk.radLocked;
+            } else {
+                inputs[key.toLowerCase()].value = 0;
+                perks[key].level = 0;
+                inputs[key.toLowerCase() + "-enabled"].checked = false;
+            }
         }
         
         // needs to be after perks since it looks at perk values
@@ -1879,33 +1902,6 @@ function getFrenzyAvgAtk(level,frenzyHits) {
     var frenzyUptimePerProc = frenzyDeathTime * Math.log(perks.Frenzy.timeEffect * level / frenzyDeathTime + 1) / Math.log(2);
     // uptime fraction for weighting the attack bonus
     var frenzyUptimeFrac = frenzyUptimePerProc / (frenzyProcWaitTime + frenzyUptimePerProc);
-    // exterm setting had presumed you needed to keep frenzy up as long as possible - but that was a fuckin lie. exterminate at marginal stats is NOT about how long you can keep frenzy up at a time, it's about
-    //   max survivability so you can kill the next bug at max equality when you inevitably die (you'll have more than enough frenzy naturally, if you have any hope of completing the challenge).
-    // tenacity WILL carry you if you can kill a bug with max equality, and that's really all there is to it. a normal 1:1:0 push spec would be much better than overweighting frenzy and underweighting hp/eq.
-    /*
-    if (props.specialChallenge == 'exterm') {
-        if (level == 0) return 1e-100; // by this special calculation frenzy has 0 value at 0, so avoid division by 0
-        // optimize for undying uptime per proc at one-shot (400ms/hit for HS1)
-        var frenzyBaseUptime = 5 * level;
-        // probability that every hit in the half-uptime refresh window fails to refresh
-        var frenzyHalfDurationHits = frenzyBaseUptime / 2 / 0.4;
-        var frenzyNoRefreshProb = Math.pow((1 - frenzyProcChance),frenzyHalfDurationHits);
-        // expected hits to refresh each proc, conditioned on refresh occurring before expiration
-        var Pm1 = 1 - frenzyProcChance;
-        var Hm1 = frenzyHalfDurationHits - 1;
-        var hitsToRefresh = frenzyHalfDurationHits
-                            + Pm1 * (1 - (Hm1*frenzyProcChance + 1)*Math.pow(Pm1,Hm1))
-                              / (frenzyProcChance * (1 - Math.pow(Pm1,frenzyHalfDurationHits)))
-                            ;
-        // expected uptime per proc, saturated at 15 zones of undying one-shot (to avoid just counting every level of frenzy better than the last forever, as uptime goes from a year to a year and a half or whatever)
-        var frenzyUptimePerProc = Math.min(1500*0.4,frenzyUptimePerProc = frenzyBaseUptime + hitsToRefresh*0.4*(1 - frenzyNoRefreshProb)/frenzyNoRefreshProb);
-        // return attack times expected total undying oneshot uptime per proc
-        // -> if frenzy expires, you're dead. we want to maximize how long we stay alive per army, but also account for the attack boost.
-        // The RHS is based on an infinite series sum across all possible number of refreshes, assuming the average refresh time per refresh,
-        //   plus a guarantee that you'll survive the base uptime per refresh (at undying oneshot).
-        return (1 + perks.Frenzy.effect * level) * frenzyUptimePerProc;
-    }
-    */
     // Mass Hysteria means frenzy is always up
     if (props.permaFrenzy) {
         frenzyUptimeFrac = 1;
@@ -1980,6 +1976,7 @@ function efficiencyColorAndFlag() {
         }
     }
     for (var [perkName,perkObj] of Object.entries(perks)) {
+        if (!game.portal.hasOwnProperty(perkName)) continue; // skip non-existant perks for the current save
         var diff = Math.round(perkObj.level - game.portal[perkName].radLevel);
         var perkLabel = document.getElementById('label-' + perkName.toLowerCase());
         if (diff != 0) {
@@ -2333,6 +2330,10 @@ function getPerkEfficiencies() {
     } else {
         perks.Observation.efficiency2 = 0;
     }
+    
+    // Masterfulness:
+    //   Simple: +1 greed +1 tenacity. The extremely harsh cost scaling means it's not very pointful to consider other than a default tenacity time.
+    perks.Masterfulness.efficiency = getLogWeightedValue(perks.Tenacity.effect,1,1,greedGain,greedGain,1)/getPerkCost("Masterfulness",1);
 }
 
 var vars = {};
