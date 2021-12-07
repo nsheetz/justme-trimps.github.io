@@ -1171,10 +1171,13 @@ var loadSave = function() {
                 setAuxInput("radonPerRun",rawRnRun);
             }
         }
-                
+               
+        // scaffolding increases population (relevant for Combat Respec and Trappa)
+        var scaffolds = game.global.autoBattleData.bonuses.Scaffolding || 0;
+        props.scaffoldingBonus = 1 + (scaffolds * Math.pow(1.1,scaffolds - 1)); 
 
         // initially used only for combat respec preset which REQUIRES an import at the point of respec, and not displayed anywhere
-        props.maxTrimps = game.resources.trimps.max;
+        props.maxTrimps = game.resources.trimps.max * props.scaffoldingBonus;
         props.coordsBought = game.upgrades.Coordination.done;
         props.armySize = game.resources.trimps.maxSoldiers;
         props.currentWorld = game.global.world;
@@ -1185,15 +1188,12 @@ var loadSave = function() {
         props.antennae = game.buildings.Antenna.owned;
         props.canGUString = game.global.canGuString;
         
-        // scaffolding increases population (relevant for Trappa)
-        var scaffolds = game.global.autoBattleData.bonuses.hasOwnProperty("Scaffolding") ? (game.global.autoBattleData.bonuses.Scaffolding.level || 0) : 0;
-        props.scaffoldingBonus = 1 + (scaffolds * Math.pow(1.1,scaffolds - 1));
         
         // Glass reward determines whether additional VM zones increase radon above 175
         props.glassDone = game.global.glassDone || false;
         
         // Mass Hysteria grants permanent Frenzy
-        props.permaFrenzy = game.global.autoBattleData.oneTimers.hasOwnProperty("Mass_Hysteria") && game.global.autoBattleData.oneTimers.Mass_Hysteria;
+        props.permaFrenzy = game.global.autoBattleData.oneTimers.hasOwnProperty("Mass_Hysteria") && game.global.autoBattleData.oneTimers.Mass_Hysteria.owned;
             
         // used for combat respec to apply special optimizations for trappa (no gain from health, full gain from equality)
         props.isTrappa = game.global.challengeActive == "Trappapalooza";
