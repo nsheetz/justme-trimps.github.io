@@ -1845,9 +1845,11 @@ function obsDropRate(level,zone) {
     if (zone < 101) return 0;
     if (zone > 200) zone = 200;
     var base = ((1 + ((level - 1) / 2)) * Math.pow(1.03, (zone - 100)));
+    var res;
     if (props.specialChallenge == 'alchemy' && zone <= 156) {
-        return 100 - (100 - base) * Math.pow(0.99,props.findPots);
-    } else return base;
+        res =  100 - (100 - base) * Math.pow(0.99,props.findPots);
+    } else res = base;
+    return Math.min(res,100); // capped at 1 per zone
 }
 
 // how many trinkets do we expect to get by clearing the target zone?
@@ -1856,7 +1858,7 @@ function shinyCollectLoop(level,zone) {
     // the game checks for the drop after advancing the zone counter, so go to zone+1.
     for (var i=101; i<=zone+1; i++) {
         shinies += obsDropRate(level,i) / 100;
-        if ((i-1) % 25 == 0) {
+        if (i % 25 == 0) {
             // level-1 since the "level" includes the free +1 obs level, but even levels for guaranteed trinket drops do not include this free +1 level
             var free = Math.floor((level-1)/2);
             if (free > 0) shinies += free;
