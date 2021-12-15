@@ -1218,7 +1218,11 @@ var loadSave = function() {
         if (game.global.universe == 2)
             shield = game.global.ShieldEquipped;
         if (game.global.universe == 1 && game.global.lastHeirlooms.u2 && game.global.lastHeirlooms.u2.Shield) {
-            shield = game.global.heirloomsCarried.find(function (s) { return s.id == game.global.lastHeirlooms.u2.Shield; });
+            if (game.global.lastHeirlooms.u2.Shield == game.global.ShieldEquipped.id) {
+                shield = game.global.ShieldEquipped;
+            } else {
+                shield = game.global.heirloomsCarried.find(function (s) { return s.id == game.global.lastHeirlooms.u2.Shield; });
+            }
         }
         if (shield) {
             var critDamageMod = shield.mods.find(function (el) { return el[0] == "critDamage"; });
