@@ -1193,7 +1193,7 @@ var loadSave = function() {
         props.glassDone = game.global.glassDone || false;
         
         // Mass Hysteria grants permanent Frenzy
-        props.permaFrenzy = game.global.autoBattleData.oneTimers.hasOwnProperty("Mass_Hysteria") && game.global.autoBattleData.oneTimers.Mass_Hysteria.owned;
+        props.permaFrenzy = game.global.autoBattleData.oneTimers.hasOwnProperty("Mass_Hysteria") && game.global.autoBattleData.oneTimers.Mass_Hysteria;
             
         // used for combat respec to apply special optimizations for trappa (no gain from health, full gain from equality)
         props.isTrappa = game.global.challengeActive == "Trappapalooza";
