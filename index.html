@@ -2723,6 +2723,7 @@ function clearAndAutobuyPerks() {
         if (game.global.highestRadonLevelCleared >= 59 && !perks.Pheromones.levLocked) inputs["pheromones"].value = 0;
         if (!perks.Trumps.levLocked) inputs['trumps'].value = 0; // zero out trumps, it will be used as a dump perk even outside of downsize
         if (props.specialChallenge == 'berserk' && !perks.Frenzy.levLocked) inputs["frenzy"].value = 0;
+        readInputs(); // get correct available radon for cleared perks
         // for max carp, just max out carp!
         if (props.specialChallenge == 'trappacarp') {
             while (buyPerk('Carpentry',1));
