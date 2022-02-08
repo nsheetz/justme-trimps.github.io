@@ -424,6 +424,7 @@ function initPerks() {
         //shieldCC: 0, // TONOTDO: strictly, this matters. sort of. if it's <100% it affects the value of criticality. also in Duel. but we can ignore this for a start.
         shieldCD: 0,
         shieldPrismal: 0,
+        healthDerate: 1, // inequality makes raw health boosts less useful, so we derate health weight by this factor (based on inequality from equipped shield)
         smithyScaling: 50,
         tributes: 0,
         trinkets: 0,
@@ -1227,9 +1228,11 @@ var loadSave = function() {
         if (shield) {
             var critDamageMod = shield.mods.find(function (el) { return el[0] == "critDamage"; });
             var prismalMod = shield.mods.find(function (el) { return el[0] == "prismatic"; });
+            var ineqMod = shield.mods.find(function (el) { return el[0] == "inequality"; });
             
             if (critDamageMod)  { props.shieldCD = Math.round(critDamageMod[1] / 10); }  else { props.shieldCD = 0; }
             if (prismalMod)     { props.shieldPrismal = Math.round(prismalMod[1]); }     else { props.shieldPrismal = 0; }
+            if (ineqMod)        { props.healthDerate = Math.log(0.9 + ineqMod[1]/10000)/Math.log(0.9) } else { props.healthDerate = 1; }
             props.hazzie = shield.rarity >= 10;
         }
         
@@ -1788,7 +1791,7 @@ function getLogWeightedValue(Va,Vh,Vgear,Vres,Vrad,Ve=1,Vp=1,moreTrinkets=0,extr
     
     var Wa = props.clearWeight; // attack weight
     // health is useless in final trappa respec after sending last army, since new perks won't be applied to current army's health
-    var Wh = (props.specialChallenge == 'combat' && props.isTrappa) ? 0 : props.clearWeight + props.survivalWeight; // health weight
+    var Wh = (props.specialChallenge == 'combat' && props.isTrappa) ? 0 : props.clearWeight * props.healthDerate + props.survivalWeight; // health weight
     var We = Math.max(1e-100,props.survivalWeight); // equality weight: force >0 to use equality as a dump perk if the user sets 0 weight
     var Wr = props.radonWeight; // radon weight
 
