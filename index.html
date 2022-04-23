@@ -1384,6 +1384,13 @@ function readInputs() {
     perks.Greed.effect = getGreedEffect(props.tributes);
     
     // use tenacity time to calculate tenacity effect
+    //   -> for any radon weight we presume we don't have high tenacity time (and radon will dominate for MF regardless)
+    //   -> for no radon weight we presume we're pushing and care about tenacity more
+    if (props.radonWeight > 0) {
+        props.tenacityTime = 10;
+    } else {
+        props.tenacityTime = 120;
+    }
     perks.Tenacity.effect = getTenacityEffect(props.tenacityTime);
     
     // triple-checking that coordlimited is not less than 0
