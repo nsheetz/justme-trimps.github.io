@@ -1933,7 +1933,7 @@ function obsDropRate(level,zone) {
     if (props.specialChallenge == 'alchemy' && zone <= 156) {
         res =  100 - (100 - base) * Math.pow(0.99,props.findPots);
     } else res = base;
-    return Math.min(res,100); // capped at 1 per zone
+    return res;
 }
 
 // how many trinkets do we expect to get by clearing the target zone?
