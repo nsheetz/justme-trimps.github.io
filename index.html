@@ -1436,6 +1436,7 @@ function readInputs() {
     // final enemy HP/ATK scaling including the sqrt(zone) component:
     //   (note we don't divide by 2, because we're adding the two log sqrt components together)
     props.logEnemyScaling = logEnemyHealthScaling + logEnemyAttackScaling + Math.log(1 + 1/props.targetZone);
+    if (props.targetZone >= 300) props.logEnemyScaling += 2 * Math.log(1.15);
     
     // calculate equipment resource scaling for atk/hp based on weaponl/armor levels
     var wLevScaling = Math.pow((props.weaponLevels+1)/(props.weaponLevels),1/Math.log(1.2));
