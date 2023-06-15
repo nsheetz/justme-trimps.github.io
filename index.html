@@ -1242,7 +1242,7 @@ var loadSave = function() {
         props.actualTaunts  = game.unlocks.impCount.Tauntimp;
 
         // initially used only for combat respec preset which REQUIRES an import at the point of respec, and not displayed anywhere
-        props.maxTrimps = game.resources.trimps.max * props.scaffoldingBonus;
+        props.maxTrimps = game.resources.trimps.max * game.resources.trimps.maxMod * props.scaffoldingBonus;
         props.coordsBought = game.upgrades.Coordination.done;
         props.armySize = game.resources.trimps.maxSoldiers;
         props.currentWorld = game.global.world;
