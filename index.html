@@ -3025,7 +3025,10 @@ function autobuyPerks() {
                  + " which would be worth extending the run by about " + cacheGainPct.toPrecision(3)
                  + "% of the current run time.";
     }
-    zRecElem.innerText = ZText;
+	// S23 supersedes S3, even though we still use S3 math to give radon weight to pushing power (which isn't strictly right but removing this would require 
+	//   extensive additional changes or a major change to the way users interact with the calc)
+    if (props.scruffyLevel >= 23) {zRecElem.innerText="";}
+	else {zRecElem.innerText = ZText;}
     //}
     evaluatePerks();
     if (props.autoFill) exportPerkString();
